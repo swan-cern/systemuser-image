@@ -1,7 +1,8 @@
 #!/bin/sh
 
 echo "Creating user $USER ($USER_ID)"
-useraddcern $USER 
+#useraddcern $USER 
+useradd -u $USER_ID -s $SHELL $USER
 sudo -E -u $USER jupyterhub-singleuser \
   --port=8888 \
   --ip=0.0.0.0 \

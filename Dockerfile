@@ -11,9 +11,6 @@ RUN yum -y install sudo
 RUN sed -i'' '/Defaults \+requiretty/d'  /etc/sudoers
 RUN sed -i'' '/Defaults \+secure_path/d' /etc/sudoers
 
-# Install useraddcern
-RUN yum -y install useraddcern
-
 # Fetch juptyerhub-singleuser entrypoint
 ADD https://raw.githubusercontent.com/jupyter/jupyterhub/master/jupyterhub/singleuser.py /usr/local/bin/jupyterhub-singleuser
 RUN chmod 755 /usr/local/bin/jupyterhub-singleuser
