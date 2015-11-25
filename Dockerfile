@@ -10,6 +10,11 @@ MAINTAINER Enric Tejedor Saavedra <enric.tejedor.saavedra@cern.ch>
 RUN sed -i'' '/Defaults \+requiretty/d'  /etc/sudoers
 RUN sed -i'' '/Defaults \+secure_path/d' /etc/sudoers
 
+# Install ROOT prerequisites
+RUN yum -y install \
+    libXpm \
+    libXft
+
 # Install requests - required by jupyterhub-singleuser
 RUN pip2 install requests
 RUN pip3 install requests
