@@ -7,6 +7,7 @@ FROM cernphsft/notebook
 MAINTAINER Enric Tejedor Saavedra <enric.tejedor.saavedra@cern.ch>
 
 # Disable requiretty and secure path - required by systemuser.sh
+RUN yum -y install sudo
 RUN sed -i'' '/Defaults \+requiretty/d'  /etc/sudoers
 RUN sed -i'' '/Defaults \+secure_path/d' /etc/sudoers
 
