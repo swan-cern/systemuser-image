@@ -1,25 +1,49 @@
 #!/bin/sh
 
+# Create notebook user
 echo "Creating user $USER ($USER_ID)"
-#useraddcern $USER
 useradd -u $USER_ID -s $SHELL $USER
 
+# Setup CERNBox
 echo "Linking to the CERNBox"
 FIRSTLETTER="$(echo $USER | head -c 1)"
 LONGNAME=/home/"$USER"/MyCERNBox
 ln -nfs /eos/user/"$FIRSTLETTER"/"$USER" $LONGNAME
-chown -h $USER $LONGNAME
+chown -h $USER:$USER $LONGNAME
 
+# Setup CVMFS
 echo "Setting up environment from CVMFS"
-SETUP_FILE=$ROOT_LCG_VIEW_PATH/$ROOT_LCG_VIEW_NAME/$ROOT_LCG_VIEW_PLATFORM/setup.sh
-source $SETUP_FILE
-echo "Using setup file: $SETUP_FILE"
-env
+LCG_VIEW=$ROOT_LCG_VIEW_PATH/$ROOT_LCG_VIEW_NAME/$ROOT_LCG_VIEW_PLATFORM
+source $LCG_VIEW/setup.sh
 
-# Force inheritance of PYTHONPATH and LD_LIBRARY_PATH
-alias sudoenv="sudo LD_LIBRARY_PATH=$LD_LIBRARY_PATH PYTHONPATH=$PYTHONPATH"
+# Add ROOT kernel
+echo "Adding ROOT kernel"
+ETC_NB=$LCG_VIEW/etc/notebook
+JPY_LOCAL_DIR=/home/$USER/.local
+KERNEL_DIR=$JPY_LOCAL_DIR/share/jupyter/kernels
+mkdir -p $KERNEL_DIR
+cp -r $ETC_NB/kernels/root $KERNEL_DIR
+chown -R $USER:$USER $JPY_LOCAL_DIR
 
-sudoenv -E -u $USER jupyterhub-singleuser \
+# Customise look and feel
+echo "Customising the look and feel"
+JPY_DIR=/home/$USER/.jupyter
+mkdir $JPY_DIR
+cp -r $ETC_NB/custom $JPY_DIR
+
+# Set environment for the notebook process
+# The kernels and the terminal will inherit
+echo "Setting environment"
+JPY_CONFIG=$JPY_DIR/jupyter_notebook_config.py
+echo "import os"                                           > $JPY_CONFIG
+echo "os.environ['PATH']            = '$PATH'"            >> $JPY_CONFIG
+echo "os.environ['LD_LIBRARY_PATH'] = '$LD_LIBRARY_PATH'" >> $JPY_CONFIG
+echo "os.environ['PYTHONPATH']      = '$PYTHONPATH'"      >> $JPY_CONFIG
+chown -R $USER:$USER $JPY_DIR
+
+# Run notebook server
+echo "Running the notebook server"
+sudo -E -u $USER jupyterhub-singleuser \
   --port=8888 \
   --ip=0.0.0.0 \
   --user=$JPY_USER \
