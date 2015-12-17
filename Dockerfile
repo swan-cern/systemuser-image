@@ -20,6 +20,9 @@ RUN yum -y install \
 RUN pip2 install requests
 RUN pip3 install requests
 
+# Install metakernel - required by ROOT C++ kernel
+RUN pip2 install metakernel
+
 # Get jupyterhub-singleuser entrypoint
 ADD https://raw.githubusercontent.com/jupyter/jupyterhub/master/jupyterhub/singleuser.py /usr/local/bin/jupyterhub-singleuser
 RUN chmod 755 /usr/local/bin/jupyterhub-singleuser
