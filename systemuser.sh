@@ -5,7 +5,7 @@ echo "Creating user $USER ($USER_ID)"
 useradd -u $USER_ID -s $SHELL $USER
 
 # Setup CERNBox
-echo "Linking to the CERNBox"
+echo "Linking to CERNBox"
 FIRSTLETTER="$(echo $USER | head -c 1)"
 LONGNAME=/home/"$USER"/MyCERNBox
 ln -nfs /eos/user/"$FIRSTLETTER"/"$USER" $LONGNAME
@@ -40,6 +40,9 @@ echo "os.environ['PATH']            = '$PATH'"            >> $JPY_CONFIG
 echo "os.environ['LD_LIBRARY_PATH'] = '$LD_LIBRARY_PATH'" >> $JPY_CONFIG
 echo "os.environ['PYTHONPATH']      = '$PYTHONPATH'"      >> $JPY_CONFIG
 chown -R $USER:$USER $JPY_DIR
+
+# Overwrite link for python2 in the image
+ln -sf $LCG_VIEW/bin/python /usr/local/bin/python2
 
 # Run notebook server
 echo "Running the notebook server"
