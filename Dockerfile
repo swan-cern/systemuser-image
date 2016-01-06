@@ -23,6 +23,9 @@ RUN pip3 install requests
 # Install metakernel - required by ROOT C++ kernel
 RUN pip2 install metakernel
 
+# Install tk - required by matplotlib
+RUN yum -y install tk
+
 # Get jupyterhub-singleuser entrypoint
 ADD https://raw.githubusercontent.com/jupyter/jupyterhub/master/jupyterhub/singleuser.py /usr/local/bin/jupyterhub-singleuser
 RUN chmod 755 /usr/local/bin/jupyterhub-singleuser
