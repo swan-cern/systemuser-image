@@ -12,6 +12,7 @@ mv $OLDHOME $OLDHOMEBACKUP
 # at this point the permissions should be ok
 # We copy the temporary directories into the CERNBox which we make our HOME
 ln -nfs /eos/user/"$FIRSTLETTER"/"$USER" $OLDHOME
+chown -h $USER:$USER $LONGNAME
 cp -r $OLDHOMEBACKUP/.local $OLDHOME/
 cp -r $OLDHOMEBACKUP/.jupyter $OLDHOME/
 
