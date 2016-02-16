@@ -7,12 +7,14 @@ useradd -u $USER_ID -s $SHELL $USER
 # Setup CERNBox
 echo "Setting up CERNBox"
 FIRSTLETTER="$(echo $USER | head -c 1)"
-MYHOME=/home/"$USER"
-mv $MYHOME "$MYHOME"_BACKUP
+cd ..
+mv $USER "$USER"_BACKUP
 # at this point the permissions should be ok
 # We copy the temporary directories into the CERNBox which we make our HOME
-ln -nfs /eos/user/"$FIRSTLETTER"/"$USER" $MYHOME
-chown -h $USER:$USER $MYHOME
+ln -nfs /eos/user/"$FIRSTLETTER"/"$USER" $USER
+chown -h $USER:$USER $USER
+cd $USER
+MYHOME=/home/"$USER"
 
 #FIRSTLETTER="$(echo $USER | head -c 1)"
 #LONGNAME=/home/"$USER"/MyCERNBox
