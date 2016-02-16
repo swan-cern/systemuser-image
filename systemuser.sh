@@ -7,16 +7,12 @@ useradd -u $USER_ID -s $SHELL $USER
 # Setup CERNBox
 echo "Setting up CERNBox"
 FIRSTLETTER="$(echo $USER | head -c 1)"
-OLDHOME=/home/"$USER"
-mv $OLDHOME "$OLDHOME"_BACKUP
+MYHOME=/home/"$USER"
+mv $MYHOME "$MYHOME"_BACKUP
 # at this point the permissions should be ok
 # We copy the temporary directories into the CERNBox which we make our HOME
-ln -nfs /eos/user/"$FIRSTLETTER"/"$USER" $OLDHOME
-chown -h $USER:$USER $LONGNAME
-cp -r "$OLDHOME"_BACKUP/.local $OLDHOME/
-cp -r "$OLDHOME"_BACKUP/.jupyter $OLDHOME/
-
-
+ln -nfs /eos/user/"$FIRSTLETTER"/"$USER" $MYHOME
+chown -h $USER:$USER $MYHOME
 
 #FIRSTLETTER="$(echo $USER | head -c 1)"
 #LONGNAME=/home/"$USER"/MyCERNBox
@@ -31,7 +27,7 @@ source $LCG_VIEW/setup.sh
 # Add ROOT kernel
 echo "Adding ROOT kernel"
 ETC_NB=$LCG_VIEW/etc/notebook
-JPY_LOCAL_DIR=/home/$USER/.local
+JPY_LOCAL_DIR="$MYHOME"/.local
 KERNEL_DIR=$JPY_LOCAL_DIR/share/jupyter/kernels
 mkdir -p $KERNEL_DIR
 cp -r $ETC_NB/kernels/root $KERNEL_DIR
@@ -39,7 +35,7 @@ chown -R $USER:$USER $JPY_LOCAL_DIR
 
 # Customise look and feel
 echo "Customising the look and feel"
-JPY_DIR=/home/$USER/.jupyter
+JPY_DIR="$MYHOME"/.jupyter
 mkdir $JPY_DIR
 cp -r $ETC_NB/custom $JPY_DIR
 
