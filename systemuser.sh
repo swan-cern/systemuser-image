@@ -4,7 +4,6 @@
 echo "Entering EOS home (CERNBox)"
 FIRSTLETTER="$(echo $USER | head -c 1)"
 MYHOME=/eos/user/"$FIRSTLETTER"/"$USER"
-cd $MYHOME
 
 # Create notebook user
 echo "Creating user $USER ($USER_ID)"
@@ -20,24 +19,24 @@ echo "Adding ROOT kernel"
 ETC_NB=$LCG_VIEW/etc/notebook
 JPY_LOCAL_DIR="$MYHOME"/.local
 KERNEL_DIR=$JPY_LOCAL_DIR/share/jupyter/kernels
-mkdir -p $KERNEL_DIR
-cp -r $ETC_NB/kernels/root $KERNEL_DIR
+sudo -E -u $USER mkdir -p $KERNEL_DIR
+sudo -E -u $USER cp -r $ETC_NB/kernels/root $KERNEL_DIR
 chown -R $USER:$USER $JPY_LOCAL_DIR
 
 # Customise look and feel
 echo "Customising the look and feel"
 JPY_DIR="$MYHOME"/.jupyter
-mkdir $JPY_DIR
-cp -r $ETC_NB/custom $JPY_DIR
+sudo -E -u $USER mkdir $JPY_DIR
+sudo -E -u $USER cp -r $ETC_NB/custom $JPY_DIR
 
 # Set environment for the notebook process
 # The kernels and the terminal will inherit
 echo "Setting environment"
 JPY_CONFIG=$JPY_DIR/jupyter_notebook_config.py
-echo "import os"                                           > $JPY_CONFIG
-echo "os.environ['PATH']            = '$PATH'"            >> $JPY_CONFIG
-echo "os.environ['LD_LIBRARY_PATH'] = '$LD_LIBRARY_PATH'" >> $JPY_CONFIG
-echo "os.environ['PYTHONPATH']      = '$PYTHONPATH'"      >> $JPY_CONFIG
+sudo -E -u $USER echo "import os"                                           > $JPY_CONFIG
+sudo -E -u $USER echo "os.environ['PATH']            = '$PATH'"            >> $JPY_CONFIG
+sudo -E -u $USER echo "os.environ['LD_LIBRARY_PATH'] = '$LD_LIBRARY_PATH'" >> $JPY_CONFIG
+sudo -E -u $USER echo "os.environ['PYTHONPATH']      = '$PYTHONPATH'"      >> $JPY_CONFIG
 chown -R $USER:$USER $JPY_DIR
 
 # Overwrite link for python2 in the image
@@ -45,7 +44,7 @@ ln -sf $LCG_VIEW/bin/python /usr/local/bin/python2
 
 # Run notebook server
 echo "Running the notebook server"
-sudo -E -u $USER jupyterhub-singleuser \
+sudo -E -u $USER cd $MYHOME && jupyterhub-singleuser \
   --port=8888 \
   --ip=0.0.0.0 \
   --user=$JPY_USER \
