@@ -1,25 +1,14 @@
 #!/bin/sh
 
+# Setup CERNBox
+echo "Entering EOS home (CERNBox)"
+FIRSTLETTER="$(echo $USER | head -c 1)"
+MYHOME=/eos/user/"$FIRSTLETTER"/"$USER"
+cd $MYHOME
+
 # Create notebook user
 echo "Creating user $USER ($USER_ID)"
-useradd -u $USER_ID -s $SHELL $USER
-
-# Setup CERNBox
-echo "Setting up CERNBox"
-FIRSTLETTER="$(echo $USER | head -c 1)"
-cd ..
-mv $USER "$USER"_BACKUP
-# at this point the permissions should be ok
-# We copy the temporary directories into the CERNBox which we make our HOME
-ln -nfs /eos/user/"$FIRSTLETTER"/"$USER" $USER
-chown -h $USER:$USER $USER
-cd $USER
-MYHOME=/home/"$USER"
-
-#FIRSTLETTER="$(echo $USER | head -c 1)"
-#LONGNAME=/home/"$USER"/MyCERNBox
-#ln -nfs /eos/user/"$FIRSTLETTER"/"$USER" $LONGNAME
-#chown -h $USER:$USER $LONGNAME
+useradd -u $USER_ID -s $SHELL -d $MYHOME $USER
 
 # Setup CVMFS
 echo "Setting up environment from CVMFS"
