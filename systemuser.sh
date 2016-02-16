@@ -5,11 +5,22 @@ echo "Creating user $USER ($USER_ID)"
 useradd -u $USER_ID -s $SHELL $USER
 
 # Setup CERNBox
-echo "Linking to CERNBox"
+echo "Setting up CERNBox"
 FIRSTLETTER="$(echo $USER | head -c 1)"
-LONGNAME=/home/"$USER"/MyCERNBox
-ln -nfs /eos/user/"$FIRSTLETTER"/"$USER" $LONGNAME
-chown -h $USER:$USER $LONGNAME
+OLDHOME=/home/"$USER"
+mv $OLDHOME $OLDHOMEBACKUP
+# at this point the permissions should be ok
+# We copy the temporary directories into the CERNBox which we make our HOME
+ln -nfs /eos/user/"$FIRSTLETTER"/"$USER" $OLDHOME
+cp -r $OLDHOMEBACKUP/.local $OLDHOME/
+cp -r $OLDHOMEBACKUP/.jupyter $OLDHOME/
+
+
+
+#FIRSTLETTER="$(echo $USER | head -c 1)"
+#LONGNAME=/home/"$USER"/MyCERNBox
+#ln -nfs /eos/user/"$FIRSTLETTER"/"$USER" $LONGNAME
+#chown -h $USER:$USER $LONGNAME
 
 # Setup CVMFS
 echo "Setting up environment from CVMFS"
