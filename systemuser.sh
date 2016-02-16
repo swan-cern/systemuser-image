@@ -8,13 +8,13 @@ useradd -u $USER_ID -s $SHELL $USER
 echo "Setting up CERNBox"
 FIRSTLETTER="$(echo $USER | head -c 1)"
 OLDHOME=/home/"$USER"
-mv $OLDHOME $OLDHOMEBACKUP
+mv $OLDHOME "$OLDHOME"_BACKUP
 # at this point the permissions should be ok
 # We copy the temporary directories into the CERNBox which we make our HOME
 ln -nfs /eos/user/"$FIRSTLETTER"/"$USER" $OLDHOME
 chown -h $USER:$USER $LONGNAME
-cp -r $OLDHOMEBACKUP/.local $OLDHOME/
-cp -r $OLDHOMEBACKUP/.jupyter $OLDHOME/
+cp -r "$OLDHOME"_BACKUP/.local $OLDHOME/
+cp -r "$OLDHOME"_BACKUP/.jupyter $OLDHOME/
 
 
 
