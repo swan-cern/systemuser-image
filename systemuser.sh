@@ -1,13 +1,13 @@
 #!/bin/sh
 
 # Setup CERNBox
-echo "Entering EOS home (CERNBox)"
-FIRSTLETTER="$(echo $USER | head -c 1)"
-MYHOME=/eos/user/"$FIRSTLETTER"/"$USER"
+#echo "Entering EOS home (CERNBox)"
+#FIRSTLETTER="$(echo $USER | head -c 1)"
+#MYHOME=/eos/user/"$FIRSTLETTER"/"$USER"
 
 # Create notebook user
 echo "Creating user $USER ($USER_ID)"
-useradd -u $USER_ID -s $SHELL -d $MYHOME $USER
+useradd -u $USER_ID -s $SHELL -d $HOME $USER
 
 # Setup CVMFS
 echo "Setting up environment from CVMFS"
@@ -44,12 +44,11 @@ ln -sf $LCG_VIEW/bin/python /usr/local/bin/python2
 
 # Run notebook server
 echo "Running the notebook server"
-sudo -E -u $USER cd $MYHOME 
-sudo -E -u $USER jupyterhub-singleuser \
+sudo -E -u $USER sh -c 'cd $MYHOME && jupyterhub-singleuser \
   --port=8888 \
   --ip=0.0.0.0 \
   --user=$JPY_USER \
   --cookie-name=$JPY_COOKIE_NAME \
   --base-url=$JPY_BASE_URL \
   --hub-prefix=$JPY_HUB_PREFIX \
-  --hub-api-url=$JPY_HUB_API_URL
+  --hub-api-url=$JPY_HUB_API_URL '
