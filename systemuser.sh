@@ -20,14 +20,14 @@ ETC_NB=$LCG_VIEW/etc/notebook
 JPY_LOCAL_DIR="$MYHOME"/.local
 KERNEL_DIR=$JPY_LOCAL_DIR/share/jupyter/kernels
 sudo -E -u $USER mkdir -p $KERNEL_DIR
-sudo -E -u $USER cp -r $ETC_NB/kernels/root $KERNEL_DIR
+sudo -E -u $USER cp -rL $ETC_NB/kernels/root $KERNEL_DIR
 chown -R $USER:$USER $JPY_LOCAL_DIR
 
 # Customise look and feel
 echo "Customising the look and feel"
 JPY_DIR="$MYHOME"/.jupyter
 sudo -E -u $USER mkdir $JPY_DIR
-sudo -E -u $USER cp -r $ETC_NB/custom $JPY_DIR
+sudo -E -u $USER cp -rL $ETC_NB/custom $JPY_DIR
 
 # Set environment for the notebook process
 # The kernels and the terminal will inherit
@@ -44,7 +44,8 @@ ln -sf $LCG_VIEW/bin/python /usr/local/bin/python2
 
 # Run notebook server
 echo "Running the notebook server"
-sudo -E -u $USER cd $MYHOME && jupyterhub-singleuser \
+sudo -E -u $USER cd $MYHOME 
+sudo -E -u $USER jupyterhub-singleuser \
   --port=8888 \
   --ip=0.0.0.0 \
   --user=$JPY_USER \
