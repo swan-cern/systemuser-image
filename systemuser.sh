@@ -17,7 +17,7 @@ source $LCG_VIEW/setup.sh
 # Add ROOT kernel
 echo "Adding ROOT kernel"
 ETC_NB=$LCG_VIEW/etc/notebook
-JPY_LOCAL_DIR="$MYHOME"/.local
+JPY_LOCAL_DIR="$HOME"/.local
 KERNEL_DIR=$JPY_LOCAL_DIR/share/jupyter/kernels
 sudo -E -u $USER mkdir -p $KERNEL_DIR
 sudo -E -u $USER cp -rL $ETC_NB/kernels/root $KERNEL_DIR
@@ -25,7 +25,7 @@ chown -R $USER:$USER $JPY_LOCAL_DIR
 
 # Customise look and feel
 echo "Customising the look and feel"
-JPY_DIR="$MYHOME"/.jupyter
+JPY_DIR="$HOME"/.jupyter
 sudo -E -u $USER mkdir $JPY_DIR
 sudo -E -u $USER cp -rL $ETC_NB/custom $JPY_DIR
 
