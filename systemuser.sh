@@ -33,10 +33,10 @@ sudo -E -u $USER cp -rL $ETC_NB/custom $JPY_DIR
 # The kernels and the terminal will inherit
 echo "Setting environment"
 JPY_CONFIG=$JPY_DIR/jupyter_notebook_config.py
-sudo -E -u $USER echo "import os"                                           > $JPY_CONFIG
-sudo -E -u $USER echo "os.environ['PATH']            = '$PATH'"            >> $JPY_CONFIG
-sudo -E -u $USER echo "os.environ['LD_LIBRARY_PATH'] = '$LD_LIBRARY_PATH'" >> $JPY_CONFIG
-sudo -E -u $USER echo "os.environ['PYTHONPATH']      = '$PYTHONPATH'"      >> $JPY_CONFIG
+sudo -E -u $USER sh -c 'echo "import os"                                               > $JPY_CONFIG'
+sudo -E -u $USER sh -c 'echo "os.environ[\"PATH\"]            = \"$PATH\""            >> $JPY_CONFIG'
+sudo -E -u $USER sh -c 'echo "os.environ[\"LD_LIBRARY_PATH\"] = \"$LD_LIBRARY_PATH\"" >> $JPY_CONFIG'
+sudo -E -u $USER sh -c 'echo "os.environ[\"PYTHONPATH\"]      = \"$PYTHONPATH\""      >> $JPY_CONFIG'
 chown -R $USER:$USER $JPY_DIR
 
 # Overwrite link for python2 in the image
