@@ -6,7 +6,7 @@ useradd -u $USER_ID -s $SHELL -d $HOME $USER
 
 # Setup CVMFS
 echo "Setting up environment from CVMFS"
-LCG_VIEW=$ROOT_LCG_VIEW_PATH/$ROOT_LCG_VIEW_NAME/$ROOT_LCG_VIEW_PLATFORM
+export LCG_VIEW=$ROOT_LCG_VIEW_PATH/$ROOT_LCG_VIEW_NAME/$ROOT_LCG_VIEW_PLATFORM
 source $LCG_VIEW/setup.sh
 
 # Add ROOT kernel
