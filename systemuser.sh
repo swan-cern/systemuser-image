@@ -29,9 +29,9 @@ sudo -E -u $USER cp -rL $ETC_NB/custom $JPY_DIR
 echo "Setting environment"
 export JPY_CONFIG=$JPY_DIR/jupyter_notebook_config.py
 sudo -E -u $USER sh -c 'echo "import os"                                               > $JPY_CONFIG'
-sudo -E -u $USER sh -c 'echo "os.environ[\"PATH\"]            = \"$PATH\""            >> $JPY_CONFIG'
-sudo -E -u $USER sh -c 'echo "os.environ[\"LD_LIBRARY_PATH\"] = \"$LD_LIBRARY_PATH\"" >> $JPY_CONFIG'
-sudo -E -u $USER sh -c 'echo "os.environ[\"PYTHONPATH\"]      = \"$PYTHONPATH\""      >> $JPY_CONFIG'
+sudo -E -u $USER sh -c 'source $LCG_VIEW/setup.sh && echo "os.environ[\"PATH\"]            = \"$PATH\""            >> $JPY_CONFIG'
+sudo -E -u $USER sh -c 'source $LCG_VIEW/setup.sh && echo "os.environ[\"LD_LIBRARY_PATH\"] = \"$LD_LIBRARY_PATH\"" >> $JPY_CONFIG'
+sudo -E -u $USER sh -c 'source $LCG_VIEW/setup.sh && echo "os.environ[\"PYTHONPATH\"]      = \"$PYTHONPATH\""      >> $JPY_CONFIG'
 chown -R $USER:$USER $JPY_DIR
 
 # Overwrite link for python2 in the image
@@ -39,7 +39,7 @@ ln -sf $LCG_VIEW/bin/python /usr/local/bin/python2
 
 # Run notebook server
 echo "Running the notebook server"
-sudo -E -u $USER sh -c 'cd $HOME && source $LCG_VIEW/setup.sh && jupyterhub-singleuser \
+sudo -E -u $USER sh -c 'cd $HOME && jupyterhub-singleuser \
   --port=8888 \
   --ip=0.0.0.0 \
   --user=$JPY_USER \
