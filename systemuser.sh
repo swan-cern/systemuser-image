@@ -1,26 +1,30 @@
 #!/bin/sh
 
+# Author: Danilo Piparo, Enric Tejedor 2015
+# Copyright CERN
+# Here the environment for the notebook server is prepared. Many of the commands are launched as regular 
+# user as it's this entity which is able to access eos and not the super user.
+
 # Create notebook user
+# The $HOME directory is specified upstream in the Spawner
 echo "Creating user $USER ($USER_ID)"
 useradd -u $USER_ID -s $SHELL -d $HOME $USER
 
-# Setup CVMFS
+# Setup the LCG View on CVMFS
 echo "Setting up environment from CVMFS"
 export LCG_VIEW=$ROOT_LCG_VIEW_PATH/$ROOT_LCG_VIEW_NAME/$ROOT_LCG_VIEW_PLATFORM
-source $LCG_VIEW/setup.sh
 
 # Add ROOT kernel
 echo "Adding ROOT kernel"
-ETC_NB=$LCG_VIEW/etc/notebook
+export ETC_NB=$LCG_VIEW/etc/notebook
 JPY_LOCAL_DIR="$HOME"/.local
-KERNEL_DIR=$JPY_LOCAL_DIR/share/jupyter/kernels
+export KERNEL_DIR=$JPY_LOCAL_DIR/share/jupyter/kernels
 sudo -E -u $USER mkdir -p $KERNEL_DIR
 sudo -E -u $USER cp -rL $ETC_NB/kernels/root $KERNEL_DIR
-chown -R $USER:$USER $JPY_LOCAL_DIR
 
 # Customise look and feel
 echo "Customising the look and feel"
-JPY_DIR="$HOME"/.jupyter
+export JPY_DIR="$HOME"/.jupyter
 sudo -E -u $USER mkdir $JPY_DIR
 sudo -E -u $USER cp -rL $ETC_NB/custom $JPY_DIR
 
@@ -28,11 +32,10 @@ sudo -E -u $USER cp -rL $ETC_NB/custom $JPY_DIR
 # The kernels and the terminal will inherit
 echo "Setting environment"
 export JPY_CONFIG=$JPY_DIR/jupyter_notebook_config.py
-sudo -E -u $USER sh -c 'echo "import os"                                               > $JPY_CONFIG'
+sudo -E -u $USER sh -c 'echo "import os"                                                                            > $JPY_CONFIG'
 sudo -E -u $USER sh -c 'source $LCG_VIEW/setup.sh && echo "os.environ[\"PATH\"]            = \"$PATH\""            >> $JPY_CONFIG'
 sudo -E -u $USER sh -c 'source $LCG_VIEW/setup.sh && echo "os.environ[\"LD_LIBRARY_PATH\"] = \"$LD_LIBRARY_PATH\"" >> $JPY_CONFIG'
 sudo -E -u $USER sh -c 'source $LCG_VIEW/setup.sh && echo "os.environ[\"PYTHONPATH\"]      = \"$PYTHONPATH\""      >> $JPY_CONFIG'
-chown -R $USER:$USER $JPY_DIR
 
 # Overwrite link for python2 in the image
 ln -sf $LCG_VIEW/bin/python /usr/local/bin/python2
