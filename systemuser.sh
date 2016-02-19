@@ -25,17 +25,17 @@ sudo -E -u $USER cp -rL $ETC_NB/kernels/root $KERNEL_DIR
 # Customise look and feel
 echo "Customising the look and feel"
 export JPY_DIR="$HOME"/.jupyter
-sudo -E -u $USER mkdir $JPY_DIR
+sudo -E -u $USER mkdir -p $JPY_DIR
 sudo -E -u $USER cp -rL $ETC_NB/custom $JPY_DIR
 
 # Set environment for the notebook process
 # The kernels and the terminal will inherit
 echo "Setting environment"
 export JPY_CONFIG=$JPY_DIR/jupyter_notebook_config.py
-sudo -E -u $USER sh -c 'echo "import os"                                                                            > $JPY_CONFIG'
-sudo -E -u $USER sh -c 'source $LCG_VIEW/setup.sh && echo "os.environ[\"PATH\"]            = \"$PATH\""            >> $JPY_CONFIG'
-sudo -E -u $USER sh -c 'source $LCG_VIEW/setup.sh && echo "os.environ[\"LD_LIBRARY_PATH\"] = \"$LD_LIBRARY_PATH\"" >> $JPY_CONFIG'
-sudo -E -u $USER sh -c 'source $LCG_VIEW/setup.sh && echo "os.environ[\"PYTHONPATH\"]      = \"$PYTHONPATH\""      >> $JPY_CONFIG'
+sudo -E -u $USER sh -c 'source $LCG_VIEW/setup.sh && echo "import os"                 >  $JPY_CONFIG ; \
+                        echo "os.environ[\"PATH\"]            = \"$PATH\""            >> $JPY_CONFIG ; \
+                        echo "os.environ[\"LD_LIBRARY_PATH\"] = \"$LD_LIBRARY_PATH\"" >> $JPY_CONFIG ; \
+                        echo "os.environ[\"PYTHONPATH\"]      = \"$PYTHONPATH\""      >> $JPY_CONFIG ;'
 
 # Overwrite link for python2 in the image
 ln -sf $LCG_VIEW/bin/python /usr/local/bin/python2
