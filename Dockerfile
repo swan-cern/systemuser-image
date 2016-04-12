@@ -31,6 +31,14 @@ RUN yum -y install tk
 RUN wget -q https://raw.githubusercontent.com/jupyter/jupyterhub/master/scripts/jupyterhub-singleuser -O /usr/local/bin/jupyterhub-singleuser
 RUN chmod 755 /usr/local/bin/jupyterhub-singleuser
 
+# WORKAROUND
+# Remove the python3 kernel
+# This is installed in the notebook image but because of a
+# bug in overlay fs cannot be removed within the container
+# This has to be removed since all packages shall be taken 
+# from the lcg view.
+RUN pip3 uninstall ipykernel
+
 EXPOSE 8888
 
 ENV SHELL /bin/bash
