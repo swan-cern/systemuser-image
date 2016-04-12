@@ -2,7 +2,7 @@
 # Analogous to jupyter/systemuser, but based on CC7 and inheriting directly from cernphsft/notebook.
 # Run with the DockerSpawner in JupyterHub.
 
-FROM cernphsft/notebook
+FROM cernphsft/notebook:v1.0
 
 MAINTAINER Enric Tejedor Saavedra <enric.tejedor.saavedra@cern.ch>
 
@@ -35,6 +35,6 @@ EXPOSE 8888
 
 ENV SHELL /bin/bash
 
-ADD systemuser.sh /srv/singleuser/systemuser.sh
+ADD systemuser.sh.link /srv/singleuser/systemuser.sh
 WORKDIR /root
 CMD ["sh", "/srv/singleuser/systemuser.sh"]
