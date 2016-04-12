@@ -37,7 +37,7 @@ RUN chmod 755 /usr/local/bin/jupyterhub-singleuser
 # bug in overlay fs cannot be removed within the container
 # This has to be removed since all packages shall be taken 
 # from the lcg view.
-RUN pip3 uninstall ipykernel
+RUN yes | pip3 uninstall ipykernel
 
 EXPOSE 8888
 
