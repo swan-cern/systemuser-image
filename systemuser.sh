@@ -19,6 +19,15 @@ echo "PYTHONPATH: $PYTHONPATH"
 echo "LD_LIBRARY_PATH: $LD_LIBRARY_PATH"
 echo "PATH: $PATH"
 
+# WORKAROUND
+# Remove the python3 kernel
+# This is installed in the notebook image but because of a
+# bug in overlay fs cannot be removed within the container
+# This has to be removed since all packages shall be taken 
+# from the lcg view.
+echo "Workaround: removing the python3 kernel"
+pip3 --no-cache-dir install ipykernel
+
 # Add ROOT kernel
 echo "Adding ROOT kernel"
 ETC_NB=$LCG_VIEW/etc/notebook
