@@ -38,7 +38,7 @@ RUN chmod 755 /usr/local/bin/jupyterhub-singleuser
 # This has to be removed since all packages shall be taken 
 # from the lcg view.
 # Remove by hand the python3 kernelspec
-RUN jupyter-kernelspec remove python3
+RUN rm -rf /usr/local/share/jupyter/kernels/python3
 # END WORKAROUND
 
 EXPOSE 8888
