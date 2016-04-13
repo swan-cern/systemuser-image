@@ -12,14 +12,14 @@ SCRATCH_HOME=/home/$USER
 useradd -u $USER_ID -s $SHELL -d $SCRATCH_HOME $USER
 chown $USER:$USER $SCRATCH_HOME
 
-# Setup CERNBox
+# Set up CERNBox
 echo "Setting up CERNBox"
 CBOX_LINK_DIR=$SCRATCH_HOME/MyCERNBox
 FIRSTLETTER=$(echo $USER | head -c 1)
 ln -nfs /eos/user/$FIRSTLETTER/$USER $CBOX_LINK_DIR
 chown -h $USER:$USER $CBOX_LINK_DIR
 
-# Setup the LCG View on CVMFS
+# Set up the LCG View on CVMFS
 echo "Setting up environment from CVMFS"
 export LCG_VIEW=$ROOT_LCG_VIEW_PATH/$ROOT_LCG_VIEW_NAME/$ROOT_LCG_VIEW_PLATFORM
 source $LCG_VIEW/setup.sh
@@ -27,6 +27,15 @@ echo "Using the following environment:"
 echo "* PYTHONPATH: $PYTHONPATH"
 echo "* LD_LIBRARY_PATH: $LD_LIBRARY_PATH"
 echo "* PATH: $PATH"
+
+# Set up the user environment, if any
+export TMP_SCRIPT=`sudo -u $USER mktemp`
+sudo -E -u $USER sh -c 'if [ -f "$USER_ENV_SCRIPT" ]; \
+                        then \
+                          echo "Found user script: $USER_ENV_SCRIPT"; \
+                          cat $USER_ENV_SCRIPT > $TMP_SCRIPT; \
+                        fi'
+source $TMP_SCRIPT 
 
 # Add ROOT kernel
 echo "Adding ROOT kernel"
