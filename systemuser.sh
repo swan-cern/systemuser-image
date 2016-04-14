@@ -39,6 +39,7 @@ JPY_LOCAL_DIR=$SCRATCH_HOME/.local
 KERNEL_DIR=$JPY_LOCAL_DIR/share/jupyter/kernels
 mkdir -p $KERNEL_DIR
 cp -rL $ETC_NB/kernels/root $KERNEL_DIR
+cp $LCG_VIEW/icons/Root6Icon.png $KERNEL_DIR/root/logo-64x64.png
 chown -R $USER:$USER $JPY_LOCAL_DIR
 
 # Add R kernel
