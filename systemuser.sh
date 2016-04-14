@@ -17,10 +17,6 @@ chown $USER:$USER $SCRATCH_HOME
 echo "Setting up environment from CVMFS"
 export LCG_VIEW=$ROOT_LCG_VIEW_PATH/$ROOT_LCG_VIEW_NAME/$ROOT_LCG_VIEW_PLATFORM
 source $LCG_VIEW/setup.sh
-echo "Using the following environment:"
-echo "PYTHONPATH: $PYTHONPATH"
-echo "LD_LIBRARY_PATH: $LD_LIBRARY_PATH"
-echo "PATH: $PATH"
 
 # Set up the user environment, if any
 export TMP_SCRIPT=`sudo -u $USER mktemp`
@@ -30,6 +26,11 @@ sudo -E -u $USER sh -c 'if [ -f "$USER_ENV_SCRIPT" ]; \
                           cat $USER_ENV_SCRIPT > $TMP_SCRIPT; \
                         fi'
 source $TMP_SCRIPT
+
+echo "Using the following environment:"
+echo "PYTHONPATH: $PYTHONPATH"
+echo "LD_LIBRARY_PATH: $LD_LIBRARY_PATH"
+echo "PATH: $PATH"
 
 # Add ROOT kernel
 echo "Adding ROOT kernel"
