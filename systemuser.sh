@@ -9,6 +9,9 @@
 # The $HOME directory is specified upstream in the Spawner
 echo "Creating user $USER ($USER_ID)"
 useradd -u $USER_ID -s $SHELL -d $HOME $USER
+SCRATCH_HOME=/scratch/$USER
+mkdir -p $SCRATCH_HOME
+chown $USER:$USER $SCRATCH_HOME
 
 # Setup the LCG View on CVMFS
 echo "Setting up environment from CVMFS"
@@ -19,29 +22,43 @@ echo "PYTHONPATH: $PYTHONPATH"
 echo "LD_LIBRARY_PATH: $LD_LIBRARY_PATH"
 echo "PATH: $PATH"
 
+# Set up the user environment, if any
+export TMP_SCRIPT=`sudo -u $USER mktemp`
+sudo -E -u $USER sh -c 'if [ -f "$USER_ENV_SCRIPT" ]; \
+                        then \
+                          echo "Found user script: $USER_ENV_SCRIPT"; \
+                          cat $USER_ENV_SCRIPT > $TMP_SCRIPT; \
+                        fi'
+
 # Add ROOT kernel
 echo "Adding ROOT kernel"
 ETC_NB=$LCG_VIEW/etc/notebook
-JPY_LOCAL_DIR="$HOME"/.local
+JPY_LOCAL_DIR=$SCRATCH_HOME/.local
 KERNEL_DIR=$JPY_LOCAL_DIR/share/jupyter/kernels
-sudo -E -u $USER mkdir -p $KERNEL_DIR
-sudo -E -u $USER cp -rL $ETC_NB/kernels/root $KERNEL_DIR
+mkdir -p $KERNEL_DIR
+cp -rL $ETC_NB/kernels/root $KERNEL_DIR
+chown -R $USER:$USER $JPY_LOCAL_DIR
 
 # Set environment for the notebook process
 # The kernels and the terminal will inherit
 echo "Setting environment"
-JPY_DIR="$HOME"/.jupyter
-sudo -E -u $USER mkdir -p $JPY_DIR
+JPY_DIR=$SCRATCH_HOME/.jupyter
+mkdir -p $JPY_DIR
 JPY_CONFIG=$JPY_DIR/jupyter_notebook_config.py
-JPY_CONFIG_TMP=`mktemp`
-echo "import os"                                           > $JPY_CONFIG_TMP
-echo "os.environ['PATH']            = '$PATH'"            >> $JPY_CONFIG_TMP
-echo "os.environ['LD_LIBRARY_PATH'] = '$LD_LIBRARY_PATH'" >> $JPY_CONFIG_TMP
-echo "os.environ['PYTHONPATH']      = '$PYTHONPATH'"      >> $JPY_CONFIG_TMP
-chmod 644 $JPY_CONFIG_TMP
-sudo -E -u $USER cp $JPY_CONFIG_TMP $JPY_CONFIG
+export JUPYTER_CONFIG_DIR=$JPY_DIR
+export JUPYTER_PATH=$JPY_LOCAL_DIR/share/jupyter
+export JUPYTER_DATA_DIR=$JUPYTER_PATH
+export JUPYTER_RUNTIME_DIR=$JPY_LOCAL_DIR/share/jupyter/runtime
+export IPYTHONDIR=$SCRATCH_HOME/.ipython
+echo "import os"                                                              > $JPY_CONFIG
+echo "os.environ['PATH']               = '$PATH'"                            >> $JPY_CONFIG
+echo "os.environ['LD_LIBRARY_PATH']    = '$LD_LIBRARY_PATH'"                 >> $JPY_CONFIG
+echo "os.environ['PYTHONPATH']         = '$PYTHONPATH'"                      >> $JPY_CONFIG
+echo "c.FileCheckpoints.checkpoint_dir = '$SCRATCH_HOME/.ipynb_checkpoints'" >> $JPY_CONFIG
+chown -R $USER:$USER $JPY_DIR
 
 # Overwrite link for python2 in the image
+echo "Link Python"
 ln -sf $LCG_VIEW/bin/python /usr/local/bin/python2
 
 # Run notebook server
