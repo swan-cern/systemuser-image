@@ -56,9 +56,6 @@ echo "import os"                                                                
 echo "os.environ['PATH']                = '$PATH'"                                >> $JPY_CONFIG
 echo "os.environ['LD_LIBRARY_PATH']     = '$LD_LIBRARY_PATH'"                     >> $JPY_CONFIG
 echo "os.environ['PYTHONPATH']          = '$PYTHONPATH'"                          >> $JPY_CONFIG
-echo "os.environ['JUPYTER_CONFIG_DIR']  = '$JPY_DIR'"                             >> $JPY_CONFIG
-echo "os.environ['JUPYTER_PATH']        = '$JPY_LOCAL_DIR/share/jupyter'"         >> $JPY_CONFIG
-echo "os.environ['JUPYTER_RUNTIME_DIR'] = '$JPY_LOCAL_DIR/share/jupyter/runtime'" >> $JPY_CONFIG
 chown -R $USER:$USER $JPY_DIR
 
 # Overwrite link for python2 in the image
