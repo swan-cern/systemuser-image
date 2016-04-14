@@ -29,6 +29,7 @@ sudo -E -u $USER sh -c 'if [ -f "$USER_ENV_SCRIPT" ]; \
                           echo "Found user script: $USER_ENV_SCRIPT"; \
                           cat $USER_ENV_SCRIPT > $TMP_SCRIPT; \
                         fi'
+source $TMP_SCRIPT
 
 # Add ROOT kernel
 echo "Adding ROOT kernel"
