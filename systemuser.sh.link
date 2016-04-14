@@ -53,10 +53,11 @@ echo "Setting environment"
 JPY_DIR=$SCRATCH_HOME/.jupyter
 mkdir -p $JPY_DIR
 JPY_CONFIG=$JPY_DIR/jupyter_notebook_config.py
-echo "import os"                                                                   > $JPY_CONFIG
-echo "os.environ['PATH']                = '$PATH'"                                >> $JPY_CONFIG
-echo "os.environ['LD_LIBRARY_PATH']     = '$LD_LIBRARY_PATH'"                     >> $JPY_CONFIG
-echo "os.environ['PYTHONPATH']          = '$PYTHONPATH'"                          >> $JPY_CONFIG
+echo "import os"                                                               > $JPY_CONFIG
+echo "os.environ['PATH']                = '$PATH'"                            >> $JPY_CONFIG
+echo "os.environ['LD_LIBRARY_PATH']     = '$LD_LIBRARY_PATH'"                 >> $JPY_CONFIG
+echo "os.environ['PYTHONPATH']          = '$PYTHONPATH'"                      >> $JPY_CONFIG
+echo "c.FileCheckpoints.checkpoint_dir  = '$SCRATCH_HOME/.ipynb_checkpoints'" >> $JPY_CONFIG
 chown -R $USER:$USER $JPY_DIR
 
 # Overwrite link for python2 in the image
