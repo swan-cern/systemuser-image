@@ -47,6 +47,9 @@ mkdir -p $KERNEL_DIR
 cp -rL $ETC_NB/kernels/root $KERNEL_DIR
 chown -R $USER:$USER $JPY_LOCAL_DIR
 
+# Add R kernel
+cp -rL $LCG_VIEW/lib64/R/library/IRkernel/kernelspec $KERNEL_DIR/R
+
 # Set environment for the notebook process
 # The kernels and the terminal will inherit
 echo "Setting environment"
