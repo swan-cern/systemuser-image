@@ -8,7 +8,8 @@
 # Create notebook user
 # The $HOME directory is specified upstream in the Spawner
 echo "Creating user $USER ($USER_ID)"
-useradd -u $USER_ID -s $SHELL -d $HOME $USER
+export CERNBOX_HOME=$HOME
+useradd -u $USER_ID -s $SHELL -d $CERNBOX_HOME $USER
 SCRATCH_HOME=/scratch/$USER
 mkdir -p $SCRATCH_HOME
 chown $USER:$USER $SCRATCH_HOME
@@ -20,10 +21,12 @@ source $LCG_VIEW/setup.sh
 
 # Set up the user environment, if any
 export TMP_SCRIPT=`sudo -u $USER mktemp`
-sudo -E -u $USER sh -c 'if [ -f "$USER_ENV_SCRIPT" ]; \
+sudo -E -u $USER sh -c 'if [ -f `eval echo $USER_ENV_SCRIPT` ]; \
                         then \
                           echo "Found user script: $USER_ENV_SCRIPT"; \
-                          cat $USER_ENV_SCRIPT > $TMP_SCRIPT; \
+                          cat `eval echo $USER_ENV_SCRIPT` > $TMP_SCRIPT; \
+                        else \
+                          echo "Cannot find user script: $USER_ENV_SCRIPT"; \
                         fi'
 source $TMP_SCRIPT
 
