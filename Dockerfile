@@ -40,6 +40,6 @@ EXPOSE 8888
 
 ENV SHELL /bin/bash
 
-ADD systemuser.sh.link /srv/singleuser/systemuser.sh
+ADD systemuser.sh /srv/singleuser/systemuser.sh
 WORKDIR /root
 CMD ["sh", "/srv/singleuser/systemuser.sh"]
