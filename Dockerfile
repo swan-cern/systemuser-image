@@ -2,7 +2,7 @@
 # Analogous to jupyter/systemuser, but based on CC7 and inheriting directly from cernphsft/notebook.
 # Run with the DockerSpawner in JupyterHub.
 
-FROM cernphsft/notebook:v2.0
+FROM cernphsft/notebook:v2.1
 
 MAINTAINER Enric Tejedor Saavedra <enric.tejedor.saavedra@cern.ch>
 
