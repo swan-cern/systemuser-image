@@ -29,6 +29,10 @@ sudo -E -u $USER sh -c 'if [ -f `eval echo $USER_ENV_SCRIPT` ]; \
                           echo "Cannot find user script: $USER_ENV_SCRIPT"; \
                         fi'
 source $TMP_SCRIPT
+if [ -z "$SWAN_HOME" ]
+then
+  export SWAN_HOME=$CERNBOX_HOME
+fi
 
 echo "Using the following environment:"
 echo "PYTHONPATH: $PYTHONPATH"
@@ -63,6 +67,10 @@ echo "import os"                                                              > 
 echo "os.environ['PATH']               = '$PATH'"                            >> $JPY_CONFIG
 echo "os.environ['LD_LIBRARY_PATH']    = '$LD_LIBRARY_PATH'"                 >> $JPY_CONFIG
 echo "os.environ['PYTHONPATH']         = '$PYTHONPATH'"                      >> $JPY_CONFIG
+if [ "$PYTHONUSERBASE" ]
+then
+  echo "os.environ['PYTHONUSERBASE']   = '$PYTHONUSERBASE'"                  >> $JPY_CONFIG
+fi
 echo "c.FileCheckpoints.checkpoint_dir = '$SCRATCH_HOME/.ipynb_checkpoints'" >> $JPY_CONFIG
 chown -R $USER:$USER $JPY_DIR
 
@@ -72,7 +80,7 @@ ln -sf $LCG_VIEW/bin/python /usr/local/bin/python2
 
 # Run notebook server
 echo "Running the notebook server"
-sudo -E -u $USER sh -c 'cd $HOME && jupyterhub-singleuser \
+sudo -E -u $USER sh -c 'cd $SWAN_HOME && jupyterhub-singleuser \
   --port=8888 \
   --ip=0.0.0.0 \
   --user=$JPY_USER \
