@@ -39,30 +39,18 @@ echo "PYTHONPATH: $PYTHONPATH"
 echo "LD_LIBRARY_PATH: $LD_LIBRARY_PATH"
 echo "PATH: $PATH"
 
-# Add ROOT kernel
-echo "Adding ROOT kernel"
-ETC_NB=$LCG_VIEW/etc/notebook
-JPY_LOCAL_DIR=$SCRATCH_HOME/.local
-KERNEL_DIR=$JPY_LOCAL_DIR/share/jupyter/kernels
-mkdir -p $KERNEL_DIR
-cp -rL $ETC_NB/kernels/root $KERNEL_DIR
-cp $LCG_VIEW/icons/Root6Icon.png $KERNEL_DIR/root/logo-64x64.png
-chown -R $USER:$USER $JPY_LOCAL_DIR
-
-# Add R kernel
-cp -rL $LCG_VIEW/lib64/R/library/IRkernel/kernelspec $KERNEL_DIR/R 
-
 # Set environment for the notebook process
 # The kernels and the terminal will inherit
 echo "Setting environment"
 JPY_DIR=$SCRATCH_HOME/.jupyter
 mkdir -p $JPY_DIR
-JPY_CONFIG=$JPY_DIR/jupyter_notebook_config.py
+JPY_LOCAL_DIR=$SCRATCH_HOME/.local
+mkdir -p $JPY_LOCAL_DIR
 export JUPYTER_CONFIG_DIR=$JPY_DIR
-export JUPYTER_PATH=$JPY_LOCAL_DIR/share/jupyter
-export JUPYTER_DATA_DIR=$JUPYTER_PATH
-export JUPYTER_RUNTIME_DIR=$JPY_LOCAL_DIR/share/jupyter/runtime
+export JUPYTER_DATA_DIR=$JPY_LOCAL_DIR/share/jupyter
+export JUPYTER_RUNTIME_DIR=$JUPYTER_DATA_DIR/runtime
 export IPYTHONDIR=$SCRATCH_HOME/.ipython
+JPY_CONFIG=$JPY_DIR/jupyter_notebook_config.py
 echo "import os"                                                              > $JPY_CONFIG
 echo "os.environ['PATH']               = '$PATH'"                            >> $JPY_CONFIG
 echo "os.environ['LD_LIBRARY_PATH']    = '$LD_LIBRARY_PATH'"                 >> $JPY_CONFIG
@@ -72,7 +60,7 @@ then
   echo "os.environ['PYTHONUSERBASE']   = '$PYTHONUSERBASE'"                  >> $JPY_CONFIG
 fi
 echo "c.FileCheckpoints.checkpoint_dir = '$SCRATCH_HOME/.ipynb_checkpoints'" >> $JPY_CONFIG
-chown -R $USER:$USER $JPY_DIR
+chown -R $USER:$USER $JPY_DIR $JPY_LOCAL_DIR
 
 # Overwrite link for python2 in the image
 echo "Link Python"
