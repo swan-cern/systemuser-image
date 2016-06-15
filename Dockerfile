@@ -26,6 +26,46 @@ RUN pip2 install metakernel
 # Install tk - required by matplotlib
 RUN yum -y install tk
 
+# Install Cloudera dependencies - required by IT Spark clusters
+RUN yum -y install \
+    alsa-lib \
+    at \
+    bc \ 
+    bzip2 \
+    cronie \
+    cronie-anacron \
+    crontabs \
+    cvs \
+    db4-cxx \
+    db4-devel \
+    ed \
+    file \
+    gdbm-devel \
+    gettext \
+    jpackage-utils \
+    libXi \
+    libXtst \
+    man \
+    passwd \
+    pax \
+    perl-CGI \
+    perl-ExtUtils-MakeMaker \
+    perl-ExtUtils-ParseXS \
+    perl-Test-Harness \
+    perl-Test-Simple \
+    perl-devel \
+    redhat-lsb-core \
+    rsyslog \
+    time \
+    xz \
+    xz-lzma-compat
+
+# Install openmotif - required by Geant4 (libXm)
+RUN yum -y install openmotif
+
+# Install libaio - required by Oracle
+RUN yum -y install libaio
+
 # Get jupyterhub-singleuser entrypoint
 # from https://github.com/jupyter/dockerspawner/commit/7dfda9473c1f2aebaf6e95b61e1304a2eb88de0b
 RUN wget -q https://raw.githubusercontent.com/jupyter/jupyterhub/master/scripts/jupyterhub-singleuser -O /usr/local/bin/jupyterhub-singleuser
