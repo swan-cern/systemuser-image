@@ -19,20 +19,8 @@ echo "Setting up environment from CVMFS"
 export LCG_VIEW=$ROOT_LCG_VIEW_PATH/$ROOT_LCG_VIEW_NAME/$ROOT_LCG_VIEW_PLATFORM
 source $LCG_VIEW/setup.sh
 
-# Set up the user environment, if any
-export TMP_SCRIPT=`sudo -u $USER mktemp`
-sudo -E -u $USER sh -c 'if [ -f `eval echo $USER_ENV_SCRIPT` ]; \
-                        then \
-                          echo "Found user script: $USER_ENV_SCRIPT"; \
-                          cat `eval echo $USER_ENV_SCRIPT` > $TMP_SCRIPT; \
-                        else \
-                          echo "Cannot find user script: $USER_ENV_SCRIPT"; \
-                        fi'
-source $TMP_SCRIPT
-if [ -z "$SWAN_HOME" ]
-then
-  export SWAN_HOME=$CERNBOX_HOME
-fi
+# Define default SWAN_HOME
+export SWAN_HOME=$CERNBOX_HOME
 
 echo "Using the following environment:"
 echo "PYTHONPATH: $PYTHONPATH"
@@ -68,11 +56,22 @@ ln -sf $LCG_VIEW/bin/python /usr/local/bin/python2
 
 # Run notebook server
 echo "Running the notebook server"
-sudo -E -u $USER sh -c 'cd $SWAN_HOME && jupyterhub-singleuser \
-  --port=8888 \
-  --ip=0.0.0.0 \
-  --user=$JPY_USER \
-  --cookie-name=$JPY_COOKIE_NAME \
-  --base-url=$JPY_BASE_URL \
-  --hub-prefix=$JPY_HUB_PREFIX \
-  --hub-api-url=$JPY_HUB_API_URL'
+sudo -E -u $USER sh -c 'export TMP_SCRIPT=`mktemp` \
+                        && if [[ $USER_ENV_SCRIPT && -f `eval echo $USER_ENV_SCRIPT` ]]; \
+                           then \
+                             echo "Found user script: $USER_ENV_SCRIPT"; \
+                             export TMP_SCRIPT=`mktemp`; \
+                             cat `eval echo $USER_ENV_SCRIPT` > $TMP_SCRIPT; \
+                             source $TMP_SCRIPT; \
+                           else \
+                             echo "Cannot find user script: $USER_ENV_SCRIPT"; \
+                           fi \
+                        && cd $SWAN_HOME \
+                        && jupyterhub-singleuser \
+                           --port=8888 \
+                           --ip=0.0.0.0 \
+                           --user=$JPY_USER \
+                           --cookie-name=$JPY_COOKIE_NAME \
+                           --base-url=$JPY_BASE_URL \
+                           --hub-prefix=$JPY_HUB_PREFIX \
+                           --hub-api-url=$JPY_HUB_API_URL'
