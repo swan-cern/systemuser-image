@@ -74,7 +74,7 @@ RUN chmod 755 /usr/local/bin/jupyterhub-singleuser
 # WORKAROUND
 # Hide from Jupyter the Python3 kernel by hand
 RUN mv /usr/local/lib/python3.5/site-packages/ipykernel /usr/local/lib/python3.5/site-packages/ipykernelBACKUP
-RUN rm -rf /usr/local/share/jupyter/kernels/python3
+RUN mv /usr/local/share/jupyter/kernels /usr/local/share/jupyter/kernelsBACKUP
 
 EXPOSE 8888
 
