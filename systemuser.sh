@@ -66,7 +66,7 @@ sudo -E -u $USER sh -c '   source $LCG_VIEW/setup.sh \
                            print kfile_contents_mod; \
                            map(lambda d: open(d[0],\"w\").write(json.dumps(d[1])), zip(kfile_names,kfile_contents_mod)); \
                            termEnvFile = open(\"$SWAN_ENV_FILE\", \"w\"); \
-                           [termEnvFile.write(\"export %s=\"%s\"\\n\" % (key, val)) for key, val in dict(os.environ).iteritems()];"'
+                           [termEnvFile.write(\"export %s=%s\\n\" % (key, val)) if key != \"SUDO_COMMAND\" else None for key, val in dict(os.environ).iteritems()];"'
 
 if [ $? -ne 0 ]
 then
@@ -75,7 +75,10 @@ then
 fi
 
 # Set the terminal environment
-mv $SWAN_ENV_FILE /etc/profile.d
+mv $SWAN_ENV_FILE /etc/profile.d/swan.sh
+export SWAN_BASH=/bin/swan_bash
+printf "#! /bin/env python\nfrom subprocess import call\nimport sys\ncall([\"bash\", \"--rcfile\", \"/etc/profile.d/swan.sh\"]+sys.argv[1:])\n" >> $SWAN_BASH
+chmod +x $SWAN_BASH
 
 # Overwrite link for python2 in the image
 echo "Link Python"
@@ -84,7 +87,7 @@ ln -sf $LCG_VIEW/bin/python /usr/local/bin/python2
 # Run notebook server
 echo "Running the notebook server"
 sudo -E -u $USER sh -c '   cd $SWAN_HOME \
-                        && jupyterhub-singleuser \
+                        && SHELL=$SWAN_BASH jupyterhub-singleuser \
                            --port=8888 \
                            --ip=0.0.0.0 \
                            --user=$JPY_USER \
