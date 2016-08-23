@@ -44,7 +44,7 @@ cp -r  /usr/local/share/jupyter/kernelsBACKUP/python2 $KERNEL_DIR
 cp -rL $LCG_VIEW/etc/notebook/kernels/root            $KERNEL_DIR 
 cp -rL $LCG_VIEW/share/jupyter/kernels/*              $KERNEL_DIR
 chown -R $USER:$USER $JPY_DIR $JPY_LOCAL_DIR
-export SWAN_ENV_FILE=/tmp/swan.sh
+export SWAN_ENV_FILE=$SCRATCH_HOME/swan.sh
 sudo -E -u $USER sh -c '   source $LCG_VIEW/setup.sh \
                         && export TMP_SCRIPT=`mktemp` \
                         && if [[ $USER_ENV_SCRIPT && -f `eval echo $USER_ENV_SCRIPT` ]]; \
@@ -68,6 +68,16 @@ sudo -E -u $USER sh -c '   source $LCG_VIEW/setup.sh \
                            termEnvFile = open(\"$SWAN_ENV_FILE\", \"w\"); \
                            [termEnvFile.write(\"export %s=%s\\n\" % (key, val)) if key != \"SUDO_COMMAND\" else None for key, val in dict(os.environ).iteritems()];"'
 
+# Make sure we have a sane terminal
+printf "export TERM=xterm\n" >> $SWAN_ENV_FILE
+
+# If there, source users' .bashrc after the SWAN environment
+BASHRC_LOCATION=$SWAN_HOME/.bashrc
+printf "if [[ -f $BASHRC_LOCATION ]];
+then
+   source $BASHRC_LOCATION
+fi\n" >> $SWAN_ENV_FILE
+
 if [ $? -ne 0 ]
 then
   echo "Error setting the environment for kernels"
@@ -75,9 +85,8 @@ then
 fi
 
 # Set the terminal environment
-mv $SWAN_ENV_FILE /etc/profile.d/swan.sh
 export SWAN_BASH=/bin/swan_bash
-printf "#! /bin/env python\nfrom subprocess import call\nimport sys\ncall([\"bash\", \"--rcfile\", \"/etc/profile.d/swan.sh\"]+sys.argv[1:])\n" >> $SWAN_BASH
+printf "#! /bin/env python\nfrom subprocess import call\nimport sys\ncall([\"bash\", \"--rcfile\", \"$SWAN_ENV_FILE\"]+sys.argv[1:])\n" >> $SWAN_BASH
 chmod +x $SWAN_BASH
 
 # Overwrite link for python2 in the image
