@@ -29,13 +29,14 @@ JPY_LOCAL_DIR=$SCRATCH_HOME/.local
 mkdir -p $JPY_LOCAL_DIR
 export JUPYTER_CONFIG_DIR=$JPY_DIR
 export JUPYTER_DATA_DIR=$JPY_LOCAL_DIR/share/jupyter
-export JUPYTER_PATH=$JUPYTER_DATA_DIR
-export KERNEL_DIR=$JUPYTER_PATH/kernels
+export JUPYTER_PATH=$JPY_LOCAL_DIR/share/jupyter:$LCG_VIEW/share/jupyter
+export KERNEL_DIR=$JPY_LOCAL_DIR/share/jupyter/kernels
 mkdir -p $KERNEL_DIR
-export JUPYTER_RUNTIME_DIR=$JUPYTER_DATA_DIR/runtime
+export JUPYTER_RUNTIME_DIR=$JPY_LOCAL_DIR/share/jupyter/runtime
 export IPYTHONDIR=$SCRATCH_HOME/.ipython
-JPY_CONFIG=$JPY_DIR/jupyter_notebook_config.py
+JPY_CONFIG=$JUPYTER_CONFIG_DIR/jupyter_notebook_config.py
 echo "c.FileCheckpoints.checkpoint_dir = '$SCRATCH_HOME/.ipynb_checkpoints'" >> $JPY_CONFIG
+cp -L -r $LCG_VIEW/etc/jupyter/* $JUPYTER_CONFIG_DIR
 
 # Configure kernels and terminal
 # The environment of the kernels and the terminal will combine the view and the user script (if any)
