@@ -28,7 +28,6 @@ mkdir -p $JPY_DIR
 JPY_LOCAL_DIR=$SCRATCH_HOME/.local
 mkdir -p $JPY_LOCAL_DIR
 export JUPYTER_CONFIG_DIR=$JPY_DIR
-export JUPYTER_DATA_DIR=$JPY_LOCAL_DIR/share/jupyter
 export JUPYTER_PATH=$JPY_LOCAL_DIR/share/jupyter:$LCG_VIEW/share/jupyter
 export KERNEL_DIR=$JPY_LOCAL_DIR/share/jupyter/kernels
 mkdir -p $KERNEL_DIR
@@ -47,6 +46,7 @@ cp -rL $LCG_VIEW/share/jupyter/kernels/*              $KERNEL_DIR
 chown -R $USER:$USER $JPY_DIR $JPY_LOCAL_DIR
 export SWAN_ENV_FILE=$SCRATCH_HOME/swan.sh
 sudo -E -u $USER sh -c '   source $LCG_VIEW/setup.sh \
+                        && export JUPYTER_DATA_DIR=$LCG_VIEW/share/jupyter \
                         && export TMP_SCRIPT=`mktemp` \
                         && if [[ $USER_ENV_SCRIPT && -f `eval echo $USER_ENV_SCRIPT` ]]; \
                            then \
