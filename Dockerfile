@@ -66,8 +66,9 @@ RUN yum -y install openmotif
 # Install libaio - required by Oracle
 RUN yum -y install libaio
 
-# Install cern-get-sso-cookie - UCA-63
+# Install cern-get-sso-cookie and update CERN CA certs - ATLAS TDAQ, UCA-63
 RUN yum -y install cern-get-sso-cookie
+RUN yum -y update CERN-CA-certs
 
 # Get jupyterhub-singleuser entrypoint
 # from https://github.com/jupyter/dockerspawner/commit/7dfda9473c1f2aebaf6e95b61e1304a2eb88de0b
