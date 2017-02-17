@@ -28,7 +28,8 @@ mkdir -p $JPY_DIR
 JPY_LOCAL_DIR=$SCRATCH_HOME/.local
 mkdir -p $JPY_LOCAL_DIR
 export JUPYTER_CONFIG_DIR=$JPY_DIR
-export JUPYTER_PATH=$JPY_LOCAL_DIR/share/jupyter:$LCG_VIEW/share/jupyter
+#export JUPYTER_PATH=$JPY_LOCAL_DIR/share/jupyter:$LCG_VIEW/share/jupyter
+export JUPYTER_PATH=$JPY_LOCAL_DIR/share/jupyter
 export KERNEL_DIR=$JPY_LOCAL_DIR/share/jupyter/kernels
 mkdir -p $KERNEL_DIR
 export JUPYTER_RUNTIME_DIR=$JPY_LOCAL_DIR/share/jupyter/runtime
@@ -42,9 +43,24 @@ cp -L -r $LCG_VIEW/etc/jupyter/* $JUPYTER_CONFIG_DIR
 # Configure kernels and terminal
 # The environment of the kernels and the terminal will combine the view and the user script (if any)
 echo "Configuring kernels and terminal"
-cp -r  /usr/local/share/jupyter/kernelsBACKUP/python2 $KERNEL_DIR
-cp -rL $LCG_VIEW/etc/notebook/kernels/root            $KERNEL_DIR 
-cp -rL $LCG_VIEW/share/jupyter/kernels/*              $KERNEL_DIR
+if [ -f $LCG_VIEW/bin/python3 ]; then PYVERSION=3; else PYVERSION=2; fi
+PYKERNELDIR=$KERNEL_DIR/python$PYVERSION
+cp -r /usr/local/share/jupyter/kernelsBACKUP/python2 $PYKERNELDIR
+echo "{
+ \"display_name\": \"Python $PYVERSION\",
+ \"language\": \"python\",
+ \"argv\": [
+  \"python$PYVERSION\",
+  \"-m\",
+  \"ipykernel\",
+  \"-f\",
+  \"{connection_file}\"
+ ]
+}" > $PYKERNELDIR/kernel.json
+cp -rL $LCG_VIEW/etc/notebook/kernels/root $KERNEL_DIR
+sed -i "s/python/python$PYVERSION/g" $KERNEL_DIR/root/kernel.json
+cp -rL $LCG_VIEW/share/jupyter/kernels/*   $KERNEL_DIR
+
 chown -R $USER:$USER $JPY_DIR $JPY_LOCAL_DIR
 export SWAN_ENV_FILE=$SCRATCH_HOME/swan.sh
 sudo -E -u $USER sh -c '   source $LCG_VIEW/setup.sh \
@@ -91,10 +107,6 @@ fi
 export SWAN_BASH=/bin/swan_bash
 printf "#! /bin/env python\nfrom subprocess import call\nimport sys\ncall([\"bash\", \"--rcfile\", \"$SWAN_ENV_FILE\"]+sys.argv[1:])\n" >> $SWAN_BASH
 chmod +x $SWAN_BASH
-
-# Overwrite link for python2 in the image
-echo "Link Python"
-ln -sf $LCG_VIEW/bin/python /usr/local/bin/python2
 
 # Run notebook server
 echo "Running the notebook server"
