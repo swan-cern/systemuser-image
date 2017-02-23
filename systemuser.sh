@@ -43,6 +43,7 @@ cp -L -r $LCG_VIEW/etc/jupyter/* $JUPYTER_CONFIG_DIR
 # Configure kernels and terminal
 # The environment of the kernels and the terminal will combine the view and the user script (if any)
 echo "Configuring kernels and terminal"
+# Python (2 or 3)
 if [ -f $LCG_VIEW/bin/python3 ]; then PYVERSION=3; else PYVERSION=2; fi
 PYKERNELDIR=$KERNEL_DIR/python$PYVERSION
 cp -r /usr/local/share/jupyter/kernelsBACKUP/python2 $PYKERNELDIR
@@ -57,9 +58,12 @@ echo "{
   \"{connection_file}\"
  ]
 }" > $PYKERNELDIR/kernel.json
+# ROOT
 cp -rL $LCG_VIEW/etc/notebook/kernels/root $KERNEL_DIR
-sed -i "s/python/python$PYVERSION/g" $KERNEL_DIR/root/kernel.json
-cp -rL $LCG_VIEW/share/jupyter/kernels/*   $KERNEL_DIR
+sed -i "s/python/python$PYVERSION/g" $KERNEL_DIR/root/kernel.json # Set Python version in kernel
+# R
+cp -rL $LCG_VIEW/share/jupyter/kernels/* $KERNEL_DIR
+sed -i "s/IRkernel::main()/options(bitmapType='cairo');IRkernel::main()/g" $KERNEL_DIR/ir/kernel.json # Force cairo for graphics
 
 chown -R $USER:$USER $JPY_DIR $JPY_LOCAL_DIR
 export SWAN_ENV_FILE=$SCRATCH_HOME/swan.sh
