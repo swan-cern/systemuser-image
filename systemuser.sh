@@ -7,19 +7,17 @@
 
 # Create notebook user
 # The $HOME directory is specified upstream in the Spawner
-echo "Creating user $USER ($USER_ID)"
-export CERNBOX_HOME=$HOME
-useradd -u $USER_ID -s $SHELL -d $CERNBOX_HOME $USER
+echo "Creating user $USER ($USER_ID) with home $HOME"
+export SWAN_HOME=$HOME
+useradd -u $USER_ID -s $SHELL -d $SWAN_HOME $USER
 SCRATCH_HOME=/scratch/$USER
 mkdir -p $SCRATCH_HOME
-chown $USER:$USER $SCRATCH_HOME
+echo "This directory is temporary and will be deleted when your SWAN session ends!" > $SCRATCH_HOME/IMPORTANT.txt
+chown -R $USER:$USER $SCRATCH_HOME
 
 # Setup the LCG View on CVMFS
 echo "Setting up environment from CVMFS"
 export LCG_VIEW=$ROOT_LCG_VIEW_PATH/$ROOT_LCG_VIEW_NAME/$ROOT_LCG_VIEW_PLATFORM
-
-# Define default SWAN_HOME
-export SWAN_HOME=$CERNBOX_HOME
 
 # Set environment for the Jupyter process
 echo "Setting Jupyter environment"
@@ -66,7 +64,7 @@ cp -rL $LCG_VIEW/share/jupyter/kernels/* $KERNEL_DIR
 sed -i "s/IRkernel::main()/options(bitmapType='cairo');IRkernel::main()/g" $KERNEL_DIR/ir/kernel.json # Force cairo for graphics
 
 chown -R $USER:$USER $JPY_DIR $JPY_LOCAL_DIR
-export SWAN_ENV_FILE=$SCRATCH_HOME/swan.sh
+export SWAN_ENV_FILE=/tmp/swan.sh
 sudo -E -u $USER sh -c '   source $LCG_VIEW/setup.sh \
                         && export JUPYTER_DATA_DIR=$LCG_VIEW/share/jupyter \
                         && export TMP_SCRIPT=`mktemp` \
