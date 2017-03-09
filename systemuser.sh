@@ -26,8 +26,8 @@ mkdir -p $JPY_DIR
 JPY_LOCAL_DIR=$SCRATCH_HOME/.local
 mkdir -p $JPY_LOCAL_DIR
 export JUPYTER_CONFIG_DIR=$JPY_DIR
-#export JUPYTER_PATH=$JPY_LOCAL_DIR/share/jupyter:$LCG_VIEW/share/jupyter
-export JUPYTER_PATH=$JPY_LOCAL_DIR/share/jupyter
+# Our kernels will be in $JPY_LOCAL_DIR/share/jupyter, $LCG_VIEW/share/jupyter is needed for the notebook extensions
+export JUPYTER_PATH=$JPY_LOCAL_DIR/share/jupyter:$LCG_VIEW/share/jupyter
 export KERNEL_DIR=$JPY_LOCAL_DIR/share/jupyter/kernels
 mkdir -p $KERNEL_DIR
 export JUPYTER_RUNTIME_DIR=$JPY_LOCAL_DIR/share/jupyter/runtime
