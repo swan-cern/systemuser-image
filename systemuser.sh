@@ -9,6 +9,7 @@
 # The $HOME directory is specified upstream in the Spawner
 echo "Creating user $USER ($USER_ID) with home $HOME"
 export SWAN_HOME=$HOME
+if [[ $SWAN_HOME == /eos/user/* ]]; then export CERNBOX_HOME=$SWAN_HOME; fi
 useradd -u $USER_ID -s $SHELL -d $SWAN_HOME $USER
 SCRATCH_HOME=/scratch/$USER
 mkdir -p $SCRATCH_HOME
