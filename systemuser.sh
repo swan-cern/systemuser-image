@@ -67,6 +67,13 @@ sed -i "s/IRkernel::main()/options(bitmapType='cairo');IRkernel::main()/g" $KERN
 chown -R $USER:$USER $JPY_DIR $JPY_LOCAL_DIR
 export SWAN_ENV_FILE=/tmp/swan.sh
 sudo -E -u $USER sh -c '   source $LCG_VIEW/setup.sh \
+                        && if [[ $SPARK_CLUSTER_NAME ]]; \
+                           then \
+                             echo "Configuring environment for Spark cluster: $SPARK_CLUSTER_NAME"; \
+                             source $SPARK_CONFIG_SCRIPT $SPARK_CLUSTER_NAME; \
+                             export SPARK_LOCAL_IP=`dig +short $SERVER_HOSTNAME`; \
+                             wget -P $SWAN_HOME https://raw.githubusercontent.com/etejedor/Spark-Notebooks/master/SWAN-Spark_NXCALS_Example.ipynb; \
+                           fi \
                         && export JUPYTER_DATA_DIR=$LCG_VIEW/share/jupyter \
                         && export TMP_SCRIPT=`mktemp` \
                         && if [[ $USER_ENV_SCRIPT && -f `eval echo $USER_ENV_SCRIPT` ]]; \
@@ -88,7 +95,14 @@ sudo -E -u $USER sh -c '   source $LCG_VIEW/setup.sh \
                            print kfile_contents_mod; \
                            map(lambda d: open(d[0],\"w\").write(json.dumps(d[1])), zip(kfile_names,kfile_contents_mod)); \
                            termEnvFile = open(\"$SWAN_ENV_FILE\", \"w\"); \
-                           [termEnvFile.write(\"export %s=%s\\n\" % (key, val)) if key != \"SUDO_COMMAND\" else None for key, val in dict(os.environ).iteritems()];"'
+                           [termEnvFile.write(\"export %s=\\\"%s\\\"\\n\" % (key, val)) if key != \"SUDO_COMMAND\" else None for key, val in dict(os.environ).iteritems()];"'
+
+# Spark configuration
+if [[ $SPARK_CLUSTER_NAME ]]
+then
+  LOCAL_IP=`hostname -i`
+  echo "$LOCAL_IP $SERVER_HOSTNAME" >> /etc/hosts
+fi
 
 # Make sure we have a sane terminal
 printf "export TERM=xterm\n" >> $SWAN_ENV_FILE
