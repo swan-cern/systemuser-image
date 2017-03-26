@@ -71,7 +71,7 @@ sudo -E -u $USER sh -c '   source $LCG_VIEW/setup.sh \
                            then \
                              echo "Configuring environment for Spark cluster: $SPARK_CLUSTER_NAME"; \
                              source $SPARK_CONFIG_SCRIPT $SPARK_CLUSTER_NAME; \
-                             export SPARK_LOCAL_IP=`dig +short $SERVER_HOSTNAME`; \
+                             export SPARK_LOCAL_IP=`hostname -i`; \
                              wget -P $SWAN_HOME https://raw.githubusercontent.com/etejedor/Spark-Notebooks/master/SWAN-Spark_NXCALS_Example.ipynb; \
                            fi \
                         && export JUPYTER_DATA_DIR=$LCG_VIEW/share/jupyter \
