@@ -33,6 +33,8 @@ export KERNEL_DIR=$JPY_LOCAL_DIR/share/jupyter/kernels
 mkdir -p $KERNEL_DIR
 export JUPYTER_RUNTIME_DIR=$JPY_LOCAL_DIR/share/jupyter/runtime
 export IPYTHONDIR=$SCRATCH_HOME/.ipython
+# This avoids to create hardlinks on eos when using pip
+export XDG_CACHE_HOME=/tmp/$USER/.cache/
 JPY_CONFIG=$JUPYTER_CONFIG_DIR/jupyter_notebook_config.py
 echo "c.FileCheckpoints.checkpoint_dir = '$SCRATCH_HOME/.ipynb_checkpoints'"         >> $JPY_CONFIG
 echo "c.NotebookNotary.db_file = '$JPY_LOCAL_DIR/share/jupyter/nbsignatures.db'"     >> $JPY_CONFIG
