@@ -70,6 +70,9 @@ RUN yum -y install libaio
 RUN yum -y install cern-get-sso-cookie
 RUN yum -y update CERN-CA-certs
 
+# Install HEP_OSlibs - includes atlas blas
+RUN yum -y install HEP_OSlibs_SL6
+
 # Get jupyterhub-singleuser entrypoint
 # from https://github.com/jupyter/dockerspawner/commit/7dfda9473c1f2aebaf6e95b61e1304a2eb88de0b
 RUN wget -q https://raw.githubusercontent.com/jupyterhub/jupyterhub/7f89f1a2a048495981797add3fe8983a0db1585d/scripts/jupyterhub-singleuser -O /usr/local/bin/jupyterhub-singleuser
