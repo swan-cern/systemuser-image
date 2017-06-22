@@ -41,6 +41,15 @@ echo "c.NotebookNotary.db_file = '$JPY_LOCAL_DIR/share/jupyter/nbsignatures.db'"
 echo "c.NotebookNotary.secret_file = '$JPY_LOCAL_DIR/share/jupyter/notebook_secret'" >> $JPY_CONFIG
 cp -L -r $LCG_VIEW/etc/jupyter/* $JUPYTER_CONFIG_DIR
 
+# Configure %%cpp cell highlighting
+CUSTOM_JS_DIR=$JPY_DIR/custom
+mkdir $CUSTOM_JS_DIR
+echo "
+require(['notebook/js/codecell'], function(codecell) {
+  codecell.CodeCell.options_default.highlight_modes['magic_text/x-c++src'] = {'reg':[/^%%cpp/]};
+});
+" > $CUSTOM_JS_DIR/custom.js
+
 # Configure kernels and terminal
 # The environment of the kernels and the terminal will combine the view and the user script (if any)
 echo "Configuring kernels and terminal"
