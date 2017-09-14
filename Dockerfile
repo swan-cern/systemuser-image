@@ -2,7 +2,7 @@
 # Analogous to jupyter/systemuser, but based on CC7 and inheriting directly from cernphsft/notebook.
 # Run with the DockerSpawner in JupyterHub.
 
-FROM cernphsft/notebook:v2.2
+FROM cernphsft/notebook:v2.3
 
 MAINTAINER Enric Tejedor Saavedra <enric.tejedor.saavedra@cern.ch>
 
@@ -30,8 +30,7 @@ RUN yum -y install tk
 RUN yum -y install \
     alsa-lib \
     at \
-    bc \ 
-    bzip2 \
+    bc \
     cronie \
     cronie-anacron \
     crontabs \
@@ -73,14 +72,10 @@ RUN yum -y update CERN-CA-certs
 # Install HEP_OSlibs - includes atlas blas
 RUN yum -y install HEP_OSlibs_SL6
 
-# Get jupyterhub-singleuser entrypoint
-# from https://github.com/jupyter/dockerspawner/commit/7dfda9473c1f2aebaf6e95b61e1304a2eb88de0b
-RUN wget -q https://raw.githubusercontent.com/jupyterhub/jupyterhub/7f89f1a2a048495981797add3fe8983a0db1585d/scripts/jupyterhub-singleuser -O /usr/local/bin/jupyterhub-singleuser
-RUN chmod 755 /usr/local/bin/jupyterhub-singleuser
-
 # WORKAROUND
 # Hide from Jupyter the Python3 kernel by hand
-RUN mv /usr/local/lib/python3.5/site-packages/ipykernel /usr/local/lib/python3.5/site-packages/ipykernelBACKUP
+RUN mv /opt/conda/lib/python3.6/site-packages/ipykernel /opt/conda/lib/python3.6/site-packages/ipykernelBACKUP
+RUN mv /opt/conda/share/jupyter/kernels /opt/conda/share/jupyter/kernelsBACKUP
 RUN mv /usr/local/share/jupyter/kernels /usr/local/share/jupyter/kernelsBACKUP
 
 EXPOSE 8888
