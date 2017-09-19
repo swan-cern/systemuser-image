@@ -11,7 +11,7 @@ echo "Creating user $USER ($USER_ID) with home $HOME"
 export SWAN_HOME=$HOME
 if [[ $SWAN_HOME == /eos/user/* ]]; then export CERNBOX_HOME=$SWAN_HOME; fi
 useradd -u $USER_ID -s $SHELL -d $SWAN_HOME $USER
-SCRATCH_HOME=/scratch/$USER
+export SCRATCH_HOME=/scratch/$USER
 mkdir -p $SCRATCH_HOME
 echo "This directory is temporary and will be deleted when your SWAN session ends!" > $SCRATCH_HOME/IMPORTANT.txt
 chown -R $USER:$USER $SCRATCH_HOME
@@ -33,6 +33,7 @@ export KERNEL_DIR=$JPY_LOCAL_DIR/share/jupyter/kernels
 mkdir -p $KERNEL_DIR
 export JUPYTER_RUNTIME_DIR=$JPY_LOCAL_DIR/share/jupyter/runtime
 export IPYTHONDIR=$SCRATCH_HOME/.ipython
+mkdir -p $IPYTHONDIR
 # This avoids to create hardlinks on eos when using pip
 export XDG_CACHE_HOME=/tmp/$USER/.cache/
 JPY_CONFIG=$JUPYTER_CONFIG_DIR/jupyter_notebook_config.py
@@ -56,7 +57,7 @@ echo "Configuring kernels and terminal"
 # Python (2 or 3)
 if [ -f $LCG_VIEW/bin/python3 ]; then PYVERSION=3; else PYVERSION=2; fi
 PYKERNELDIR=$KERNEL_DIR/python$PYVERSION
-cp -r /usr/local/share/jupyter/kernelsBACKUP/python2 $PYKERNELDIR
+mkdir -p $PYKERNELDIR
 echo "{
  \"display_name\": \"Python $PYVERSION\",
  \"language\": \"python\",
@@ -75,8 +76,9 @@ sed -i "s/python/python$PYVERSION/g" $KERNEL_DIR/root/kernel.json # Set Python v
 cp -rL $LCG_VIEW/share/jupyter/kernels/* $KERNEL_DIR
 sed -i "s/IRkernel::main()/options(bitmapType='cairo');IRkernel::main()/g" $KERNEL_DIR/ir/kernel.json # Force cairo for graphics
 
-chown -R $USER:$USER $JPY_DIR $JPY_LOCAL_DIR
+chown -R $USER:$USER $JPY_DIR $JPY_LOCAL_DIR $IPYTHONDIR
 export SWAN_ENV_FILE=/tmp/swan.sh
+export PYVERSION=$PYVERSION
 sudo -E -u $USER sh -c '   source $LCG_VIEW/setup.sh \
                         && if [[ $SPARK_CLUSTER_NAME ]]; \
                            then \
@@ -106,7 +108,8 @@ sudo -E -u $USER sh -c '   source $LCG_VIEW/setup.sh \
                            print kfile_contents_mod; \
                            map(lambda d: open(d[0],\"w\").write(json.dumps(d[1])), zip(kfile_names,kfile_contents_mod)); \
                            termEnvFile = open(\"$SWAN_ENV_FILE\", \"w\"); \
-                           [termEnvFile.write(\"export %s=\\\"%s\\\"\\n\" % (key, val)) if key != \"SUDO_COMMAND\" else None for key, val in dict(os.environ).iteritems()];"'
+                           [termEnvFile.write(\"export %s=\\\"%s\\\"\\n\" % (key, val)) if key != \"SUDO_COMMAND\" else None for key, val in dict(os.environ).iteritems()];" \
+                        && printf "alias python=\"$(which python$PYVERSION)\"\n" >> $SWAN_ENV_FILE '
 
 # Spark configuration
 if [[ $SPARK_CLUSTER_NAME ]]
