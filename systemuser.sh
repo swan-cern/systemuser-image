@@ -57,7 +57,7 @@ echo "Configuring kernels and terminal"
 # Python (2 or 3)
 if [ -f $LCG_VIEW/bin/python3 ]; then PYVERSION=3; else PYVERSION=2; fi
 PYKERNELDIR=$KERNEL_DIR/python$PYVERSION
-mkdir -p $PYKERNELDIR
+cp -r /usr/local/share/jupyter/kernelsBACKUP/python3 $PYKERNELDIR
 echo "{
  \"display_name\": \"Python $PYVERSION\",
  \"language\": \"python\",
@@ -78,8 +78,8 @@ sed -i "s/IRkernel::main()/options(bitmapType='cairo');IRkernel::main()/g" $KERN
 
 chown -R $USER:$USER $JPY_DIR $JPY_LOCAL_DIR $IPYTHONDIR
 export SWAN_ENV_FILE=/tmp/swan.sh
-export PYVERSION=$PYVERSION
-sudo -E -u $USER sh -c '   source $LCG_VIEW/setup.sh \
+
+sudo -E -u $USER sh -c 'source $LCG_VIEW/setup.sh \
                         && if [[ $SPARK_CLUSTER_NAME ]]; \
                            then \
                              echo "Configuring environment for Spark cluster: $SPARK_CLUSTER_NAME"; \

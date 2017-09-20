@@ -19,9 +19,6 @@ RUN yum -y install \
 # Install requests - required by jupyterhub-singleuser
 RUN pip3 install requests
 
-# Install metakernel - required by ROOT C++ kernel
-RUN pip3 install metakernel
-
 # Install tk - required by matplotlib
 RUN yum -y install tk
 
@@ -73,7 +70,7 @@ RUN yum -y install HEP_OSlibs_SL6
 
 # WORKAROUND
 # Hide from Jupyter the Python3 kernel by hand
-RUN mv /usr/local/lib/python3.6/site-packages/ipykernel /usr/local//lib/python3.6/site-packages/ipykernelBACKUP
+RUN mv /usr/local/lib/python3.6/site-packages/ipykernel /usr/local/lib/python3.6/site-packages/ipykernelBACKUP
 RUN mv /usr/local/share/jupyter/kernels /usr/local/share/jupyter/kernelsBACKUP
 
 EXPOSE 8888
