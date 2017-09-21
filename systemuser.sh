@@ -55,7 +55,7 @@ require(['notebook/js/codecell'], function(codecell) {
 # The environment of the kernels and the terminal will combine the view and the user script (if any)
 echo "Configuring kernels and terminal"
 # Python (2 or 3)
-if [ -f $LCG_VIEW/bin/python3 ]; then PYVERSION=3; else PYVERSION=2; fi
+if [ -f $LCG_VIEW/bin/python3 ]; then export PYVERSION=3; else export PYVERSION=2; fi
 PYKERNELDIR=$KERNEL_DIR/python$PYVERSION
 cp -r /usr/local/share/jupyter/kernelsBACKUP/python3 $PYKERNELDIR
 echo "{
