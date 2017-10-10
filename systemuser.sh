@@ -57,7 +57,8 @@ echo "Configuring kernels and terminal"
 # Python (2 or 3)
 if [ -f $LCG_VIEW/bin/python3 ]; then export PYVERSION=3; else export PYVERSION=2; fi
 PYKERNELDIR=$KERNEL_DIR/python$PYVERSION
-cp -r /usr/local/share/jupyter/kernelsBACKUP/python3 $PYKERNELDIR
+mkdir -p $PYKERNELDIR
+cp -r /usr/local/share/jupyter/kernelsBACKUP/python3/*.png $PYKERNELDIR
 echo "{
  \"display_name\": \"Python $PYVERSION\",
  \"language\": \"python\",
@@ -73,7 +74,7 @@ echo "{
 cp -rL $LCG_VIEW/etc/notebook/kernels/root $KERNEL_DIR
 sed -i "s/python/python$PYVERSION/g" $KERNEL_DIR/root/kernel.json # Set Python version in kernel
 # R
-cp -rL $LCG_VIEW/share/jupyter/kernels/* $KERNEL_DIR
+cp -rL $LCG_VIEW/share/jupyter/kernels/ir $KERNEL_DIR
 sed -i "s/IRkernel::main()/options(bitmapType='cairo');IRkernel::main()/g" $KERNEL_DIR/ir/kernel.json # Force cairo for graphics
 
 chown -R $USER:$USER $JPY_DIR $JPY_LOCAL_DIR $IPYTHONDIR
