@@ -6,6 +6,8 @@ FROM cernphsft/notebook:v2.3
 
 MAINTAINER Enric Tejedor Saavedra <enric.tejedor.saavedra@cern.ch>
 
+RUN yum -y install yum-plugin-ovl # See https://github.com/CentOS/sig-cloud-instance-images/issues/15
+
 # Disable requiretty and secure path - required by systemuser.sh
 RUN yum -y install sudo
 RUN sed -i'' '/Defaults \+requiretty/d'  /etc/sudoers
@@ -72,6 +74,9 @@ RUN yum -y install HEP_OSlibs_SL6
 # Hide from Jupyter the Python3 kernel by hand
 RUN mv /usr/local/lib/python3.6/site-packages/ipykernel /usr/local/lib/python3.6/site-packages/ipykernelBACKUP
 RUN mv /usr/local/share/jupyter/kernels /usr/local/share/jupyter/kernelsBACKUP
+
+#Add extra save to fileio
+ADD extra_save.d/fileio.py /usr/local/lib/python3.6/site-packages/notebook/services/contents/fileio.py
 
 EXPOSE 8888
 

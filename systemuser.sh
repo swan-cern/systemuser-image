@@ -16,6 +16,10 @@ mkdir -p $SCRATCH_HOME
 echo "This directory is temporary and will be deleted when your SWAN session ends!" > $SCRATCH_HOME/IMPORTANT.txt
 chown -R $USER:$USER $SCRATCH_HOME
 
+echo "Setting directory for Notebook backup"
+export USERDATA_PATH=/srv/singleuser/userdata
+chown -R $USER:$USER $USERDATA_PATH
+
 # Setup the LCG View on CVMFS
 echo "Setting up environment from CVMFS"
 export LCG_VIEW=$ROOT_LCG_VIEW_PATH/$ROOT_LCG_VIEW_NAME/$ROOT_LCG_VIEW_PLATFORM
