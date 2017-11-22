@@ -38,12 +38,16 @@ mkdir -p $KERNEL_DIR
 export JUPYTER_RUNTIME_DIR=$JPY_LOCAL_DIR/share/jupyter/runtime
 export IPYTHONDIR=$SCRATCH_HOME/.ipython
 mkdir -p $IPYTHONDIR
+export PROFILEPATH=$IPYTHONDIR/profile_default
+mkdir -p $PROFILEPATH
 # This avoids to create hardlinks on eos when using pip
 export XDG_CACHE_HOME=/tmp/$USER/.cache/
 JPY_CONFIG=$JUPYTER_CONFIG_DIR/jupyter_notebook_config.py
 echo "c.FileCheckpoints.checkpoint_dir = '$SCRATCH_HOME/.ipynb_checkpoints'"         >> $JPY_CONFIG
 echo "c.NotebookNotary.db_file = '$JPY_LOCAL_DIR/share/jupyter/nbsignatures.db'"     >> $JPY_CONFIG
 echo "c.NotebookNotary.secret_file = '$JPY_LOCAL_DIR/share/jupyter/notebook_secret'" >> $JPY_CONFIG
+echo "c.NotebookApp.contents_manager_class = 'swancontents.filemanager.swanfilemanager.SwanFileManager'" >> $JPY_CONFIG
+echo "c.NotebookApp.default_url = 'projects'" >> $JPY_CONFIG
 cp -L -r $LCG_VIEW/etc/jupyter/* $JUPYTER_CONFIG_DIR
 
 # Configure %%cpp cell highlighting
@@ -84,12 +88,25 @@ sed -i "s/IRkernel::main()/options(bitmapType='cairo');IRkernel::main()/g" $KERN
 chown -R $USER:$USER $JPY_DIR $JPY_LOCAL_DIR $IPYTHONDIR
 export SWAN_ENV_FILE=/tmp/swan.sh
 
-sudo -E -u $USER sh -c 'source $LCG_VIEW/setup.sh \
+sudo -E -u $USER sh -c 'mkdir -p $SWAN_HOME/SWAN_projects/ \
+                        && source $LCG_VIEW/setup.sh \
+                        && export PYTHONPATH=$EXTRA_LIBS/modules/:$PYTHONPATH \
+                        && export KERNEL_PROFILEPATH=$PROFILEPATH/ipython_kernel_config.py \
+                        && echo "c.InteractiveShellApp.extensions.append('\''sparkmonitor.kernelextension'\'')" >>  $KERNEL_PROFILEPATH \
                         && if [[ $SPARK_CLUSTER_NAME ]]; \
                            then \
                              echo "Configuring environment for Spark cluster: $SPARK_CLUSTER_NAME"; \
                              source $SPARK_CONFIG_SCRIPT $SPARK_CLUSTER_NAME; \
                              export SPARK_LOCAL_IP=`hostname -i`; \
+                             NBCONFIG=$SCRATCH_HOME/.jupyter/nbconfig ; \
+                             mkdir -p $NBCONFIG ; \
+                             echo "{
+                               \"load_extensions\": {
+                                 \"sparkconnector/extension\": true
+                               }
+                             }" > $NBCONFIG/notebook.json ; \
+                             echo "c.InteractiveShellApp.extensions.append('\''sparkconnector.connector'\'')" >>  $KERNEL_PROFILEPATH; \
+                             echo "Completed Spark Configuration" ; \
                            fi \
                         && export JUPYTER_DATA_DIR=$LCG_VIEW/share/jupyter \
                         && export TMP_SCRIPT=`mktemp` \
@@ -120,6 +137,11 @@ if [[ $SPARK_CLUSTER_NAME ]]
 then
   LOCAL_IP=`hostname -i`
   echo "$LOCAL_IP $SERVER_HOSTNAME" >> /etc/hosts
+
+  # Spark Monitor configuration
+  export SPARKMONITOR_UI_HOST=$SERVER_HOSTNAME ; \
+  export SPARKMONITOR_UI_PORT=$SPARK_PORT_3  ; \
+  echo "SparkMonitor UI is on $SPARKMONITOR_UI_HOST at port $SPARKMONITOR_UI_PORT" ; \
 fi
 
 # Make sure we have a sane terminal
@@ -146,7 +168,9 @@ chmod +x $SWAN_BASH
 # Run notebook server
 echo "Running the notebook server"
 sudo -E -u $USER sh -c '   cd $SWAN_HOME \
-                        && SHELL=$SWAN_BASH jupyterhub-singleuser \
+                        && SHELL=$SWAN_BASH \
+                           PYTHONPATH=$EXTRA_LIBS/modules/:$PYTHONPATH \
+                           jupyterhub-singleuser \
                            --port=8888 \
                            --ip=0.0.0.0 \
                            --user=$JPY_USER \

@@ -21,6 +21,9 @@ RUN yum -y install \
 # Install requests - required by jupyterhub-singleuser
 RUN pip3 install requests
 
+# Install bs4 - required by sparkconnector.serverextension
+RUN pip3 install bs4
+
 # Install tk - required by matplotlib
 RUN yum -y install tk
 
