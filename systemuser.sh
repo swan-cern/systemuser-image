@@ -31,19 +31,23 @@ mkdir -p $JPY_DIR
 JPY_LOCAL_DIR=$SCRATCH_HOME/.local
 mkdir -p $JPY_LOCAL_DIR
 export JUPYTER_CONFIG_DIR=$JPY_DIR
-# Our kernels will be in $JPY_LOCAL_DIR/share/jupyter, $LCG_VIEW/share/jupyter is needed for the notebook extensions
-export JUPYTER_PATH=$JPY_LOCAL_DIR/share/jupyter:$LCG_VIEW/share/jupyter:$EXTRA_LIBS
-export KERNEL_DIR=$JPY_LOCAL_DIR/share/jupyter/kernels
+JUPYTER_LOCAL_PATH=$JPY_LOCAL_DIR/share/jupyter
+mkdir -p $JUPYTER_LOCAL_PATH
+# Our kernels will be in $JUPYTER_LOCAL_PATH
+export JUPYTER_PATH=$JUPYTER_LOCAL_PATH:$EXTRA_LIBS
+# symlink $LCG_VIEW/share/jupyter/nbextensions for the notebook extensions
+ln -s $LCG_VIEW/share/jupyter/nbextensions $JUPYTER_LOCAL_PATH
+export KERNEL_DIR=$JUPYTER_LOCAL_PATH/kernels
 mkdir -p $KERNEL_DIR
-export JUPYTER_RUNTIME_DIR=$JPY_LOCAL_DIR/share/jupyter/runtime
+export JUPYTER_RUNTIME_DIR=$JUPYTER_LOCAL_PATH/runtime
 export IPYTHONDIR=$SCRATCH_HOME/.ipython
 mkdir -p $IPYTHONDIR
 # This avoids to create hardlinks on eos when using pip
 export XDG_CACHE_HOME=/tmp/$USER/.cache/
 JPY_CONFIG=$JUPYTER_CONFIG_DIR/jupyter_notebook_config.py
 echo "c.FileCheckpoints.checkpoint_dir = '$SCRATCH_HOME/.ipynb_checkpoints'"         >> $JPY_CONFIG
-echo "c.NotebookNotary.db_file = '$JPY_LOCAL_DIR/share/jupyter/nbsignatures.db'"     >> $JPY_CONFIG
-echo "c.NotebookNotary.secret_file = '$JPY_LOCAL_DIR/share/jupyter/notebook_secret'" >> $JPY_CONFIG
+echo "c.NotebookNotary.db_file = '$JUPYTER_LOCAL_PATH/nbsignatures.db'"     >> $JPY_CONFIG
+echo "c.NotebookNotary.secret_file = '$JUPYTER_LOCAL_PATH/notebook_secret'" >> $JPY_CONFIG
 cp -L -r $LCG_VIEW/etc/jupyter/* $JUPYTER_CONFIG_DIR
 
 # Configure %%cpp cell highlighting
