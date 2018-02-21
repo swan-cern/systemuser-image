@@ -48,6 +48,7 @@ JPY_CONFIG=$JUPYTER_CONFIG_DIR/jupyter_notebook_config.py
 echo "c.FileCheckpoints.checkpoint_dir = '$SCRATCH_HOME/.ipynb_checkpoints'"         >> $JPY_CONFIG
 echo "c.NotebookNotary.db_file = '$JUPYTER_LOCAL_PATH/nbsignatures.db'"     >> $JPY_CONFIG
 echo "c.NotebookNotary.secret_file = '$JUPYTER_LOCAL_PATH/notebook_secret'" >> $JPY_CONFIG
+echo "c.NotebookApp.iopub_data_rate_limit=5000000" >> $JPY_CONFIG
 cp -L -r $LCG_VIEW/etc/jupyter/* $JUPYTER_CONFIG_DIR
 
 # Configure %%cpp cell highlighting
@@ -84,6 +85,14 @@ sed -i "s/python/python$PYVERSION/g" $KERNEL_DIR/root/kernel.json # Set Python v
 # R
 cp -rL $LCG_VIEW/share/jupyter/kernels/ir $KERNEL_DIR
 sed -i "s/IRkernel::main()/options(bitmapType='cairo');IRkernel::main()/g" $KERNEL_DIR/ir/kernel.json # Force cairo for graphics
+# Octave
+OCTAVE_KERNEL_PATH=$LCG_VIEW/share/jupyter/kernels/octave
+if [[ -d $OCTAVE_KERNEL_PATH ]];
+then
+   cp -rL $OCTAVE_KERNEL_PATH $KERNEL_DIR
+   export OCTAVE_KERNEL_JSON=$KERNEL_DIR/octave/kernel.json
+   sed -i "s/python/python$PYVERSION/g" $OCTAVE_KERNEL_JSON # Set Python version in kernel
+fi
 
 chown -R $USER:$USER $JPY_DIR $JPY_LOCAL_DIR $IPYTHONDIR
 export SWAN_ENV_FILE=/tmp/swan.sh
