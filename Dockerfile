@@ -70,6 +70,13 @@ RUN yum -y install libaio
 RUN yum -y install cern-get-sso-cookie
 RUN yum -y update CERN-CA-certs
 
+# Create truststore for NXCALS Spark connection
+RUN yum -y install java-1.8.0-openjdk && \
+    keytool -import -alias cerngridCA -file /etc/pki/tls/certs/CERN_Grid_Certification_Authority.crt -keystore /etc/pki/tls/certs/truststore.jks -storepass 'password' -noprompt && \
+    keytool -import -alias cernRootCA2 -file /etc/pki/tls/certs/CERN_Root_Certification_Authority_2.crt -keystore /etc/pki/tls/certs/truststore.jks -storepass 'password' -noprompt && \
+    yum -y erase java-1.8.0-openjdk && \
+    rm -rf /usr/lib/jvm/
+
 # Install HEP_OSlibs - includes atlas blas
 RUN yum -y install HEP_OSlibs_SL6
 
