@@ -80,6 +80,11 @@ RUN yum -y install java-1.8.0-openjdk && \
 # Install HEP_OSlibs - includes atlas blas
 RUN yum -y install HEP_OSlibs_SL6
 
+# Clean the image
+RUN clean_requirements_on_remove=1 >> /etc/yum.conf && \
+    yum clean all && \
+    rm -rf /var/cache/yum
+
 # WORKAROUND
 # Hide from Jupyter the Python3 kernel by hand
 RUN mv /usr/local/lib/python3.6/site-packages/ipykernel /usr/local/lib/python3.6/site-packages/ipykernelBACKUP
