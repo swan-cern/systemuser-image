@@ -90,9 +90,6 @@ RUN clean_requirements_on_remove=1 >> /etc/yum.conf && \
 RUN mv /usr/local/lib/python3.6/site-packages/ipykernel /usr/local/lib/python3.6/site-packages/ipykernelBACKUP
 RUN mv /usr/local/share/jupyter/kernels /usr/local/share/jupyter/kernelsBACKUP
 
-#Add extra save to fileio
-ADD extra_save.d/fileio.py /usr/local/lib/python3.6/site-packages/notebook/services/contents/fileio.py
-
 EXPOSE 8888
 
 ENV SHELL /bin/bash
