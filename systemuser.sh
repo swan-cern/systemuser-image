@@ -101,6 +101,8 @@ fi
 chown -R $USER:$USER $JPY_DIR $JPY_LOCAL_DIR $IPYTHONDIR
 export SWAN_ENV_FILE=/tmp/swan.sh
 
+# As the LCG setup might set PYTHONHOME, run python with -E to prevent this python 2 code
+# to lookup for modules in a Python 3 path (if this is the selected stack)
 sudo -E -u $USER sh -c 'mkdir -p $SWAN_HOME/SWAN_projects/ \
                         && source $LCG_VIEW/setup.sh \
                         && export PYTHONPATH=$EXTRA_LIBS/modules/:$PYTHONPATH \
@@ -133,7 +135,7 @@ sudo -E -u $USER sh -c 'mkdir -p $SWAN_HOME/SWAN_projects/ \
                              echo "Cannot find user script: $USER_ENV_SCRIPT"; \
                            fi \
                         && cd $KERNEL_DIR \
-                        && python -c "import os; kdirs = os.listdir(\"./\"); \
+                        && python -E -c "import os; kdirs = os.listdir(\"./\"); \
                            kfile_names = [\"%s/kernel.json\" %kdir for kdir in kdirs]; \
                            kfile_contents = [open(kfile_name).read() for kfile_name in kfile_names]; \
                            exec(\"def addEnv(dtext): d=eval(dtext); d[\\\"env\\\"]=dict(os.environ); return d\"); \
