@@ -100,55 +100,7 @@ fi
 chown -R $USER:$USER $JPY_DIR $JPY_LOCAL_DIR $IPYTHONDIR
 export SWAN_ENV_FILE=/tmp/swan.sh
 
-# As the LCG setup might set PYTHONHOME, run python with -E to prevent this python 2 code
-# to lookup for modules in a Python 3 path (if this is the selected stack)
-sudo -E -u $USER sh -c 'mkdir -p $SWAN_HOME/SWAN_projects/ \
-                        && source $LCG_VIEW/setup.sh \
-                        && export PYTHONPATH=$EXTRA_LIBS/modules/:$PYTHONPATH \
-                        && if [[ $PYVERSION -eq 3 ]]; \
-                           then \
-                             export PYTHONPATH=/usr/local/lib/swan/:$PYTHONPATH; \
-                           fi \
-                        && export KERNEL_PROFILEPATH=$PROFILEPATH/ipython_kernel_config.py \
-                        && echo "c.InteractiveShellApp.extensions.append('\''sparkmonitor.kernelextension'\'')" >>  $KERNEL_PROFILEPATH \
-                        && if [[ $SPARK_CLUSTER_NAME ]]; \
-                           then \
-                             echo "Configuring environment for Spark cluster: $SPARK_CLUSTER_NAME"; \
-                             source $SPARK_CONFIG_SCRIPT $SPARK_CLUSTER_NAME; \
-                             export SPARK_LOCAL_IP=`hostname -i`; \
-                             NBCONFIG=$SCRATCH_HOME/.jupyter/nbconfig ; \
-                             mkdir -p $NBCONFIG ; \
-                             echo "{
-                               \"load_extensions\": {
-                                 \"sparkconnector/extension\": true
-                               }
-                             }" > $NBCONFIG/notebook.json ; \
-                             echo "c.InteractiveShellApp.extensions.append('\''sparkconnector.connector'\'')" >>  $KERNEL_PROFILEPATH; \
-                             echo "Completed Spark Configuration" ; \
-                           fi \
-                        && export JUPYTER_DATA_DIR=$LCG_VIEW/share/jupyter \
-                        && export TMP_SCRIPT=`mktemp` \
-                        && if [[ $USER_ENV_SCRIPT && -f `eval echo $USER_ENV_SCRIPT` ]]; \
-                           then \
-                             echo "Found user script: $USER_ENV_SCRIPT"; \
-                             export TMP_SCRIPT=`mktemp`; \
-                             cat `eval echo $USER_ENV_SCRIPT` > $TMP_SCRIPT; \
-                             source $TMP_SCRIPT; \
-                           else \
-                             echo "Cannot find user script: $USER_ENV_SCRIPT"; \
-                           fi \
-                        && cd $KERNEL_DIR \
-                        && python -E -c "import os; kdirs = os.listdir(\"./\"); \
-                           kfile_names = [\"%s/kernel.json\" %kdir for kdir in kdirs]; \
-                           kfile_contents = [open(kfile_name).read() for kfile_name in kfile_names]; \
-                           exec(\"def addEnv(dtext): d=eval(dtext); d[\\\"env\\\"]=dict(os.environ); return d\"); \
-                           kfile_contents_mod = map(addEnv, kfile_contents); \
-                           import json; \
-                           print kfile_contents_mod; \
-                           map(lambda d: open(d[0],\"w\").write(json.dumps(d[1])), zip(kfile_names,kfile_contents_mod)); \
-                           termEnvFile = open(\"$SWAN_ENV_FILE\", \"w\"); \
-                           [termEnvFile.write(\"export %s=\\\"%s\\\"\\n\" % (key, val)) if key != \"SUDO_COMMAND\" else None for key, val in dict(os.environ).iteritems()];" \
-                        && printf "alias python=\"$(which python$PYVERSION)\"\n" >> $SWAN_ENV_FILE '
+sudo -E -u $USER sh /srv/singleuser/userconfig.sh
 
 # Spark configuration
 if [[ $SPARK_CLUSTER_NAME ]]
