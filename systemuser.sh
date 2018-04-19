@@ -105,6 +105,10 @@ export SWAN_ENV_FILE=/tmp/swan.sh
 sudo -E -u $USER sh -c 'mkdir -p $SWAN_HOME/SWAN_projects/ \
                         && source $LCG_VIEW/setup.sh \
                         && export PYTHONPATH=$EXTRA_LIBS/modules/:$PYTHONPATH \
+                        && if [[ $PYVERSION -eq 3 ]]; \
+                           then \
+                             export PYTHONPATH=/usr/local/lib/swan/:$PYTHONPATH; \
+                           fi \
                         && export KERNEL_PROFILEPATH=$PROFILEPATH/ipython_kernel_config.py \
                         && echo "c.InteractiveShellApp.extensions.append('\''sparkmonitor.kernelextension'\'')" >>  $KERNEL_PROFILEPATH \
                         && if [[ $SPARK_CLUSTER_NAME ]]; \

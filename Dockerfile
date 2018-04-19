@@ -90,6 +90,9 @@ RUN clean_requirements_on_remove=1 >> /etc/yum.conf && \
 RUN mv /usr/local/lib/python3.6/site-packages/ipykernel /usr/local/lib/python3.6/site-packages/ipykernelBACKUP
 RUN mv /usr/local/share/jupyter/kernels /usr/local/share/jupyter/kernelsBACKUP
 
+RUN mkdir /usr/local/lib/swan && \
+    pip3 install 'ipykernel==4.8.2' -t /usr/local/lib/swan
+
 EXPOSE 8888
 
 ENV SHELL /bin/bash
