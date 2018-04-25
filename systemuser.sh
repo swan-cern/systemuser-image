@@ -102,6 +102,12 @@ export SWAN_ENV_FILE=/tmp/swan.sh
 
 sudo -E -u $USER sh /srv/singleuser/userconfig.sh
 
+if [ $? -ne 0 ]
+then
+  echo "Error configuring user environment"
+  exit 1
+fi
+
 # Spark configuration
 if [[ $SPARK_CLUSTER_NAME ]]
 then
