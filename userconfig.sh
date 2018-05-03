@@ -56,7 +56,7 @@ fi
 # Configure kernels
 # As the LCG setup might set PYTHONHOME, run python with -E to prevent this python 2 code
 # to lookup for modules in a Python 3 path (if this is the selected stack)
-python -E <<EOF
+/usr/bin/python -E <<EOF
 import os
 import json
 
