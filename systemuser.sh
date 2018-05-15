@@ -135,7 +135,7 @@ sudo -E -u $USER sh -c 'mkdir -p $SWAN_HOME/SWAN_projects/ \
                              echo "Cannot find user script: $USER_ENV_SCRIPT"; \
                            fi \
                         && cd $KERNEL_DIR \
-                        && python -E -c "import os; kdirs = os.listdir(\"./\"); \
+                        && /usr/bin/python -E -c "import os; kdirs = os.listdir(\"./\"); \
                            kfile_names = [\"%s/kernel.json\" %kdir for kdir in kdirs]; \
                            kfile_contents = [open(kfile_name).read() for kfile_name in kfile_names]; \
                            exec(\"def addEnv(dtext): d=eval(dtext); d[\\\"env\\\"]=dict(os.environ); return d\"); \
