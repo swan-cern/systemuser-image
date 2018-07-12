@@ -1,9 +1,9 @@
-# Analogous to jupyter/systemuser, but based on SLC6 and inheriting directly from cernphsft/notebook.
+# Analogous to jupyter/systemuser, but based on CC7 and inheriting directly from cernphsft/notebook.
 # Run with the DockerSpawner in JupyterHub.
 
-FROM gitlab-registry.cern.ch/swan/docker-images/notebook:v2.5
+FROM gitlab-registry.cern.ch/swan/docker-images/notebook:v3.0
 
-MAINTAINER Enric Tejedor Saavedra <enric.tejedor.saavedra@cern.ch>
+MAINTAINER SWAN Admins <swan-admins@cern.ch>
 
 # Disable requiretty and secure path - required by systemuser.sh
 RUN yum -y install sudo && \
@@ -74,7 +74,7 @@ RUN yum -y install java-1.8.0-openjdk && \
     rm -rf /usr/lib/jvm/
 
 # Install HEP_OSlibs - includes atlas blas
-RUN yum -y install HEP_OSlibs_SL6
+RUN yum -y install HEP_OSlibs
 
 # WORKAROUND
 # Hide from Jupyter the Python3 kernel by hand
