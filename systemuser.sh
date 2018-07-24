@@ -138,7 +138,7 @@ fi
 
 # Set the terminal environment
 export SWAN_BASH=/bin/swan_bash
-printf "#! /bin/env python\nfrom subprocess import call\nimport sys\ncall([\"bash\", \"--rcfile\", \"$SWAN_ENV_FILE\"]+sys.argv[1:])\n" >> $SWAN_BASH
+printf "#! /bin/env python\nfrom subprocess import call\nimport sys\nexit(call([\"bash\", \"--rcfile\", \"$SWAN_ENV_FILE\"]+sys.argv[1:]))\n" >> $SWAN_BASH
 chmod +x $SWAN_BASH
 
 # Run notebook server
