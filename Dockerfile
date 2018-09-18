@@ -1,7 +1,7 @@
 # Analogous to jupyter/systemuser, but based on SLC6 and inheriting directly from cernphsft/notebook.
 # Run with the DockerSpawner in JupyterHub.
 
-FROM cernphsft/notebook:v2.5
+FROM gitlab-registry.cern.ch/swan/docker-images/notebook:v2.5
 
 MAINTAINER Enric Tejedor Saavedra <enric.tejedor.saavedra@cern.ch>
 
