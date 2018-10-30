@@ -32,9 +32,17 @@ then
  mkdir -p $NBCONFIG
  echo "{
    \"load_extensions\": {
-     \"sparkconnector/extension\": true
+     \"sparkconnector/extension\": true,
+     \"hdfsbrowser/extension\": true
    }
  }" > $NBCONFIG/notebook.json
+ echo "{
+   \"NotebookApp\": {
+     \"nbserver_extensions\": {
+       \"hdfsbrowser.serverextension\": true
+     }
+   }
+ }" > $SCRATCH_HOME/.jupyter/jupyter_notebook_config.json
  echo "c.InteractiveShellApp.extensions.append('sparkconnector.connector')" >>  $KERNEL_PROFILEPATH
  echo "Completed Spark Configuration"
 fi
