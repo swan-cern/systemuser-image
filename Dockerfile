@@ -64,6 +64,14 @@ RUN yum -y install libaio
 RUN yum -y install cern-get-sso-cookie && \
     yum -y update CERN-CA-certs
 
+# Install grid certificates
+RUN echo $'[carepo]\n\
+name=IGTF CA Repository\n\
+baseurl=http://linuxsoft.cern.ch/mirror/repository.egi.eu/sw/production/cas/1/current/\n\
+enabled=1\n\
+gpgcheck=0' > /etc/yum.repos.d/ca.repo && \
+    yum install -y voms-clients-cpp  fetch-crl ca_CERN-GridCA-1.90-1.noarch
+
 # Create truststore for NXCALS Spark connection
 RUN yum -y install java-1.8.0-openjdk && \
     keytool -import -alias cerngridCA -file /etc/pki/tls/certs/CERN_Grid_Certification_Authority.crt \
