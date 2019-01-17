@@ -9,7 +9,7 @@ mkdir -p $SWAN_HOME/SWAN_projects/
 source $LCG_VIEW/setup.sh
 
 # Add SWAN modules path to PYTHONPATH so that it picks them
-export PYTHONPATH=$EXTRA_LIBS/modules/:$PYTHONPATH 
+export PYTHONPATH=/usr/local/lib/swan/extensions/:$PYTHONPATH 
 
 # To prevent conflicts with older versions of Jupyter dependencies in CVMFS
 # add these packages to the beginning of PYTHONPATH

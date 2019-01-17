@@ -34,7 +34,7 @@ export JUPYTER_CONFIG_DIR=$JPY_DIR
 JUPYTER_LOCAL_PATH=$JPY_LOCAL_DIR/share/jupyter
 mkdir -p $JUPYTER_LOCAL_PATH
 # Our kernels will be in $JUPYTER_LOCAL_PATH
-export JUPYTER_PATH=$JUPYTER_LOCAL_PATH:$EXTRA_LIBS
+export JUPYTER_PATH=$JUPYTER_LOCAL_PATH
 # symlink $LCG_VIEW/share/jupyter/nbextensions for the notebook extensions
 ln -s $LCG_VIEW/share/jupyter/nbextensions $JUPYTER_LOCAL_PATH
 export KERNEL_DIR=$JUPYTER_LOCAL_PATH/kernels
@@ -145,7 +145,6 @@ chmod +x $SWAN_BASH
 echo "Running the notebook server"
 sudo -E -u $USER sh -c '   cd $SWAN_HOME \
                         && SHELL=$SWAN_BASH \
-                           PYTHONPATH=$EXTRA_LIBS/modules/:$PYTHONPATH \
                            jupyterhub-singleuser \
                            --port=8888 \
                            --ip=0.0.0.0 \

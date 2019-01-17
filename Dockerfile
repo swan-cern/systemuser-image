@@ -94,6 +94,34 @@ RUN mv /usr/local/lib/python3.6/site-packages/ipykernel /usr/local/lib/python3.6
 RUN mkdir /usr/local/lib/swan && \
     pip3 install 'ipykernel==4.8.2' -t /usr/local/lib/swan
 
+# !!!!! Replace with the zip file from gitlab repo
+ADD v7 /tmp/jupyter_extensions/
+RUN cd /tmp/jupyter_extensions && \
+    #unzip latest.zip && \
+    rm -rf /usr/local/lib/python3.6/site-packages/notebook/templates && \
+    mv -f templates /usr/local/lib/python3.6/site-packages/notebook/ && \
+    # Install all SWAN extensions which are packaged as python modules
+    # Ignore dependencies because they have already been installed or come from CVMFS
+    ls -d ./*/ | xargs -n1 sh -c 'cd $0 ; pip install --no-deps .' && \
+    # Automatically install all nbextensions from their python module (all extensions need to implement the api even if they return 0 nbextensions)
+    ls -d ./*/ | xargs -n1 sh -c 'extension=$(basename $0) ; jupyter nbextension install --py --system ${extension,,} || exit 1' && \
+    # Enable the server extensions
+    server_extensions=('swancontents' 'sparkmonitor' 'swannotebookviewer' 'swangallery') && \
+    for extension in ${server_extensions[@]}; do jupyter serverextension enable --py --system $extension || exit 1 ; done && \
+    # Enable the nb extensions
+    # Not all nbextensions are activated as some of them are activated on session startup or by the import in the templates
+    nb_extensions=('swanhelp' 'swannotifications' 'swanshare' 'swanintro' 'sparkmonitor') && \
+    for extension in ${nb_extensions[@]}; do jupyter nbextension enable --py --system $extension || exit 1; done && \
+    # Force nbextension_configurator systemwide to prevent users disabling it
+    jupyter nbextensions_configurator enable --system && \
+    # Spark Monitor/Connector also need to be available to the user environment since they have kernel extensions
+    mkdir /usr/local/lib/swan/extensions && \
+    ln -s /usr/local/lib/python3.6/site-packages/sparkmonitor /usr/local/lib/swan/extensions/ && \
+    ln -s /usr/local/lib/python3.6/site-packages/sparkconnector /usr/local/lib/swan/extensions/ && \
+    ln -s /usr/local/lib/python3.6/site-packages/swankernelenv /usr/local/lib/swan/extensions/ && \
+    # Clean
+    rm -rf /tmp/jupyter_extensions
+
 RUN yum clean all && \
     rm -rf /var/cache/yum
 
