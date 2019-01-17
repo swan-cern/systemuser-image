@@ -3,7 +3,21 @@
 echo "Configuring user session"
 
 # Make sure the user has the SWAN_projects folder
-mkdir -p $SWAN_HOME/SWAN_projects/
+SWAN_PROJECTS=$SWAN_HOME/SWAN_projects/
+mkdir -p $SWAN_PROJECTS
+
+# Persist enabled notebook nbextensions
+NBCONFIG=$JPY_DIR/nbconfig
+mkdir -p $NBCONFIG
+LOCAL_NB_NBEXTENSIONS=$SWAN_PROJECTS/.notebook_nbextensions
+if [ ! -f $LOCAL_NB_NBEXTENSIONS ]; then 
+  echo "{
+    \"load_extensions\": {
+    }
+  }" > $LOCAL_NB_NBEXTENSIONS
+fi
+rm -f $NBCONFIG/notebook.json
+ln -s $LOCAL_NB_NBEXTENSIONS $NBCONFIG/notebook.json
 
 # Setup LCG
 source $LCG_VIEW/setup.sh
@@ -28,21 +42,6 @@ then
  echo "Configuring environment for Spark cluster: $SPARK_CLUSTER_NAME"
  source $SPARK_CONFIG_SCRIPT $SPARK_CLUSTER_NAME
  export SPARK_LOCAL_IP=`hostname -i`
- NBCONFIG=$SCRATCH_HOME/.jupyter/nbconfig
- mkdir -p $NBCONFIG
- echo "{
-   \"load_extensions\": {
-     \"sparkconnector/extension\": true,
-     \"hdfsbrowser/extension\": true
-   }
- }" > $NBCONFIG/notebook.json
- echo "{
-   \"NotebookApp\": {
-     \"nbserver_extensions\": {
-       \"hdfsbrowser.serverextension\": true
-     }
-   }
- }" > $SCRATCH_HOME/.jupyter/jupyter_notebook_config.json
  echo "c.InteractiveShellApp.extensions.append('sparkconnector.connector')" >>  $KERNEL_PROFILEPATH
  echo "Completed Spark Configuration"
 fi

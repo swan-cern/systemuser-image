@@ -26,7 +26,7 @@ export LCG_VIEW=$ROOT_LCG_VIEW_PATH/$ROOT_LCG_VIEW_NAME/$ROOT_LCG_VIEW_PLATFORM
 
 # Set environment for the Jupyter process
 echo "Setting Jupyter environment"
-JPY_DIR=$SCRATCH_HOME/.jupyter
+export JPY_DIR=$SCRATCH_HOME/.jupyter
 mkdir -p $JPY_DIR
 JPY_LOCAL_DIR=$SCRATCH_HOME/.local
 mkdir -p $JPY_LOCAL_DIR
@@ -115,9 +115,28 @@ then
   echo "$LOCAL_IP $SERVER_HOSTNAME" >> /etc/hosts
 
   # Spark Monitor configuration
-  export SPARKMONITOR_UI_HOST=$SERVER_HOSTNAME ; \
-  export SPARKMONITOR_UI_PORT=$SPARK_PORT_3  ; \
-  echo "SparkMonitor UI is on $SPARKMONITOR_UI_HOST at port $SPARKMONITOR_UI_PORT" ; \
+  export SPARKMONITOR_UI_HOST=$SERVER_HOSTNAME
+  export SPARKMONITOR_UI_PORT=$SPARK_PORT_3 
+  echo "SparkMonitor UI is on $SPARKMONITOR_UI_HOST at port $SPARKMONITOR_UI_PORT"
+
+  # Enable the extensions in Jupyter global path to avoid having to maintain this information 
+  # in the user scratch json file (specially because now we persist this file in the user directory and
+  # we don't want to persist the Spark extensions across sessions)
+  mkdir -p /etc/jupyter/nbconfig
+  echo "Globally enabling the Spark extensions"
+  echo "{
+    \"load_extensions\": {
+      \"sparkconnector/extension\": true,
+      \"hdfsbrowser/extension\": true
+    }
+  }" > /etc/jupyter/nbconfig/notebook.json
+  echo "{
+    \"NotebookApp\": {
+      \"nbserver_extensions\": {
+        \"hdfsbrowser.serverextension\": true
+      }
+    }
+  }" > /etc/jupyter/jupyter_notebook_config.json
 fi
 
 # Make sure we have a sane terminal
