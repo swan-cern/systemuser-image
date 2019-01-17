@@ -1,7 +1,7 @@
 # Analogous to jupyter/systemuser, but based on CC7 and inheriting directly from cernphsft/notebook.
 # Run with the DockerSpawner in JupyterHub.
 
-FROM gitlab-registry.cern.ch/swan/docker-images/notebook:v3.0.1
+FROM gitlab-registry.cern.ch/swan/docker-images/notebook:v4.0.0
 
 MAINTAINER SWAN Admins <swan-admins@cern.ch>
 
