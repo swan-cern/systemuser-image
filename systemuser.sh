@@ -76,8 +76,7 @@ echo "{
  \"language\": \"python\",
  \"argv\": [
   \"python$PYVERSION\",
-  \"-m\",
-  \"ipykernel\",
+  \"/usr/local/bin/start_ipykernel.py\",
   \"-f\",
   \"{connection_file}\"
  ]

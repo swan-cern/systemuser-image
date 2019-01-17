@@ -1,0 +1,7 @@
+#!/usr/local/bin/python3.6
+
+if __name__ == '__main__':
+    import sys
+    del sys.path[0]
+    from jupyterhub.singleuser import main
+    main()
