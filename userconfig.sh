@@ -64,7 +64,7 @@ fi
 # As the LCG setup might set PYTHONHOME, run python with -E to prevent this python 2 code
 # to lookup for modules in a Python 3 path (if this is the selected stack)
 /usr/local/bin/python3 -E <<EOF
-import os
+import os, re
 import json
 
 def addEnv(dtext):
@@ -78,9 +78,19 @@ kfile_contents = [open(kfile_name).read() for kfile_name in kfile_names]
 kfile_contents_mod = list(map(addEnv, kfile_contents))
 print(kfile_contents_mod)
 [open(d[0],"w").write(json.dumps(d[1])) for d in zip(kfile_names,kfile_contents_mod)]
-termEnvFile = open("$SWAN_ENV_FILE", "w")
-[termEnvFile.write("export %s=\"%s\"\n" % (key, val)) if key != "SUDO_COMMAND" else None for key, val in dict(os.environ).items()]
+
+with open("$SWAN_ENV_FILE", "w") as termEnvFile:
+    for key, val in dict(os.environ).items():
+        if key == "SUDO_COMMAND":
+            continue
+        if key == "PYTHONPATH":
+            val = re.sub('/usr/local/lib/swan/(extensions/)?:', '', val)
+        termEnvFile.write("export %s=\"%s\"\n" % (key, val))
 EOF
 
 # Make sure that `python` points to the correct python bin from CVMFS
 printf "alias python=\"$(which python$PYVERSION)\"\n" >> $SWAN_ENV_FILE
+
+# Remove our extra paths (where we install our extensions) in the kernel (via SwanKernelEnv kernel extension), 
+# leaving the user env cleaned. It should be the last one called to allow the kernel to load our extensions correctly.
+echo "c.InteractiveShellApp.extensions.append('swankernelenv')" >>  $KERNEL_PROFILEPATH
