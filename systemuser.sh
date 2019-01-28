@@ -138,6 +138,23 @@ then
   }" > /etc/jupyter/jupyter_notebook_config.json
 fi
 
+# Configurations for Sharing extension (used when deployed outside CERN)
+if [[ $SHARE_CBOX_API ]]
+then
+  echo "{\"sharing\":
+    {
+      \"domain\": \"$SHARE_CBOX_API\",
+      \"base\": \"/swanapi/v1\",
+      \"authentication\": \"/authenticate\",
+      \"shared\": \"/sharing\",
+      \"shared_with_me\": \"/shared\",
+      \"share\": \"/share\",
+      \"clone\": \"/clone\",
+      \"search\": \"/search\"
+  }
+}" > /usr/local/etc/jupyter/nbconfig/sharing.json
+fi
+
 # Make sure we have a sane terminal
 printf "export TERM=xterm\n" >> $SWAN_ENV_FILE
 
