@@ -83,7 +83,9 @@ echo "{
 }" > $PYKERNELDIR/kernel.json
 # ROOT
 cp -rL $LCG_VIEW/etc/notebook/kernels/root $KERNEL_DIR
-sed -i "s/python/python$PYVERSION/g" $KERNEL_DIR/root/kernel.json # Set Python version in kernel
+# Set Python version in kernel
+# In newer stacks the version already comes with it, so the " is necessary to distinguish it
+sed -i "s/\"python\"/\"python$PYVERSION\"/g" $KERNEL_DIR/root/kernel.json
 # R
 cp -rL $LCG_VIEW/share/jupyter/kernels/ir $KERNEL_DIR
 sed -i "s/IRkernel::main()/options(bitmapType='cairo');IRkernel::main()/g" $KERNEL_DIR/ir/kernel.json # Force cairo for graphics
