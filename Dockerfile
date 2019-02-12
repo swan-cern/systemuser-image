@@ -5,6 +5,11 @@ FROM gitlab-registry.cern.ch/swan/docker-images/notebook:v4.0.0
 
 MAINTAINER SWAN Admins <swan-admins@cern.ch>
 
+ARG BUILD_TAG=daily
+ENV VERSION_DOCKER_IMAGE=$BUILD_TAG
+
+RUN echo "Building systemuser image with tag ${VERSION_DOCKER_IMAGE}"
+
 # Disable requiretty and secure path - required by systemuser.sh
 RUN yum -y install sudo && \
     sed -i'' '/Defaults \+requiretty/d'  /etc/sudoers && \
@@ -94,10 +99,24 @@ RUN mv /usr/local/lib/python3.6/site-packages/ipykernel /usr/local/lib/python3.6
 RUN mkdir /usr/local/lib/swan && \
     pip3 install 'ipykernel==4.8.2' -t /usr/local/lib/swan
 
-# !!!!! Replace with the zip file from gitlab repo
-ADD v7 /tmp/jupyter_extensions/
-RUN cd /tmp/jupyter_extensions && \
-    #unzip latest.zip && \
+# Download and install all of our extensions
+# For testing purposes we can specify a different url to look for the extensions
+ARG URL_NBEXTENSIONS
+# Replace this value to update the version of the extensions deployed
+ARG VERSION_NBEXTENSIONS=v7
+ENV VERSION_NBEXTENSIONS=$VERSION_NBEXTENSIONS
+RUN mkdir /tmp/jupyter_extensions && \
+    if [ -n "$URL_NBEXTENSIONS" ]; then \
+        echo "Downloading Extensions from a provided URL" ; \
+        wget $URL_NBEXTENSIONS -O extensions.zip ; \
+    elif [ "$VERSION_NBEXTENSIONS" = "daily" ]; then \
+        echo "Downloading Extensions build: daily" ; \
+        wget https://gitlab.cern.ch/api/v4/projects/25624/jobs/artifacts/qa/download?job=release-daily -O extensions.zip ; \
+    else \
+        echo "Downloading Extensions build: ${VERSION_NBEXTENSIONS}" ; \
+        wget https://gitlab.cern.ch/api/v4/projects/25624/jobs/artifacts/$VERSION_NBEXTENSIONS/download?job=release-version -O extensions.zip ; \
+    fi  && \
+    unzip extensions.zip && \
     rm -rf /usr/local/lib/python3.6/site-packages/notebook/templates && \
     mv -f templates /usr/local/lib/python3.6/site-packages/notebook/ && \
     # Install all SWAN extensions which are packaged as python modules

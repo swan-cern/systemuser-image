@@ -1,6 +1,6 @@
 
 variables:
-  SYSTEM: slc6
+  SYSTEM: cc7
   NAME: gitlab-registry.cern.ch/swan/docker-images/systemuser
 
 
@@ -11,27 +11,42 @@ stages:
     - clean
 
 
-build_image:
+build_final_image:
     stage: build
-    script: docker build --compress --rm -t $CI_COMMIT_SHA .
+    script: docker build --compress --squash --rm -t $CI_COMMIT_SHA --build-arg BUILD_TAG=$CI_COMMIT_SHA .
+    tags:
+        - swan-runner
+    only: 
+        - /^v.*$/
+
+
+build_daily:
+    stage: build
+    script: docker build --compress --rm -t $CI_COMMIT_SHA --build-arg VERSION_NBEXTENSIONS=daily .
+    tags:
+        - swan-runner
     except:
-        - web
-        - master
+        - /^v.*$/
 
 
 test_all:
     stage: test
     script: python3 /tests/test_image.py --image $CI_COMMIT_SHA --system $SYSTEM
+    tags:
+        - swan-runner
     only: 
         - /^v.*$/
     except:
         - web
+        - schedules
     when: on_success
 
 
 test_latest:
     stage: test
     script: python3 /tests/test_image.py --image $CI_COMMIT_SHA --stack latest --system $SYSTEM
+    tags:
+        - swan-runner
     except: 
         - tags
         - master
@@ -41,6 +56,8 @@ test_latest:
 test_release:
     stage: test
     script: python3 /tests/test_image.py --image latest:$SYSTEM --system $SYSTEM --stack $STACK --platform $PLATFORM --python $PYTHON
+    tags:
+        - swan-runner
     only: 
         - web
 
@@ -53,6 +70,8 @@ publish_image:
         - docker login gitlab-registry.cern.ch -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
         - docker push $NAME:$CI_COMMIT_TAG
         - docker logout
+    tags:
+        - swan-runner
     only: 
         - /^v.*$/
     except:
@@ -60,10 +79,26 @@ publish_image:
     when: on_success
 
 
+publish_daily:
+    stage: deploy
+    script:
+        - docker tag $CI_COMMIT_SHA $NAME:daily
+        - docker login gitlab-registry.cern.ch -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+        - docker push $NAME:daily
+        - docker logout
+    tags:
+        - swan-runner
+    only:
+        - schedules
+    when: on_success
+
+
 clean_images:
     stage: clean
     script:
         - docker rmi $CI_COMMIT_SHA
+    tags:
+        - swan-runner
     except: 
         - master
         - web
