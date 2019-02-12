@@ -140,7 +140,7 @@ then
   }" > /etc/jupyter/jupyter_notebook_config.json
 fi
 
-# Configurations for Sharing extension (used when deployed outside CERN)
+# Configurations for extensions (used when deployed outside CERN)
 if [[ $SHARE_CBOX_API ]]
 then
   echo "{\"sharing\":
@@ -155,6 +155,13 @@ then
       \"search\": \"/search\"
   }
 }" > /usr/local/etc/jupyter/nbconfig/sharing.json
+fi
+
+if [[ $HELP_ENDPOINT ]]
+then
+  echo "{
+    \"help\": \"$HELP_ENDPOINT\"
+}" > /usr/local/etc/jupyter/nbconfig/help.json
 fi
 
 # Make sure we have a sane terminal
