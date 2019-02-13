@@ -164,6 +164,12 @@ then
 }" > /usr/local/etc/jupyter/nbconfig/help.json
 fi
 
+if [[ $CONNECTOR_BUNDLED_CONFIGS ]]
+then
+  ln -s $CONNECTOR_BUNDLED_CONFIGS/bundles.json /usr/local/etc/jupyter/nbconfig/sparkconnector_bundles.json
+  ln -s $CONNECTOR_BUNDLED_CONFIGS/spark_options.json /usr/local/etc/jupyter/nbconfig/sparkconnector_spark_options.json
+fi
+
 # Make sure we have a sane terminal
 printf "export TERM=xterm\n" >> $SWAN_ENV_FILE
 
