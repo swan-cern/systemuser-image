@@ -191,6 +191,13 @@ export SWAN_BASH=/bin/swan_bash
 printf "#! /bin/env python\nfrom subprocess import call\nimport sys\nexit(call([\"bash\", \"--rcfile\", \"$SWAN_ENV_FILE\"]+sys.argv[1:]))\n" >> $SWAN_BASH
 chmod +x $SWAN_BASH
 
+# Allow further configuration by sysadmin (usefull outside of CERN)
+if [[ $CONFIG_SCRIPT ]]; 
+then
+  echo "Found Config script"
+  sh $CONFIG_SCRIPT
+fi
+
 # Run notebook server
 echo "Running the notebook server"
 sudo -E -u $USER sh -c '   cd $SWAN_HOME \
