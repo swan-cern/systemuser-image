@@ -115,11 +115,6 @@ then
   LOCAL_IP=`hostname -i`
   echo "$LOCAL_IP $SERVER_HOSTNAME" >> /etc/hosts
 
-  # Spark Monitor configuration
-  export SPARKMONITOR_UI_HOST=$SERVER_HOSTNAME
-  export SPARKMONITOR_UI_PORT=$SPARK_PORT_3 
-  echo "SparkMonitor UI is on $SPARKMONITOR_UI_HOST at port $SPARKMONITOR_UI_PORT"
-
   # Enable the extensions in Jupyter global path to avoid having to maintain this information 
   # in the user scratch json file (specially because now we persist this file in the user directory and
   # we don't want to persist the Spark extensions across sessions)
@@ -134,6 +129,7 @@ then
   echo "{
     \"NotebookApp\": {
       \"nbserver_extensions\": {
+        \"sparkconnector.portallocator\": true,
         \"hdfsbrowser.serverextension\": true
       }
     }
