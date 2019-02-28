@@ -36,9 +36,6 @@ test_all:
         - swan-runner
     only: 
         - /^v.*$/
-    except:
-        - web
-        - schedules
     when: on_success
 
 
@@ -48,8 +45,8 @@ test_latest:
     tags:
         - swan-runner
     except: 
-        - tags
-        - master
+        - /^v.*$/
+        - web
     when: on_success
 
 
@@ -99,6 +96,4 @@ clean_images:
         - docker rmi $CI_COMMIT_SHA
     tags:
         - swan-runner
-    except: 
-        - master
-        - web
+    when: always
