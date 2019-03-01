@@ -43,6 +43,11 @@ then
  source $SPARK_CONFIG_SCRIPT $SPARK_CLUSTER_NAME
  export SPARK_LOCAL_IP=`hostname -i`
  echo "c.InteractiveShellApp.extensions.append('sparkconnector.connector')" >>  $KERNEL_PROFILEPATH
+ if [[ $CONNECTOR_BUNDLED_CONFIGS ]]
+  then
+    ln -s $CONNECTOR_BUNDLED_CONFIGS/bundles.json $JUPYTER_CONFIG_DIR/nbconfig/sparkconnector_bundles.json
+    ln -s $CONNECTOR_BUNDLED_CONFIGS/spark_options.json $JUPYTER_CONFIG_DIR/nbconfig/sparkconnector_spark_options.json
+  fi
  echo "Completed Spark Configuration"
 fi
 
