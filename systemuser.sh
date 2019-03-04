@@ -9,7 +9,7 @@
 # The $HOME directory is specified upstream in the Spawner
 echo "Creating user $USER ($USER_ID) with home $HOME"
 export SWAN_HOME=$HOME
-if [[ $SWAN_HOME == /eos/user/* ]]; then export CERNBOX_HOME=$SWAN_HOME; fi
+if [[ $SWAN_HOME == /eos/* ]]; then export CERNBOX_HOME=$SWAN_HOME; fi
 useradd -u $USER_ID -s $SHELL -d $SWAN_HOME $USER
 export SCRATCH_HOME=/scratch/$USER
 mkdir -p $SCRATCH_HOME
@@ -26,7 +26,7 @@ export LCG_VIEW=$ROOT_LCG_VIEW_PATH/$ROOT_LCG_VIEW_NAME/$ROOT_LCG_VIEW_PLATFORM
 
 # Set environment for the Jupyter process
 echo "Setting Jupyter environment"
-JPY_DIR=$SCRATCH_HOME/.jupyter
+export JPY_DIR=$SCRATCH_HOME/.jupyter
 mkdir -p $JPY_DIR
 JPY_LOCAL_DIR=$SCRATCH_HOME/.local
 mkdir -p $JPY_LOCAL_DIR
@@ -34,7 +34,7 @@ export JUPYTER_CONFIG_DIR=$JPY_DIR
 JUPYTER_LOCAL_PATH=$JPY_LOCAL_DIR/share/jupyter
 mkdir -p $JUPYTER_LOCAL_PATH
 # Our kernels will be in $JUPYTER_LOCAL_PATH
-export JUPYTER_PATH=$JUPYTER_LOCAL_PATH:$EXTRA_LIBS
+export JUPYTER_PATH=$JUPYTER_LOCAL_PATH
 # symlink $LCG_VIEW/share/jupyter/nbextensions for the notebook extensions
 ln -s $LCG_VIEW/share/jupyter/nbextensions $JUPYTER_LOCAL_PATH
 export KERNEL_DIR=$JUPYTER_LOCAL_PATH/kernels
@@ -76,15 +76,16 @@ echo "{
  \"language\": \"python\",
  \"argv\": [
   \"python$PYVERSION\",
-  \"-m\",
-  \"ipykernel\",
+  \"/usr/local/bin/start_ipykernel.py\",
   \"-f\",
   \"{connection_file}\"
  ]
 }" > $PYKERNELDIR/kernel.json
 # ROOT
 cp -rL $LCG_VIEW/etc/notebook/kernels/root $KERNEL_DIR
-sed -i "s/python/python$PYVERSION/g" $KERNEL_DIR/root/kernel.json # Set Python version in kernel
+# Set Python version in kernel
+# In newer stacks the version already comes with it, so the " is necessary to distinguish it
+sed -i "s/\"python\"/\"python$PYVERSION\"/g" $KERNEL_DIR/root/kernel.json
 # R
 cp -rL $LCG_VIEW/share/jupyter/kernels/ir $KERNEL_DIR
 sed -i "s/IRkernel::main()/options(bitmapType='cairo');IRkernel::main()/g" $KERNEL_DIR/ir/kernel.json # Force cairo for graphics
@@ -114,10 +115,49 @@ then
   LOCAL_IP=`hostname -i`
   echo "$LOCAL_IP $SERVER_HOSTNAME" >> /etc/hosts
 
-  # Spark Monitor configuration
-  export SPARKMONITOR_UI_HOST=$SERVER_HOSTNAME ; \
-  export SPARKMONITOR_UI_PORT=$SPARK_PORT_3  ; \
-  echo "SparkMonitor UI is on $SPARKMONITOR_UI_HOST at port $SPARKMONITOR_UI_PORT" ; \
+  # Enable the extensions in Jupyter global path to avoid having to maintain this information 
+  # in the user scratch json file (specially because now we persist this file in the user directory and
+  # we don't want to persist the Spark extensions across sessions)
+  mkdir -p /etc/jupyter/nbconfig
+  echo "Globally enabling the Spark extensions"
+  echo "{
+    \"load_extensions\": {
+      \"sparkconnector/extension\": true,
+      \"hdfsbrowser/extension\": true
+    }
+  }" > /etc/jupyter/nbconfig/notebook.json
+  echo "{
+    \"NotebookApp\": {
+      \"nbserver_extensions\": {
+        \"sparkconnector.portallocator\": true,
+        \"hdfsbrowser.serverextension\": true
+      }
+    }
+  }" > /etc/jupyter/jupyter_notebook_config.json
+fi
+
+# Configurations for extensions (used when deployed outside CERN)
+if [[ $SHARE_CBOX_API ]]
+then
+  echo "{\"sharing\":
+    {
+      \"domain\": \"$SHARE_CBOX_API\",
+      \"base\": \"/swanapi/v1\",
+      \"authentication\": \"/authenticate\",
+      \"shared\": \"/sharing\",
+      \"shared_with_me\": \"/shared\",
+      \"share\": \"/share\",
+      \"clone\": \"/clone\",
+      \"search\": \"/search\"
+  }
+}" > /usr/local/etc/jupyter/nbconfig/sharing.json
+fi
+
+if [[ $HELP_ENDPOINT ]]
+then
+  echo "{
+    \"help\": \"$HELP_ENDPOINT\"
+}" > /usr/local/etc/jupyter/nbconfig/help.json
 fi
 
 # Make sure we have a sane terminal
@@ -141,11 +181,17 @@ export SWAN_BASH=/bin/swan_bash
 printf "#! /bin/env python\nfrom subprocess import call\nimport sys\nexit(call([\"bash\", \"--rcfile\", \"$SWAN_ENV_FILE\"]+sys.argv[1:]))\n" >> $SWAN_BASH
 chmod +x $SWAN_BASH
 
+# Allow further configuration by sysadmin (usefull outside of CERN)
+if [[ $CONFIG_SCRIPT ]]; 
+then
+  echo "Found Config script"
+  sh $CONFIG_SCRIPT
+fi
+
 # Run notebook server
 echo "Running the notebook server"
 sudo -E -u $USER sh -c '   cd $SWAN_HOME \
                         && SHELL=$SWAN_BASH \
-                           PYTHONPATH=$EXTRA_LIBS/modules/:$PYTHONPATH \
                            jupyterhub-singleuser \
                            --port=8888 \
                            --ip=0.0.0.0 \
