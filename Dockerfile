@@ -100,6 +100,8 @@ RUN mkdir /usr/local/lib/swan && \
     pip3 install 'ipykernel==4.8.2' -t /usr/local/lib/swan
 
 # Download and install all of our extensions
+# Dummy var to force docker to build from this point on (otherwise, due to the caching, this layer would not get the latest release-daily)
+ARG CI_PIPELINE
 # For testing purposes we can specify a different url to look for the extensions
 ARG URL_NBEXTENSIONS
 # Replace this value to update the version of the extensions deployed

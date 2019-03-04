@@ -22,7 +22,7 @@ build_final_image:
 
 build_daily:
     stage: build
-    script: docker build --compress --rm -t $CI_COMMIT_SHA --build-arg VERSION_NBEXTENSIONS=daily .
+    script: docker build --compress --rm -t $CI_COMMIT_SHA --build-arg VERSION_NBEXTENSIONS=daily --build-arg CI_PIPELINE=$CI_PIPELINE_ID .
     tags:
         - swan-runner
     except:
