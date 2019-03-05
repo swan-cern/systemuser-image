@@ -137,12 +137,12 @@ then
 fi
 
 # Configurations for extensions (used when deployed outside CERN)
-if [[ $SHARE_CBOX_API ]]
+if [[ $SHARE_CBOX_API_DOMAIN && $SHARE_CBOX_API_BASE ]]
 then
   echo "{\"sharing\":
     {
-      \"domain\": \"$SHARE_CBOX_API\",
-      \"base\": \"/swanapi/v1\",
+      \"domain\": \"$SHARE_CBOX_API_DOMAIN\",
+      \"base\": \"$SHARE_CBOX_API_BASE\",
       \"authentication\": \"/authenticate\",
       \"shared\": \"/sharing\",
       \"shared_with_me\": \"/shared\",
