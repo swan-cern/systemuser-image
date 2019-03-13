@@ -13,7 +13,7 @@ stages:
 
 build_final_image:
     stage: build
-    script: docker build --compress --squash --rm -t $CI_COMMIT_SHA --build-arg BUILD_TAG=$CI_COMMIT_SHA .
+    script: docker build --compress --squash --rm -t $CI_COMMIT_SHA --build-arg BUILD_TAG=$CI_COMMIT_TAG .
     tags:
         - swan-runner
     only: 
