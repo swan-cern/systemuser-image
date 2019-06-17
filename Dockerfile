@@ -87,7 +87,7 @@ RUN yum -y install java-1.8.0-openjdk && \
     rm -rf /usr/lib/jvm/
 
 # Install HEP_OSlibs - includes atlas blas
-RUN yum -y install HEP_OSlibs_SL6
+RUN yum -y install HEP_OSlibs_SL6-1.1.6-1.el6
 
 # WORKAROUND
 # Hide from Jupyter the Python3 kernel by hand
