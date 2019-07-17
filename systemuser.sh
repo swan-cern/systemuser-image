@@ -7,6 +7,9 @@
 
 # Create notebook user
 # The $HOME directory is specified upstream in the Spawner
+
+START_TIME_CONFIGURE_USER_ENV=$( date +%s.%N )
+
 echo "Creating user $USER ($USER_ID) with home $HOME"
 export SWAN_HOME=$HOME
 if [[ $SWAN_HOME == /eos/* ]]; then export CERNBOX_HOME=$SWAN_HOME; fi
@@ -108,7 +111,12 @@ if [ $? -ne 0 ]
 then
   echo "Error configuring user environment"
   exit 1
+else
+  CONFIGURE_USER_ENV_TIME_SEC=$(echo $(date +%s.%N --date="$START_TIME_CONFIGURE_USER_ENV seconds ago") | bc)
+  echo "user: $USER, host: ${SERVER_HOSTNAME%%.*}, metric: configure_user_env.duration_sec, value: $CONFIGURE_USER_ENV_TIME_SEC"
 fi
+
+START_TIME_CONFIGURE_KERNEL_ENV=$( date +%s.%N )
 
 # Spark configuration
 if [[ $SPARK_CLUSTER_NAME ]]
@@ -175,6 +183,9 @@ if [ $? -ne 0 ]
 then
   echo "Error setting the environment for kernels"
   exit 1
+else
+  CONFIGURE_KERNEL_ENV_TIME_SEC=$(echo $(date +%s.%N --date="$START_TIME_CONFIGURE_KERNEL_ENV seconds ago") | bc)
+  echo "user: $USER, host: ${SERVER_HOSTNAME%%.*}, metric: configure_kernel_env.duration_sec, value: $CONFIGURE_KERNEL_ENV_TIME_SEC"
 fi
 
 # Set the terminal environment
