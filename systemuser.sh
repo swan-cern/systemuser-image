@@ -113,7 +113,7 @@ then
   exit 1
 else
   CONFIGURE_USER_ENV_TIME_SEC=$(echo $(date +%s.%N --date="$START_TIME_CONFIGURE_USER_ENV seconds ago") | bc)
-  echo "user: $USER, host: ${SERVER_HOSTNAME%%.*}, metric: configure_user_env.duration_sec, value: $CONFIGURE_USER_ENV_TIME_SEC"
+  echo "user: $USER, host: ${SERVER_HOSTNAME%%.*}, metric: configure_user_env.${ROOT_LCG_VIEW_NAME:-none}.${SPARK_CLUSTER_NAME:-none}.duration_sec, value: $CONFIGURE_USER_ENV_TIME_SEC"
 fi
 
 START_TIME_CONFIGURE_KERNEL_ENV=$( date +%s.%N )
@@ -185,7 +185,7 @@ then
   exit 1
 else
   CONFIGURE_KERNEL_ENV_TIME_SEC=$(echo $(date +%s.%N --date="$START_TIME_CONFIGURE_KERNEL_ENV seconds ago") | bc)
-  echo "user: $USER, host: ${SERVER_HOSTNAME%%.*}, metric: configure_kernel_env.duration_sec, value: $CONFIGURE_KERNEL_ENV_TIME_SEC"
+  echo "user: $USER, host: ${SERVER_HOSTNAME%%.*}, metric: configure_kernel_env.${ROOT_LCG_VIEW_NAME:-none}.${SPARK_CLUSTER_NAME:-none}.duration_sec, value: $CONFIGURE_KERNEL_ENV_TIME_SEC"
 fi
 
 # Set the terminal environment
