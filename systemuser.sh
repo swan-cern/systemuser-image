@@ -13,14 +13,22 @@ START_TIME_CONFIGURE_USER_ENV=$( date +%s.%N )
 echo "Creating user $USER ($USER_ID) with home $HOME"
 export SWAN_HOME=$HOME
 if [[ $SWAN_HOME == /eos/* ]]; then export CERNBOX_HOME=$SWAN_HOME; fi
-useradd -u $USER_ID -s $SHELL -d $SWAN_HOME $USER
+useradd -u $USER_ID -s $SHELL -M -d $SWAN_HOME $USER
 export SCRATCH_HOME=/scratch/$USER
 mkdir -p $SCRATCH_HOME
 echo "This directory is temporary and will be deleted when your SWAN session ends!" > $SCRATCH_HOME/IMPORTANT.txt
 chown -R $USER:$USER $SCRATCH_HOME
 
+sudo -E -u $USER sh -c 'if [[ ! -d "$SWAN_HOME" || ! -x "$SWAN_HOME" ]]; then exit 1; fi'
+if [ $? -ne 0 ]
+then
+    echo "Error setting notebook working directory, $SWAN_HOME not accessible by user $USER."
+    exit 1
+fi
+
 echo "Setting directory for Notebook backup"
 export USERDATA_PATH=/srv/singleuser/userdata
+mkdir -p $USERDATA_PATH
 chown -R $USER:$USER $USERDATA_PATH
 
 # Setup the LCG View on CVMFS
@@ -202,7 +210,7 @@ fi
 
 # Run notebook server
 echo "Running the notebook server"
-sudo -E -u $USER sh -c '   cd $SWAN_HOME \
+sudo -E -u $USER sh -c 'cd $SWAN_HOME \
                         && SHELL=$SWAN_BASH \
                            jupyterhub-singleuser \
                            --port=8888 \
