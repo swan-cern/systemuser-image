@@ -26,7 +26,6 @@ build_daily:
         - swan-runner
     except:
         - /^v.*$/
-        - web
 
 
 test_all:
