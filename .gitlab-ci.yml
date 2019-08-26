@@ -1,4 +1,3 @@
-
 variables:
   SYSTEM: cc7
   NAME: gitlab-registry.cern.ch/swan/docker-images/systemuser
@@ -27,6 +26,7 @@ build_daily:
         - swan-runner
     except:
         - /^v.*$/
+        - web
 
 
 test_all:
@@ -52,7 +52,7 @@ test_latest:
 
 test_release:
     stage: test
-    script: python3 /tests/test_image.py --image latest:$SYSTEM --system $SYSTEM --stack $STACK --platform $PLATFORM --python $PYTHON
+    script: python3 /tests/test_image.py --image latest:$SYSTEM --system $SYSTEM --stack $STACK --platform $PLATFORM
     tags:
         - swan-runner
     only: 
