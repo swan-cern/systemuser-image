@@ -19,8 +19,13 @@ fi
 rm -f $NBCONFIG/notebook.json
 ln -s $LOCAL_NB_NBEXTENSIONS $NBCONFIG/notebook.json
 
+START_TIME_SETUP_LCG=$( date +%s.%N )
+
 # Setup LCG
 source $LCG_VIEW/setup.sh
+
+SETUP_LCG_TIME_SEC=$(echo $(date +%s.%N --date="$START_TIME_SETUP_LCG seconds ago") | bc)
+echo "user: $USER, host: ${SERVER_HOSTNAME%%.*}, metric: configure_user_env_cvmfs.${ROOT_LCG_VIEW_NAME:-none}.duration_sec, value: $SETUP_LCG_TIME_SEC"
 
 # Add SWAN modules path to PYTHONPATH so that it picks them
 export PYTHONPATH=/usr/local/lib/swan/extensions/:$PYTHONPATH 
@@ -39,6 +44,8 @@ echo "c.InteractiveShellApp.extensions.append('sparkmonitor.kernelextension')" >
 # Configure SparkConnector
 if [[ $SPARK_CLUSTER_NAME ]]; 
 then
+ START_TIME_SETUP_SPARK=$( date +%s.%N )
+
  echo "Configuring environment for Spark cluster: $SPARK_CLUSTER_NAME"
  source $SPARK_CONFIG_SCRIPT $SPARK_CLUSTER_NAME
  export SPARK_LOCAL_IP=`hostname -i`
@@ -49,18 +56,26 @@ then
     ln -s $CONNECTOR_BUNDLED_CONFIGS/spark_options.json $JUPYTER_CONFIG_DIR/nbconfig/sparkconnector_spark_options.json
   fi
  echo "Completed Spark Configuration"
+
+ SETUP_SPARK_TIME_SEC=$(echo $(date +%s.%N --date="$START_TIME_SETUP_SPARK seconds ago") | bc)
+ echo "user: $USER, host: ${SERVER_HOSTNAME%%.*}, metric: configure_user_env_spark.${ROOT_LCG_VIEW_NAME:-none}.${SPARK_CLUSTER_NAME:-none}.duration_sec, value: $SETUP_SPARK_TIME_SEC"
 fi
 
 # Run user startup script
 export JUPYTER_DATA_DIR=$LCG_VIEW/share/jupyter 
 export TMP_SCRIPT=`mktemp`
 
-if [[ $USER_ENV_SCRIPT && -f `eval echo $USER_ENV_SCRIPT` ]]; 
+if [[ $USER_ENV_SCRIPT && -f `eval echo $USER_ENV_SCRIPT` ]];
 then
+ START_TIME_SETUP_SCRIPT=$( date +%s.%N )
+ 
  echo "Found user script: $USER_ENV_SCRIPT"
  export TMP_SCRIPT=`mktemp`
  cat `eval echo $USER_ENV_SCRIPT` > $TMP_SCRIPT
  source $TMP_SCRIPT
+
+ SETUP_SCRIPT_TIME_SEC=$(echo $(date +%s.%N --date="$START_TIME_SETUP_SCRIPT seconds ago") | bc)
+ echo "user: $USER, host: ${SERVER_HOSTNAME%%.*}, metric: configure_user_env_script.duration_sec, value: $SETUP_SCRIPT_TIME_SEC"
 else
  echo "Cannot find user script: $USER_ENV_SCRIPT";
 fi
