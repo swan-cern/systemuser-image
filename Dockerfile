@@ -26,6 +26,9 @@ RUN pip3 install bs4
 # Install tk - required by matplotlib
 RUN yum -y install tk
 
+# Install htop
+RUN yum -y install htop
+
 # Install Cloudera dependencies - required by IT Spark clusters
 RUN yum -y  install \
             alsa-lib \
