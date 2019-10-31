@@ -150,6 +150,9 @@ EXPOSE 8888
 
 ENV SHELL /bin/bash
 
+#Setting up colors
+RUN echo 'alias ls="ls --color"' >> /etc/bashrc
+
 ADD systemuser.sh /srv/singleuser/systemuser.sh
 ADD userconfig.sh /srv/singleuser/userconfig.sh
 ADD executables/start_ipykernel.py /usr/local/bin/start_ipykernel.py
