@@ -2,9 +2,14 @@
 
 echo "Configuring user session"
 
+START_TIME_SETUP_SWAN_HOME=$( date +%s.%N )
+
 # Make sure the user has the SWAN_projects folder
 SWAN_PROJECTS=$SWAN_HOME/SWAN_projects/
 mkdir -p $SWAN_PROJECTS
+
+SETUP_SWAN_HOME_TIME_SEC=$(echo $(date +%s.%N --date="$START_TIME_SETUP_SWAN_HOME seconds ago") | bc)
+echo "user: $USER, host: ${SERVER_HOSTNAME%%.*}, metric: configure_user_env_swan_home.duration_sec, value: $SETUP_SWAN_HOME_TIME_SEC"
 
 # Persist enabled notebook nbextensions
 NBCONFIG=$JPY_DIR/nbconfig
