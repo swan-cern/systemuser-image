@@ -55,6 +55,9 @@ export PROFILEPATH=$IPYTHONDIR/profile_default
 mkdir -p $PROFILEPATH
 # This avoids to create hardlinks on eos when using pip
 export XDG_CACHE_HOME=/tmp/$USER/.cache/
+#Creating a ROOT_DATA_DIR variable
+ROOT_DATA_DIR=$(readlink $LCG_VIEW/bin/root | sed -e 's/\/bin\/root//g')
+
 JPY_CONFIG=$JUPYTER_CONFIG_DIR/jupyter_notebook_config.py
 echo "c.FileCheckpoints.checkpoint_dir = '$SCRATCH_HOME/.ipynb_checkpoints'"         >> $JPY_CONFIG
 echo "c.NotebookNotary.db_file = '$JUPYTER_LOCAL_PATH/nbsignatures.db'"     >> $JPY_CONFIG
@@ -62,6 +65,7 @@ echo "c.NotebookNotary.secret_file = '$JUPYTER_LOCAL_PATH/notebook_secret'" >> $
 echo "c.NotebookApp.contents_manager_class = 'swancontents.filemanager.swanfilemanager.SwanFileManager'" >> $JPY_CONFIG
 echo "c.ContentsManager.checkpoints_class = 'swancontents.filemanager.checkpoints.EOSCheckpoints'" >> $JPY_CONFIG
 echo "c.NotebookApp.default_url = 'projects'" >> $JPY_CONFIG
+echo "c.NotebookApp.extra_static_paths = ['$ROOT_DATA_DIR/js']" >> $JPY_CONFIG
 cp -L -r $LCG_VIEW/etc/jupyter/* $JUPYTER_CONFIG_DIR
 
 # Configure %%cpp cell highlighting
