@@ -2,6 +2,6 @@
 
 if __name__ == '__main__':
     import sys
-    del sys.path[0]
+    sys.path = [path for path in sys.path if not path.startswith('/eos')]
     from jupyterhub.singleuser import main
     main()
