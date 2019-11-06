@@ -153,9 +153,6 @@ EXPOSE 8888
 
 ENV SHELL /bin/bash
 
-#Setting up colors
-RUN echo 'alias ls="ls --color"' >> /etc/bashrc
-RUN echo 'alias grep="grep --color"' >> /etc/bashrc
 
 ADD systemuser.sh /srv/singleuser/systemuser.sh
 ADD userconfig.sh /srv/singleuser/userconfig.sh

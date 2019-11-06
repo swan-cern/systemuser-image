@@ -115,6 +115,9 @@ EOF
 
 # Make sure that `python` points to the correct python bin from CVMFS
 printf "alias python=\"$(which python$PYVERSION)\"\n" >> $SWAN_ENV_FILE
+#Setting up colors
+printf "alias ls='ls --color'\n" >> $SWAN_ENV_FILE
+printf "alias grep='grep --color'\n" >> $SWAN_ENV_FILE
 
 # Remove our extra paths (where we install our extensions) in the kernel (via SwanKernelEnv kernel extension), 
 # leaving the user env cleaned. It should be the last one called to allow the kernel to load our extensions correctly.
