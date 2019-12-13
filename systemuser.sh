@@ -8,7 +8,14 @@
 # Create notebook user
 # The $HOME directory is specified upstream in the Spawner
 
-echo "Creating user $USER ($USER_ID) with home $HOME"
+log_info() {
+    echo "[INFO $(date '+%Y-%m-%d %T.%3N') $(basename $0)] $1"
+}
+log_error() {
+    echo "[ERROR $(date '+%Y-%m-%d %T.%3N') $(basename $0)] $1"
+}
+
+log_info "Creating user $USER ($USER_ID) with home $HOME"
 export SWAN_HOME=$HOME
 if [[ $SWAN_HOME == /eos/* ]]; then export CERNBOX_HOME=$SWAN_HOME; fi
 useradd -u $USER_ID -s $SHELL -M -d $SWAN_HOME $USER
@@ -20,21 +27,21 @@ chown -R $USER:$USER $SCRATCH_HOME
 sudo -E -u $USER sh -c 'if [[ ! -d "$SWAN_HOME" || ! -x "$SWAN_HOME" ]]; then exit 1; fi'
 if [ $? -ne 0 ]
 then
-    echo "Error setting notebook working directory, $SWAN_HOME not accessible by user $USER."
+    log_error "Error setting notebook working directory, $SWAN_HOME not accessible by user $USER."
     exit 1
 fi
 
-echo "Setting directory for Notebook backup"
+log_info "Setting directory for Notebook backup"
 export USERDATA_PATH=/srv/singleuser/userdata
 mkdir -p $USERDATA_PATH
 chown -R $USER:$USER $USERDATA_PATH
 
 # Setup the LCG View on CVMFS
-echo "Setting up environment from CVMFS"
+log_info "Setting up environment from CVMFS"
 export LCG_VIEW=$ROOT_LCG_VIEW_PATH/$ROOT_LCG_VIEW_NAME/$ROOT_LCG_VIEW_PLATFORM
 
 # Set environment for the Jupyter process
-echo "Setting Jupyter environment"
+log_info "Setting Jupyter environment"
 export JPY_DIR=$SCRATCH_HOME/.jupyter
 mkdir -p $JPY_DIR
 JPY_LOCAL_DIR=$SCRATCH_HOME/.local
@@ -79,7 +86,7 @@ require(['notebook/js/codecell'], function(codecell) {
 
 # Configure kernels and terminal
 # The environment of the kernels and the terminal will combine the view and the user script (if any)
-echo "Configuring kernels and terminal"
+log_info "Configuring kernels and terminal"
 # Python (2 or 3)
 if [ -f $LCG_VIEW/bin/python3 ]; then export PYVERSION=3; else export PYVERSION=2; fi
 PYKERNELDIR=$KERNEL_DIR/python$PYVERSION
@@ -119,7 +126,7 @@ sudo -E -u $USER sh /srv/singleuser/userconfig.sh
 
 if [ $? -ne 0 ]
 then
-  echo "Error configuring user environment"
+  log_error "Error configuring user environment"
   exit 1
 fi
 
@@ -135,7 +142,7 @@ then
   # in the user scratch json file (specially because now we persist this file in the user directory and
   # we don't want to persist the Spark extensions across sessions)
   mkdir -p /etc/jupyter/nbconfig
-  echo "Globally enabling the Spark extensions"
+  log_info "Globally enabling the Spark extensions"
   echo "{
     \"load_extensions\": {
       \"sparkconnector/extension\": true,
@@ -188,11 +195,11 @@ fi\n" >> $SWAN_ENV_FILE
 
 if [ $? -ne 0 ]
 then
-  echo "Error setting the environment for kernels"
+  log_error "Error setting the environment for kernels"
   exit 1
 else
   CONFIGURE_KERNEL_ENV_TIME_SEC=$(echo $(date +%s.%N --date="$START_TIME_CONFIGURE_KERNEL_ENV seconds ago") | bc)
-  echo "user: $USER, host: ${SERVER_HOSTNAME%%.*}, metric: configure_kernel_env.${ROOT_LCG_VIEW_NAME:-none}.${SPARK_CLUSTER_NAME:-none}.duration_sec, value: $CONFIGURE_KERNEL_ENV_TIME_SEC"
+  log_info "user: $USER, host: ${SERVER_HOSTNAME%%.*}, metric: configure_kernel_env.${ROOT_LCG_VIEW_NAME:-none}.${SPARK_CLUSTER_NAME:-none}.duration_sec, value: $CONFIGURE_KERNEL_ENV_TIME_SEC"
 fi
 
 # Set the terminal environment
@@ -203,12 +210,12 @@ chmod +x $SWAN_BASH
 # Allow further configuration by sysadmin (usefull outside of CERN)
 if [[ $CONFIG_SCRIPT ]]; 
 then
-  echo "Found Config script"
+  log_info "Found Config script"
   sh $CONFIG_SCRIPT
 fi
 
 # Run notebook server
-echo "Running the notebook server"
+log_info "Running the notebook server"
 sudo -E -u $USER sh -c 'cd $SWAN_HOME \
                         && SHELL=$SWAN_BASH \
                            jupyterhub-singleuser \
