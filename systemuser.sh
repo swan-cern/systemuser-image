@@ -96,7 +96,7 @@ echo "{
  \"display_name\": \"Python $PYVERSION\",
  \"language\": \"python\",
  \"argv\": [
-  \"python$PYVERSION\",
+  \"python\",
   \"/usr/local/bin/start_ipykernel.py\",
   \"-f\",
   \"{connection_file}\"
@@ -104,9 +104,6 @@ echo "{
 }" > $PYKERNELDIR/kernel.json
 # ROOT
 cp -rL $LCG_VIEW/etc/notebook/kernels/root $KERNEL_DIR
-# Set Python version in kernel
-# In newer stacks the version already comes with it, so the " is necessary to distinguish it
-sed -i "s/\"python\"/\"python$PYVERSION\"/g" $KERNEL_DIR/root/kernel.json
 # R
 cp -rL $LCG_VIEW/share/jupyter/kernels/ir $KERNEL_DIR
 sed -i "s/IRkernel::main()/options(bitmapType='cairo');IRkernel::main()/g" $KERNEL_DIR/ir/kernel.json # Force cairo for graphics
@@ -116,7 +113,6 @@ if [[ -d $OCTAVE_KERNEL_PATH ]];
 then
    cp -rL $OCTAVE_KERNEL_PATH $KERNEL_DIR
    export OCTAVE_KERNEL_JSON=$KERNEL_DIR/octave/kernel.json
-   sed -i "s/python/python$PYVERSION/g" $OCTAVE_KERNEL_JSON # Set Python version in kernel
 fi
 
 chown -R $USER:$USER $JPY_DIR $JPY_LOCAL_DIR $IPYTHONDIR

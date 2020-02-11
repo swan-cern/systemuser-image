@@ -97,11 +97,6 @@ RUN yum -y install HEP_OSlibs-7.2.7-1.el7.cern
 RUN mv /usr/local/lib/python3.7/site-packages/ipykernel /usr/local/lib/python3.7/site-packages/ipykernelBACKUP && \
     mv /usr/local/share/jupyter/kernels /usr/local/share/jupyter/kernelsBACKUP
 
-# Add ipykernel and its dependencies to an isolated place referenced by PYTHONPATH in user env (Py3)
-# Needed to prevent updated Jupyter code to break with older LCG versions (this way it picks always the correct pkgs)
-RUN mkdir /usr/local/lib/swan && \
-    pip3 install 'ipykernel==4.8.2' -t /usr/local/lib/swan
-
 # Download and install all of our extensions
 # Dummy var to force docker to build from this point on (otherwise, due to the caching, this layer would not get the latest release-daily)
 ARG CI_PIPELINE
@@ -139,7 +134,7 @@ RUN mkdir /tmp/jupyter_extensions && \
     # Force nbextension_configurator systemwide to prevent users disabling it
     jupyter nbextensions_configurator enable --system && \
     # Spark Monitor/Connector also need to be available to the user environment since they have kernel extensions
-    mkdir /usr/local/lib/swan/extensions && \
+    mkdir -p /usr/local/lib/swan/extensions && \
     ln -s /usr/local/lib/python3.7/site-packages/sparkmonitor /usr/local/lib/swan/extensions/ && \
     ln -s /usr/local/lib/python3.7/site-packages/sparkconnector /usr/local/lib/swan/extensions/ && \
     ln -s /usr/local/lib/python3.7/site-packages/swankernelenv /usr/local/lib/swan/extensions/ && \

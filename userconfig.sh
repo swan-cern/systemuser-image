@@ -39,13 +39,6 @@ log_info "user: $USER, host: ${SERVER_HOSTNAME%%.*}, metric: configure_user_env_
 # Add SWAN modules path to PYTHONPATH so that it picks them
 export PYTHONPATH=/usr/local/lib/swan/extensions/:$PYTHONPATH 
 
-# To prevent conflicts with older versions of Jupyter dependencies in CVMFS
-# add these packages to the beginning of PYTHONPATH
-if [[ $PYVERSION -eq 3 ]]; 
-then 
- export PYTHONPATH=/usr/local/lib/swan/:$PYTHONPATH
-fi 
-
 # Configure SparkMonitor
 export KERNEL_PROFILEPATH=$PROFILEPATH/ipython_kernel_config.py 
 echo "c.InteractiveShellApp.extensions.append('sparkmonitor.kernelextension')" >>  $KERNEL_PROFILEPATH
@@ -118,7 +111,10 @@ with open("$SWAN_ENV_FILE", "w") as termEnvFile:
 EOF
 
 # Make sure that `python` points to the correct python bin from CVMFS
-printf "alias python=\"$(which python$PYVERSION)\"\n" >> $SWAN_ENV_FILE
+PYTHONEXECPATH=$(which python$PYVERSION)
+printf "alias python=\"$PYTHONEXECPATH\"\n" >> $SWAN_ENV_FILE
+sed -i -E "s@\[\"python[0-9.]*\"@\[\"$PYTHONEXECPATH\"@g" $KERNEL_DIR/*/kernel.json
+
 #Setting up colors
 printf "alias ls='ls --color'\n" >> $SWAN_ENV_FILE
 printf "alias grep='grep --color'\n" >> $SWAN_ENV_FILE
