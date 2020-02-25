@@ -30,7 +30,7 @@ build_daily:
 
 test_all:
     stage: test
-    script: python3 /tests/test_image.py --image $CI_COMMIT_SHA --system $SYSTEM
+    script: python3 /home/tests/test_image.py --image $CI_COMMIT_SHA --system $SYSTEM
     tags:
         - swan-runner
     only: 
@@ -40,7 +40,7 @@ test_all:
 
 test_latest:
     stage: test
-    script: python3 /tests/test_image.py --image $CI_COMMIT_SHA --stack latest --system $SYSTEM
+    script: python3 /home/tests/test_image.py --image $CI_COMMIT_SHA --stack latest --system $SYSTEM
     tags:
         - swan-runner
     except: 
@@ -51,7 +51,7 @@ test_latest:
 
 test_release:
     stage: test
-    script: python3 /tests/test_image.py --image latest:$SYSTEM --system $SYSTEM --stack $STACK --platform $PLATFORM
+    script: python3 /home/tests/test_image.py --image latest:$SYSTEM --system $SYSTEM --stack $STACK --platform $PLATFORM
     tags:
         - swan-runner
     only: 
