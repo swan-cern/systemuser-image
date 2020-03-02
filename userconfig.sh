@@ -82,6 +82,19 @@ else
  log_info "Cannot find user script: $USER_ENV_SCRIPT";
 fi
 
+# Run notebook with different KRB5CCNAME than container itself.
+# This is needed to allow eos-fuse (and other container processes) to run with dedicated read-only KRB5CCNAME,
+# while notebook and terminal processes run KRB5CCNAME being NOTEBOOK_KRB5CCNAME.
+# If krb5ccname is already set copy this krb as default for the notebook process.
+NOTEBOOK_KRB5CCNAME="/tmp/krb5cc_${USER_ID}_${RANDOM}"
+if [[ -n $KRB5CCNAME && -f $KRB5CCNAME ]];
+then
+  cp $KRB5CCNAME $NOTEBOOK_KRB5CCNAME
+  chown $USER:$USER $NOTEBOOK_KRB5CCNAME
+fi
+
+export KRB5CCNAME=$NOTEBOOK_KRB5CCNAME
+
 # Configure kernels
 # As the LCG setup might set PYTHONHOME, run python with -E to prevent this python 2 code
 # to lookup for modules in a Python 3 path (if this is the selected stack)
