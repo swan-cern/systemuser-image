@@ -116,7 +116,7 @@ then
 fi
 
 chown -R $USER:$USER $JPY_DIR $JPY_LOCAL_DIR $IPYTHONDIR
-export SWAN_ENV_FILE=/tmp/swan.sh
+export SWAN_ENV_FILE=$SCRATCH_HOME/.bash_profile
 
 sudo -E -u $USER sh /srv/singleuser/userconfig.sh
 
@@ -199,9 +199,8 @@ else
 fi
 
 # Set the terminal environment
-export SWAN_BASH=/bin/swan_bash
-printf "#! /bin/env python\nfrom subprocess import call\nimport sys\nexit(call([\"bash\", \"--rcfile\", \"$SWAN_ENV_FILE\"]+sys.argv[1:]))\n" >> $SWAN_BASH
-chmod +x $SWAN_BASH
+#in jupyter 6.0.0 login shell (jupyter/notebook#4112) is set by default and /etc/profile.d is respected
+echo "source $SCRATCH_HOME/.bash_profile" > /etc/profile.d/swan.sh
 
 # Allow further configuration by sysadmin (usefull outside of CERN)
 if [[ $CONFIG_SCRIPT ]]; 
@@ -213,8 +212,7 @@ fi
 # Run notebook server
 log_info "Running the notebook server"
 sudo -E -u $USER sh -c 'cd $SWAN_HOME \
-                        && SHELL=$SWAN_BASH \
-                           jupyterhub-singleuser \
+                        && jupyterhub-singleuser \
                            --port=8888 \
                            --ip=0.0.0.0 \
                            --user=$JPY_USER \
