@@ -103,7 +103,7 @@ ARG CI_PIPELINE
 # For testing purposes we can specify a different url to look for the extensions
 ARG URL_NBEXTENSIONS
 # Replace this value to update the version of the extensions deployed
-ARG VERSION_NBEXTENSIONS=v7.6
+ARG VERSION_NBEXTENSIONS=v7.7
 ENV VERSION_NBEXTENSIONS=$VERSION_NBEXTENSIONS
 RUN mkdir /tmp/jupyter_extensions && \
     if [ -n "$URL_NBEXTENSIONS" ]; then \
