@@ -179,7 +179,9 @@ RUN yum -y install java-1.8.0-openjdk && \
     keytool -import -alias cerngridCA -file /etc/pki/tls/certs/CERN_Grid_Certification_Authority.crt \
         -keystore /etc/pki/tls/certs/truststore.jks -storepass 'password' -noprompt && \
     keytool -import -alias cernRootCA2 -file /etc/pki/tls/certs/CERN_Root_Certification_Authority_2.crt \
-        -keystore /etc/pki/tls/certs/truststore.jks -storepass 'password' -noprompt 
+        -keystore /etc/pki/tls/certs/truststore.jks -storepass 'password' -noprompt && \
+    yum -y erase java-1.8.0-openjdk && \
+    rm -rf /usr/lib/jvm/
 
 # Install HEP_OSlibs - includes atlas blas
 RUN yum -y install HEP_OSlibs-7.2.7-1.el7.cern
