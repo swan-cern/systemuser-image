@@ -170,8 +170,7 @@ gpgcheck=0' > /etc/yum.repos.d/carepo.repo && \
      ca-policy-egi-core
 
 # Install VOMS
-RUN yum install -y epel-release && \
-    yum install -y voms-clients-java voms-clients-cpp  fetch-crl globus-gsi-sysconfig
+RUN yum install -y voms-clients-java voms-clients-cpp  fetch-crl globus-gsi-sysconfig
 
 ADD etc/vomses /etc/vomses
 
