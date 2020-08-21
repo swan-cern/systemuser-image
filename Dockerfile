@@ -173,6 +173,7 @@ gpgcheck=0' > /etc/yum.repos.d/carepo.repo && \
 RUN yum install -y voms-clients-java voms-clients-cpp  fetch-crl globus-gsi-sysconfig
 
 ADD etc/vomses /etc/vomses
+ADD etc/grid-security/vomsdir /etc/grid-security/vomsdir
 
 # Create truststore for NXCALS Spark connection
 RUN yum -y install java-1.8.0-openjdk && \
