@@ -192,49 +192,45 @@ RUN yum -y install HEP_OSlibs-7.2.7-1.el7.cern
 RUN mv /usr/local/lib/python3.7/site-packages/ipykernel /usr/local/lib/python3.7/site-packages/ipykernelBACKUP && \
     mv /usr/local/share/jupyter/kernels /usr/local/share/jupyter/kernelsBACKUP
 
-# Download and install all of our extensions
-# Dummy var to force docker to build from this point on (otherwise, due to the caching, this layer would not get the latest release-daily)
-ARG CI_PIPELINE
-# For testing purposes we can specify a different url to look for the extensions
-ARG URL_NBEXTENSIONS
-# Replace this value to update the version of the extensions deployed
-ARG VERSION_NBEXTENSIONS=v7.8
-ENV VERSION_NBEXTENSIONS=$VERSION_NBEXTENSIONS
-RUN mkdir /tmp/jupyter_extensions && \
-    if [ -n "$URL_NBEXTENSIONS" ]; then \
-        echo "Downloading Extensions from a provided URL" ; \
-        wget $URL_NBEXTENSIONS -O extensions.zip ; \
-    elif [ "$VERSION_NBEXTENSIONS" = "daily" ]; then \
-        echo "Downloading Extensions build: daily" ; \
-        wget https://gitlab.cern.ch/api/v4/projects/25624/jobs/artifacts/qa/download?job=release-daily -O extensions.zip ; \
-    else \
-        echo "Downloading Extensions build: ${VERSION_NBEXTENSIONS}" ; \
-        wget https://gitlab.cern.ch/api/v4/projects/25624/jobs/artifacts/$VERSION_NBEXTENSIONS/download?job=release-version -O extensions.zip ; \
-    fi  && \
-    unzip extensions.zip && \
-    rm -rf /usr/local/lib/python3.7/site-packages/notebook/templates && \
-    mv -f templates /usr/local/lib/python3.7/site-packages/notebook/ && \
-    # Install all SWAN extensions which are packaged as python modules
-    # Ignore dependencies because they have already been installed or come from CVMFS
-    ls -d ./*/ | xargs -n1 sh -c 'cd $0 ; pip install --no-deps .' && \
-    # Automatically install all nbextensions from their python module (all extensions need to implement the api even if they return 0 nbextensions)
-    ls -d ./*/ | xargs -n1 sh -c 'extension=$(basename $0) ; jupyter nbextension install --py --system ${extension,,} || exit 1' && \
-    # Enable the server extensions
-    server_extensions=('swancontents' 'sparkmonitor' 'swannotebookviewer' 'swangallery') && \
-    for extension in ${server_extensions[@]}; do jupyter serverextension enable --py --system $extension || exit 1 ; done && \
-    # Enable the nb extensions
-    # Not all nbextensions are activated as some of them are activated on session startup or by the import in the templates
-    nb_extensions=('swanhelp' 'swannotifications' 'swanshare' 'swanintro' 'sparkmonitor') && \
-    for extension in ${nb_extensions[@]}; do jupyter nbextension enable --py --system $extension || exit 1; done && \
+# Install all of our extensions
+# Ignore dependencies because they have already been installed or come from CVMFS
+RUN pip install --no-deps \
+            hdfsbrowser==1.0.0 \
+            sparkconnector==1.0.0 \
+            sparkmonitor==1.0.0 \
+            swancontents==1.0.1 \
+            swanhelp==1.0.0 \
+            swanintro==1.0.0 \
+            swankernelenv==1.0.0 \
+            swannotebookviewer==1.0.0 \
+            swannotifications==1.0.0 \
+            swanshare==1.0.0 && \
+    # Enable all the nbextensions and server extensions
+    jupyter nbextension install --py --system hdfsbrowser && \
+    jupyter nbextension install --py --system sparkconnector && \
+    jupyter nbextension install --py --system sparkmonitor && \
+    jupyter nbextension enable --py --system sparkmonitor && \
+    jupyter serverextension enable --py --system sparkmonitor && \
+    jupyter nbextension install --py --system swancontents && \
+    jupyter serverextension enable --py --system swancontents && \
+    jupyter nbextension install --py --system swanhelp && \
+    jupyter nbextension enable --py --system swanhelp && \
+    jupyter nbextension install --py --system swanintro && \
+    jupyter nbextension enable --py --system swanintro && \
+    jupyter serverextension enable --py --system swannotebookviewer && \
+    jupyter nbextension install --py --system swannotifications && \
+    jupyter nbextension enable --py --system swannotifications && \
+    jupyter nbextension install --py --system swanshare && \
+    jupyter nbextension enable --py --system swanshare && \
+    # Build Jupyterlab to enable the installed lab extensions
+    jupyter lab build && \
     # Force nbextension_configurator systemwide to prevent users disabling it
     jupyter nbextensions_configurator enable --system && \
     # Spark Monitor/Connector also need to be available to the user environment since they have kernel extensions
     mkdir -p /usr/local/lib/swan/extensions && \
     ln -s /usr/local/lib/python3.7/site-packages/sparkmonitor /usr/local/lib/swan/extensions/ && \
     ln -s /usr/local/lib/python3.7/site-packages/sparkconnector /usr/local/lib/swan/extensions/ && \
-    ln -s /usr/local/lib/python3.7/site-packages/swankernelenv /usr/local/lib/swan/extensions/ && \
-    # Clean
-    rm -rf /tmp/jupyter_extensions
+    ln -s /usr/local/lib/python3.7/site-packages/swankernelenv /usr/local/lib/swan/extensions/
 
 RUN yum clean all && \
     rm -rf /var/cache/yum
