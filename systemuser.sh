@@ -73,6 +73,8 @@ echo "c.NotebookApp.contents_manager_class = 'swancontents.filemanager.swanfilem
 echo "c.ContentsManager.checkpoints_class = 'swancontents.filemanager.checkpoints.EOSCheckpoints'" >> $JPY_CONFIG
 echo "c.NotebookApp.default_url = 'projects'" >> $JPY_CONFIG
 echo "c.NotebookApp.extra_static_paths = ['$ROOT_DATA_DIR/js']" >> $JPY_CONFIG
+echo "from swancontents import get_templates" >> $JPY_CONFIG
+echo "c.NotebookApp.extra_template_paths = [get_templates()]" >> $JPY_CONFIG
 cp -L -r $LCG_VIEW/etc/jupyter/* $JUPYTER_CONFIG_DIR
 
 # Configure %%cpp cell highlighting
@@ -177,6 +179,13 @@ then
   echo "{
     \"help\": \"$HELP_ENDPOINT\"
 }" > /usr/local/etc/jupyter/nbconfig/help.json
+fi
+
+if [[ $GALLERY_URL ]]
+then
+  echo "c.NotebookApp.jinja_template_vars = {
+    'gallery_url': '$GALLERY_URL'
+}" >> $JPY_CONFIG
 fi
 
 # Make sure we have a sane terminal
