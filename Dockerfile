@@ -230,7 +230,10 @@ RUN pip install --no-deps \
     mkdir -p /usr/local/lib/swan/extensions && \
     ln -s /usr/local/lib/python3.7/site-packages/sparkmonitor /usr/local/lib/swan/extensions/ && \
     ln -s /usr/local/lib/python3.7/site-packages/sparkconnector /usr/local/lib/swan/extensions/ && \
-    ln -s /usr/local/lib/python3.7/site-packages/swankernelenv /usr/local/lib/swan/extensions/
+    ln -s /usr/local/lib/python3.7/site-packages/swankernelenv /usr/local/lib/swan/extensions/ && \
+    # FIXME workaround for templates. For some reason, and only in our image, Jupyter is looking for templates inside templates
+    cp -r /usr/local/lib/python3.7/site-packages/swancontents/templates{,2} && \
+    mv /usr/local/lib/python3.7/site-packages/swancontents/templates{2,/templates}
 
 RUN yum clean all && \
     rm -rf /var/cache/yum
