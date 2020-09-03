@@ -3,7 +3,7 @@
 
 FROM gitlab-registry.cern.ch/swan/docker-images/notebook:v5.0.0
 
-MAINTAINER SWAN Admins <swan-admins@cern.ch>
+LABEL maintainer="swan-admins@cern.ch"
 
 ARG BUILD_TAG=daily
 ENV VERSION_DOCKER_IMAGE=$BUILD_TAG
