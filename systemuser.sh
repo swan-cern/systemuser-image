@@ -155,6 +155,15 @@ then
       }
     }
   }" > /etc/jupyter/jupyter_notebook_config.json
+  if [ $SPARK_CLUSTER_NAME = "k8s" ]
+  then
+    CLUSTER_NAME="analytix"
+  else
+    CLUSTER_NAME=$SPARK_CLUSTER_NAME
+  fi
+  echo "c.HDFSBrowserConfig.hdfs_site_path = '/cvmfs/sft.cern.ch/lcg/etc/hadoop-confext/conf/etc/$CLUSTER_NAME/hadoop.$CLUSTER_NAME/hdfs-site.xml'" >> $JPY_CONFIG
+  echo "c.HDFSBrowserConfig.hdfs_site_namenodes_property = 'dfs.ha.namenodes.$CLUSTER_NAME'" >> $JPY_CONFIG
+  echo "c.HDFSBrowserConfig.hdfs_site_namenodes_port = '50070'" >> $JPY_CONFIG
 fi
 
 # Configurations for extensions (used when deployed outside CERN)
