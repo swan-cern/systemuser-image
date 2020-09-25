@@ -24,6 +24,18 @@ mkdir -p $SCRATCH_HOME
 echo "This directory is temporary and will be deleted when your SWAN session ends!" > $SCRATCH_HOME/IMPORTANT.txt
 chown -R $USER:$USER $SCRATCH_HOME
 
+# Store the oAuth token given by the spawner inside a file
+# so that EOS can use it
+if [[ ! -z "$ACCESS_TOKEN" ]];
+then
+    log_info "Storing oAuth token for EOS"
+    export OAUTH2_FILE=/tmp/eos_oauth.token
+    export OAUTH2_TOKEN="FILE:$OAUTH2_FILE"
+    echo -n oauth2:$ACCESS_TOKEN:$OAUTH_INSPECTION_ENDPOINT >& $OAUTH2_FILE
+    chown -R $USER:$USER $OAUTH2_FILE
+    chmod 600 $OAUTH2_FILE
+fi
+
 sudo -E -u $USER sh -c 'if [[ ! -d "$SWAN_HOME" || ! -x "$SWAN_HOME" ]]; then exit 1; fi'
 if [ $? -ne 0 ]
 then
