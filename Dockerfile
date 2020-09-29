@@ -204,6 +204,7 @@ RUN pip install --no-deps \
             swankernelenv==1.0.0 \
             swannotebookviewer==1.0.0 \
             swannotifications==1.0.0 \
+            swanoauthrenew==0.0.1 \
             swanshare==1.0.0 && \
     # Enable all the nbextensions and server extensions
     jupyter nbextension install --py --system hdfsbrowser && \
@@ -220,6 +221,7 @@ RUN pip install --no-deps \
     jupyter serverextension enable --py --system swannotebookviewer && \
     jupyter nbextension install --py --system swannotifications && \
     jupyter nbextension enable --py --system swannotifications && \
+    jupyter serverextension enable --py --system swanoauthrenew && \
     jupyter nbextension install --py --system swanshare && \
     jupyter nbextension enable --py --system swanshare && \
     # Build Jupyterlab to enable the installed lab extensions
