@@ -193,7 +193,7 @@ RUN mv /usr/local/lib/python3.7/site-packages/ipykernel /usr/local/lib/python3.7
     mv /usr/local/share/jupyter/kernels /usr/local/share/jupyter/kernelsBACKUP
 
 # Install all of our extensions
-# Ignore dependencies because they have already been installed or come from CVMFS
+# Ignore (almost all) dependencies because they have already been installed or come from CVMFS
 RUN pip install --no-deps \
             hdfsbrowser==1.0.0 \
             sparkconnector==1.0.0 \
@@ -204,7 +204,7 @@ RUN pip install --no-deps \
             swankernelenv==1.0.0 \
             swannotebookviewer==1.0.0 \
             swannotifications==1.0.0 \
-            swanoauthrenew==0.0.1 \
+            swanoauthrenew==0.0.1 PyJWT \
             swanshare==1.0.0 && \
     # Enable all the nbextensions and server extensions
     jupyter nbextension install --py --system hdfsbrowser && \
