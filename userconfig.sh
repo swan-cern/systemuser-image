@@ -33,6 +33,11 @@ START_TIME_SETUP_LCG=$( date +%s.%N )
 # Setup LCG
 source $LCG_VIEW/setup.sh
 
+# add nvidia driver to LD_LIBRARY_PATH for cuda view
+if [[ $LCG_VIEW == *"cu"* ]]; then
+  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/nvidia-driver/lib64
+fi
+
 SETUP_LCG_TIME_SEC=$(echo $(date +%s.%N --date="$START_TIME_SETUP_LCG seconds ago") | bc)
 log_info "user: $USER, host: ${SERVER_HOSTNAME%%.*}, metric: configure_user_env_cvmfs.${ROOT_LCG_VIEW_NAME:-none}.duration_sec, value: $SETUP_LCG_TIME_SEC"
 
