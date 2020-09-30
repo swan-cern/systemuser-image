@@ -187,6 +187,9 @@ RUN yum -y install java-1.8.0-openjdk && \
 # Install HEP_OSlibs - includes atlas blas
 RUN yum -y install HEP_OSlibs-7.2.7-1.el7.cern
 
+# Install package required for key4hep
+RUN yum -y install environment-modules 
+
 # WORKAROUND
 # Hide from Jupyter the Python3 kernel by hand
 RUN mv /usr/local/lib/python3.7/site-packages/ipykernel /usr/local/lib/python3.7/site-packages/ipykernelBACKUP && \
