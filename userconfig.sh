@@ -33,6 +33,19 @@ START_TIME_SETUP_LCG=$( date +%s.%N )
 # Setup LCG
 source $LCG_VIEW/setup.sh
 
+# Append NVIDIA_LIB_PATH to LD_LIBRARY_PATH
+if [[ $NVIDIA_LIB_PATH ]];
+then
+ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$NVIDIA_LIB_PATH
+fi
+
+# Append NVIDIA_PATH to PATH
+if [[ $NVIDIA_PATH ]];
+then
+ export PATH=$PATH:$NVIDIA_PATH
+fi
+
+
 SETUP_LCG_TIME_SEC=$(echo $(date +%s.%N --date="$START_TIME_SETUP_LCG seconds ago") | bc)
 log_info "user: $USER, host: ${SERVER_HOSTNAME%%.*}, metric: configure_user_env_cvmfs.${ROOT_LCG_VIEW_NAME:-none}.duration_sec, value: $SETUP_LCG_TIME_SEC"
 
