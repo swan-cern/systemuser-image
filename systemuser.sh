@@ -132,7 +132,7 @@ fi
 chown -R $USER:$USER $JPY_DIR $JPY_LOCAL_DIR $IPYTHONDIR
 export SWAN_ENV_FILE=$SCRATCH_HOME/.bash_profile
 
-sudo -E LD_LIBRARY_PATH=$LD_LIBRARY_PATH -u $USER sh /srv/singleuser/userconfig.sh
+sudo -E -u $USER sh /srv/singleuser/userconfig.sh
 
 if [ $? -ne 0 ]
 then
