@@ -28,9 +28,9 @@ jobs:
       run: |
         echo "Updating information for package = ${{ github.event.inputs.package }} version = ${{ github.event.inputs.version }}"
 
-        PKG_NAME_LOWER=$(echo " ${{ github.event.inputs.package }}" | tr '[:upper:]' '[:lower:]')
-        PKG_VER=$(echo ${{ github.event.inputs.version }} | sed -e 'e/v//g')
-        sed -i "s/$(grep "$PKG_NAME_LOWER==" Dockerfile |  sed -e 's/\\//g')/            $PKG_NAME_LOWER==$PKG_VER /g" Dockerfile
+        export PKG_NAME_LOWER=$(echo " ${{ github.event.inputs.package }}" | tr '[:upper:]' '[:lower:]')
+        export PKG_VER=$(echo ${{ github.event.inputs.version }} | sed -e "s/v//g")
+        sed -i "s/\( $PKG_NAME_LOWER==*\)[^ ]*/\1$PKG_VER/" Dockerfile
 
     - name: Push
       uses: github-actions-x/commit@v2.7
