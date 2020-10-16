@@ -200,7 +200,7 @@ RUN mv /usr/local/lib/python3.7/site-packages/ipykernel /usr/local/lib/python3.7
 RUN pip install --no-deps \
             hdfsbrowser==1.0.0 \
             sparkconnector==1.0.0 \
-            sparkmonitor==1.0.0 \
+            sparkmonitor==1.1.0 \
             swancontents==1.0.1 \
             swanhelp==1.0.0 \
             swanintro==1.0.0 \
