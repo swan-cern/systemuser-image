@@ -170,6 +170,9 @@ then
   if [ $SPARK_CLUSTER_NAME = "k8s" ]
   then
     CLUSTER_NAME="analytix"
+  elif [ $SPARK_CLUSTER_NAME = "hadoop-nxcals" ]
+  then
+    CLUSTER_NAME="nxcals"
   else
     CLUSTER_NAME=$SPARK_CLUSTER_NAME
   fi
