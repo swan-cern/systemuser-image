@@ -169,15 +169,14 @@ then
   }" > /etc/jupyter/jupyter_notebook_config.json
   if [ $SPARK_CLUSTER_NAME = "k8s" ]
   then
+    NAMESPACE="analytix"
     CLUSTER_NAME="analytix"
-  elif [ $SPARK_CLUSTER_NAME = "hadoop-nxcals" ]
-  then
-    CLUSTER_NAME="nxcals"
   else
+    NAMESPACE=$(cat /cvmfs/sft.cern.ch/lcg/etc/hadoop-confext/conf/etc/$SPARK_CLUSTER_NAME/$SPARK_CLUSTER_NAME.info.json | python -c 'import json,sys;obj=json.load(sys.stdin);print(obj["namespace"])')
     CLUSTER_NAME=$SPARK_CLUSTER_NAME
   fi
   echo "c.HDFSBrowserConfig.hdfs_site_path = '/cvmfs/sft.cern.ch/lcg/etc/hadoop-confext/conf/etc/$CLUSTER_NAME/hadoop.$CLUSTER_NAME/hdfs-site.xml'" >> $JPY_CONFIG
-  echo "c.HDFSBrowserConfig.hdfs_site_namenodes_property = 'dfs.ha.namenodes.$CLUSTER_NAME'" >> $JPY_CONFIG
+  echo "c.HDFSBrowserConfig.hdfs_site_namenodes_property = 'dfs.ha.namenodes.$NAMESPACE'" >> $JPY_CONFIG
   echo "c.HDFSBrowserConfig.hdfs_site_namenodes_port = '50070'" >> $JPY_CONFIG
 fi
 
