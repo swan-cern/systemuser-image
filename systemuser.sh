@@ -87,6 +87,15 @@ echo "c.NotebookApp.default_url = 'projects'" >> $JPY_CONFIG
 echo "c.NotebookApp.extra_static_paths = ['$ROOT_DATA_DIR/js']" >> $JPY_CONFIG
 echo "from swancontents import get_templates" >> $JPY_CONFIG
 echo "c.NotebookApp.extra_template_paths = [get_templates()]" >> $JPY_CONFIG
+
+CERNBOX_OAUTH_ID="${CERNBOX_OAUTH_ID:-cernbox-service}"
+EOS_OAUTH_ID="${EOS_OAUTH_ID:-eos-service}"
+echo "c.SwanOauthRenew.files = [
+    ('/tmp/swan_oauth.token', 'access_token', '{token}'),
+    ('/tmp/cernbox_oauth.token', 'exchanged_tokens/$CERNBOX_OAUTH_ID', '{token}'),
+    ('$OAUTH2_FILE', 'exchanged_tokens/$EOS_OAUTH_ID', 'oauth2:{token}:$OAUTH_INSPECTION_ENDPOINT')
+]" >> $JPY_CONFIG
+
 cp -L -r $LCG_VIEW/etc/jupyter/* $JUPYTER_CONFIG_DIR
 
 # Configure %%cpp cell highlighting
