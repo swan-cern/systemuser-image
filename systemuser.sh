@@ -195,6 +195,7 @@ then
       \"search\": \"/search\"
   }
 }" > /usr/local/etc/jupyter/nbconfig/sharing.json
+  echo "c.SwanShare.cernbox_url = '$SHARE_CBOX_API_DOMAIN'" >> $JPY_CONFIG
 fi
 
 if [[ $HELP_ENDPOINT ]]
