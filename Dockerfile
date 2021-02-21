@@ -227,6 +227,7 @@ RUN pip install --no-deps \
     jupyter serverextension enable --py --system swanoauthrenew && \
     jupyter nbextension install --py --system swanshare && \
     jupyter nbextension enable --py --system swanshare && \
+    jupyter serverextension enable --py --system swanshare && \
     # Build Jupyterlab to enable the installed lab extensions
     jupyter lab build && \
     # Force nbextension_configurator systemwide to prevent users disabling it
