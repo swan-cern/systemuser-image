@@ -201,7 +201,7 @@ RUN pip install --no-deps \
             hdfsbrowser==1.0.0 \
             sparkconnector==1.0.0 \
             sparkmonitor==1.1.1 \
-            swancontents==1.0.1 \
+            swancontents==1.1.0 \
             swanhelp==1.0.0 \
             swanintro==1.0.0 \
             swankernelenv==1.0.0 \
