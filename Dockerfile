@@ -205,7 +205,7 @@ RUN pip install --no-deps \
             swanhelp==1.0.0 \
             swanintro==1.0.0 \
             swankernelenv==1.0.0 \
-            swannotebookviewer==1.1.0 \
+            swannotebookviewer==1.2.0 \
             swannotifications==1.0.0 \
             swanoauthrenew==1.0.1 PyJWT \
             swanshare==1.1.1 && \
