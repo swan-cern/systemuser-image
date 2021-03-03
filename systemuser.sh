@@ -83,7 +83,7 @@ echo "c.NotebookNotary.db_file = '$JUPYTER_LOCAL_PATH/nbsignatures.db'"     >> $
 echo "c.NotebookNotary.secret_file = '$JUPYTER_LOCAL_PATH/notebook_secret'" >> $JPY_CONFIG
 echo "c.NotebookApp.contents_manager_class = 'swancontents.filemanager.swanfilemanager.SwanFileManager'" >> $JPY_CONFIG
 echo "c.ContentsManager.checkpoints_class = 'swancontents.filemanager.checkpoints.EOSCheckpoints'" >> $JPY_CONFIG
-echo "c.NotebookApp.default_url = 'projects'" >> $JPY_CONFIG
+echo "c.NotebookApp.default_url = 'rstudio'" >> $JPY_CONFIG
 echo "c.NotebookApp.extra_static_paths = ['$ROOT_DATA_DIR/js']" >> $JPY_CONFIG
 echo "from swancontents import get_templates" >> $JPY_CONFIG
 echo "c.NotebookApp.extra_template_paths = [get_templates()]" >> $JPY_CONFIG
