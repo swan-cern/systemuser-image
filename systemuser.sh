@@ -251,6 +251,17 @@ then
   sh $CONFIG_SCRIPT
 fi
 
+# Configure RStudio manually, given that we need to run it in the user space to get the r kernel
+mkdir -p /tmp/RStudio /var/run/rstudio-server
+chown -R $USER /tmp/RStudio /var/run/rstudio-server
+echo "provider=sqlite
+directory=/tmp/RStudio" > /tmp/RStudio/dbconf
+echo "c.ServerProxy.servers = {
+  'rstudio': {
+    'command': ['bash', '-c', 'source $SCRATCH_HOME/.bash_profile && /usr/lib/rstudio-server/bin/rserver --auth-none=1 --www-frame-origin=same --www-port={port} --www-verify-user-agent=0 --www-root-path={base_url}rstudio/ --database-config-file=/tmp/RStudio/dbconf']
+  }
+}" >> $JPY_CONFIG
+
 # Run notebook server
 log_info "Running the notebook server"
 sudo -E -u $USER sh -c 'cd $SWAN_HOME \

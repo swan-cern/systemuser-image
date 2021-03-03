@@ -241,6 +241,18 @@ RUN pip install --no-deps \
     cp -r /usr/local/lib/python3.7/site-packages/swancontents/templates{,2} && \
     mv /usr/local/lib/python3.7/site-packages/swancontents/templates{2,/templates}
 
+# Install RStudio
+RUN mkdir /tmp/rstudio && \
+    cd /tmp/rstudio && \
+    wget https://download2.rstudio.org/server/centos7/x86_64/rstudio-server-rhel-1.4.1106-x86_64.rpm && \
+    # TODO validate file before installing...
+    yum -y install rstudio-server-rhel-1.4.1106-x86_64.rpm && \
+    rm -rf /tmp/rstudio
+
+# Install proxy to launch other services (rstudio is configured manually in systemuser.sh)
+RUN pip install jupyter-server-proxy && \
+    jupyter serverextension enable --sys-prefix jupyter_server_proxy
+
 RUN yum clean all && \
     rm -rf /var/cache/yum
 
