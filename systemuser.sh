@@ -189,6 +189,16 @@ then
   echo "c.HDFSBrowserConfig.hdfs_site_namenodes_port = '50070'" >> $JPY_CONFIG
 fi
 
+# HTCondor at CERN integration
+if [[ $CERN_HTCONDOR ]]
+then
+  export CONDOR_CONFIG=/eos/project/l/lxbatch/public/config-condor-swan/condor_config
+  mkdir -p /etc/condor/config.d/ /etc/myschedd/
+  ln -s /eos/project/l/lxbatch/public/config-condor-swan/10_cernsubmit.erb /etc/condor/config.d/10_cernsubmit.erb
+  ln -s /eos/project/l/lxbatch/public/config-condor-swan/myschedd.yaml /etc/myschedd/myschedd.yaml
+  ln -s /eos/project/l/lxbatch/public/config-condor-swan/ngbauth-submit /etc/sysconfig/ngbauth-submit
+fi
+
 # Configurations for extensions (used when deployed outside CERN)
 if [[ $SHARE_CBOX_API_DOMAIN && $SHARE_CBOX_API_BASE ]]
 then
