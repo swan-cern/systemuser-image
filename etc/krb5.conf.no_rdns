@@ -1,0 +1,20 @@
+; /etc/krb5.conf.pkinit
+; 
+; This file contains the config to allow for the use of RH/MIT pkinit.
+
+[libdefaults]
+ default_realm = CERN.CH
+ ticket_lifetime = 25h
+ renew_lifetime = 120h
+ forwardable = true
+ proxiable = true
+ rdns = false
+
+[realms]
+ CERN.CH = {
+  default_domain = cern.ch
+  kdc = cerndc.cern.ch:88
+ }
+
+[domain_realm]
+ .cern.ch = CERN.CH

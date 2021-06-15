@@ -190,6 +190,10 @@ RUN yum -y install HEP_OSlibs-7.2.7-1.el7.cern
 # Install package required for key4hep
 RUN yum -y install environment-modules 
 
+# HTCondor Requirement
+RUN yum install -y perl-Archive-Tar
+ADD etc/krb5.conf.no_rdns  /etc/krb5.conf.no_rdns
+
 # WORKAROUND
 # Hide from Jupyter the Python3 kernel by hand
 RUN mv /usr/local/lib/python3.7/site-packages/ipykernel /usr/local/lib/python3.7/site-packages/ipykernelBACKUP && \
@@ -240,6 +244,7 @@ RUN pip install --no-deps \
     # FIXME workaround for templates. For some reason, and only in our image, Jupyter is looking for templates inside templates
     cp -r /usr/local/lib/python3.7/site-packages/swancontents/templates{,2} && \
     mv /usr/local/lib/python3.7/site-packages/swancontents/templates{2,/templates}
+
 
 RUN yum clean all && \
     rm -rf /var/cache/yum
