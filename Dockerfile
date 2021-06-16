@@ -194,6 +194,16 @@ RUN yum -y install environment-modules
 RUN yum install -y perl-Archive-Tar
 ADD etc/krb5.conf.no_rdns  /etc/krb5.conf.no_rdns
 
+# CERN SSO
+RUN echo $'[authz7-stable]\n\
+name=AuthZ Packages [stable]\n\
+baseurl=http://linuxsoft.cern.ch/internal/repos/authz7-stable/x86_64/os\n\
+enabled=1\n\
+gpgcheck=False\n\
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-koji file:///etc/pki/rpm-gpg/RPM-GPG-KEY-kojiv2\n\
+includepkgs=auth-get-sso-cookie\n\
+priority=20\n' > /etc/yum.repos.d/authz7-stable.repo && yum install -y auth-get-sso-cookie
+
 # WORKAROUND
 # Hide from Jupyter the Python3 kernel by hand
 RUN mv /usr/local/lib/python3.7/site-packages/ipykernel /usr/local/lib/python3.7/site-packages/ipykernelBACKUP && \
