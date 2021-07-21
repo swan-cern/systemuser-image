@@ -145,6 +145,9 @@ sed -i -E "s@\[\"python[0-9.]*\"@\[\"$PYTHONEXECPATH\"@g" $KERNEL_DIR/*/kernel.j
 printf "alias ls='ls --color'\n" >> $SWAN_ENV_FILE
 printf "alias grep='grep --color'\n" >> $SWAN_ENV_FILE
 
+# Enable Rucio kernel extension (run it before we remove its path from user env)
+echo "c.InteractiveShellApp.extensions.append('rucio_jupyterlab.kernels.ipython')" >>  $KERNEL_PROFILEPATH
+
 # Remove our extra paths (where we install our extensions) in the kernel (via SwanKernelEnv kernel extension), 
 # leaving the user env cleaned. It should be the last one called to allow the kernel to load our extensions correctly.
 echo "c.InteractiveShellApp.extensions.append('swankernelenv')" >>  $KERNEL_PROFILEPATH

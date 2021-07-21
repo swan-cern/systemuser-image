@@ -199,6 +199,10 @@ ADD etc/krb5.conf.no_rdns  /etc/krb5.conf.no_rdns
 RUN mv /usr/local/lib/python3.7/site-packages/ipykernel /usr/local/lib/python3.7/site-packages/ipykernelBACKUP && \
     mv /usr/local/share/jupyter/kernels /usr/local/share/jupyter/kernelsBACKUP
 
+# Instal Lab 3 for Rucion (only here, to avoid having to change the notebook image)
+# Our extensions won't install+enable any lab extension because they're not even compatible
+RUN pip install --upgrade jupyterlab
+
 # Install all of our extensions
 # Ignore (almost all) dependencies because they have already been installed or come from CVMFS
 RUN pip install --no-deps \
@@ -233,7 +237,7 @@ RUN pip install --no-deps \
     jupyter nbextension enable --py --system swanshare && \
     jupyter serverextension enable --py --system swanshare && \
     # Build Jupyterlab to enable the installed lab extensions
-    jupyter lab build && \
+    # jupyter lab build && \
     # Force nbextension_configurator systemwide to prevent users disabling it
     jupyter nbextensions_configurator enable --system && \
     # Spark Monitor/Connector also need to be available to the user environment since they have kernel extensions
@@ -245,6 +249,14 @@ RUN pip install --no-deps \
     cp -r /usr/local/lib/python3.7/site-packages/swancontents/templates{,2} && \
     mv /usr/local/lib/python3.7/site-packages/swancontents/templates{2,/templates}
 
+## RUCIO EXTENSION
+RUN pip install rucio-jupyterlab==0.5.2
+# Make it available inside the user env, to be able to use the kernel extension
+RUN ln -s /usr/local/lib/python3.7/site-packages/rucio_jupyterlab /usr/local/lib/swan/extensions/
+
+RUN yum -y install gfal2-python
+ADD etc/rucio_ca.pem /certs/rucio_ca.pem
+##
 
 RUN yum clean all && \
     rm -rf /var/cache/yum

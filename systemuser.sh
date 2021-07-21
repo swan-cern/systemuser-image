@@ -82,8 +82,9 @@ echo "c.FileCheckpoints.checkpoint_dir = '$SCRATCH_HOME/.ipynb_checkpoints'"    
 echo "c.NotebookNotary.db_file = '$JUPYTER_LOCAL_PATH/nbsignatures.db'"     >> $JPY_CONFIG
 echo "c.NotebookNotary.secret_file = '$JUPYTER_LOCAL_PATH/notebook_secret'" >> $JPY_CONFIG
 echo "c.NotebookApp.contents_manager_class = 'swancontents.filemanager.swanfilemanager.SwanFileManager'" >> $JPY_CONFIG
-echo "c.ContentsManager.checkpoints_class = 'swancontents.filemanager.checkpoints.EOSCheckpoints'" >> $JPY_CONFIG
-echo "c.NotebookApp.default_url = 'projects'" >> $JPY_CONFIG
+# Disable EOS Checkpoints due to a bug with Lab
+# echo "c.ContentsManager.checkpoints_class = 'swancontents.filemanager.checkpoints.EOSCheckpoints'" >> $JPY_CONFIG
+echo "c.NotebookApp.default_url = 'lab'" >> $JPY_CONFIG
 echo "c.NotebookApp.extra_static_paths = ['$ROOT_DATA_DIR/js']" >> $JPY_CONFIG
 echo "from swancontents import get_templates" >> $JPY_CONFIG
 echo "c.NotebookApp.extra_template_paths = [get_templates()]" >> $JPY_CONFIG
@@ -106,6 +107,23 @@ require(['notebook/js/codecell'], function(codecell) {
   codecell.CodeCell.options_default.highlight_modes['magic_text/x-c++src'] = {'reg':[/^%%cpp/]};
 });
 " > $CUSTOM_JS_DIR/custom.js
+
+echo '{
+    "RucioConfig": {
+        "instances": [
+            {
+                "name": "ESCAPE",
+                "display_name": "ESCAPE",
+                "rucio_base_url": "https://escape-rucio.cern.ch:32300",
+                "rucio_auth_url": "https://escape-rucio.cern.ch:32301",
+                "rucio_ca_cert": "/certs/rucio_ca.pem",
+                "site_name": "SWAN",
+                "wildcard_enabled": false,
+                "mode": "download"
+            }
+        ]
+    }
+}' > $JPY_DIR/jupyter_notebook_config.json
 
 # Configure kernels and terminal
 # The environment of the kernels and the terminal will combine the view and the user script (if any)
