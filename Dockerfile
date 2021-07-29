@@ -1,7 +1,7 @@
 # Analogous to jupyter/systemuser, but based on CC7 and inheriting directly from cernphsft/notebook.
 # Run with the DockerSpawner in JupyterHub.
 
-FROM gitlab-registry.cern.ch/swan/docker-images/notebook:v7.2.0
+FROM gitlab-registry.cern.ch/swan/docker-images/notebook:v7.3.1
 
 LABEL maintainer="swan-admins@cern.ch"
 
@@ -185,7 +185,8 @@ RUN yum -y install java-1.8.0-openjdk && \
     rm -rf /usr/lib/jvm/
 
 # Install HEP_OSlibs - includes atlas blas
-RUN yum -y install HEP_OSlibs-7.2.7-1.el7.cern
+RUN yum -y install https://linuxsoft.cern.ch/wlcg/centos7/x86_64/wlcg-repo-1.0.0-1.el7.noarch.rpm
+RUN yum -y install HEP_OSlibs-7.3.1-2.el7.cern
 
 # Install package required for key4hep
 RUN yum -y install environment-modules 
@@ -196,7 +197,7 @@ ADD etc/krb5.conf.no_rdns  /etc/krb5.conf.no_rdns
 
 # WORKAROUND
 # Hide from Jupyter the Python3 kernel by hand
-RUN mv /usr/local/lib/python3.7/site-packages/ipykernel /usr/local/lib/python3.7/site-packages/ipykernelBACKUP && \
+RUN mv /usr/local/lib/python3.9/site-packages/ipykernel /usr/local/lib/python3.9/site-packages/ipykernelBACKUP && \
     mv /usr/local/share/jupyter/kernels /usr/local/share/jupyter/kernelsBACKUP
 
 # Install all of our extensions
@@ -238,12 +239,12 @@ RUN pip install --no-deps \
     jupyter nbextensions_configurator enable --system && \
     # Spark Monitor/Connector also need to be available to the user environment since they have kernel extensions
     mkdir -p /usr/local/lib/swan/extensions && \
-    ln -s /usr/local/lib/python3.7/site-packages/sparkmonitor /usr/local/lib/swan/extensions/ && \
-    ln -s /usr/local/lib/python3.7/site-packages/sparkconnector /usr/local/lib/swan/extensions/ && \
-    ln -s /usr/local/lib/python3.7/site-packages/swankernelenv /usr/local/lib/swan/extensions/ && \
+    ln -s /usr/local/lib/python3.9/site-packages/sparkmonitor /usr/local/lib/swan/extensions/ && \
+    ln -s /usr/local/lib/python3.9/site-packages/sparkconnector /usr/local/lib/swan/extensions/ && \
+    ln -s /usr/local/lib/python3.9/site-packages/swankernelenv /usr/local/lib/swan/extensions/ && \
     # FIXME workaround for templates. For some reason, and only in our image, Jupyter is looking for templates inside templates
-    cp -r /usr/local/lib/python3.7/site-packages/swancontents/templates{,2} && \
-    mv /usr/local/lib/python3.7/site-packages/swancontents/templates{2,/templates}
+    cp -r /usr/local/lib/python3.9/site-packages/swancontents/templates{,2} && \
+    mv /usr/local/lib/python3.9/site-packages/swancontents/templates{2,/templates}
 
 
 RUN yum clean all && \
