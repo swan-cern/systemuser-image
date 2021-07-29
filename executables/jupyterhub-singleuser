@@ -1,4 +1,4 @@
-#!/usr/local/bin/python3.7
+#!/usr/local/bin/python3.9
 
 if __name__ == '__main__':
     import sys
