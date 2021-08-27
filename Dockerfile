@@ -200,9 +200,13 @@ ADD etc/krb5.conf.no_rdns  /etc/krb5.conf.no_rdns
 RUN mv /usr/local/lib/python3.9/site-packages/ipykernel /usr/local/lib/python3.9/site-packages/ipykernelBACKUP && \
     mv /usr/local/share/jupyter/kernels /usr/local/share/jupyter/kernelsBACKUP
 
+# Required by jupyter-resource-usage
+RUN pip install psutil==5.8.0
+
 # Install all of our extensions
 # Ignore (almost all) dependencies because they have already been installed or come from CVMFS
 RUN pip install --no-deps \
+            jupyter-resource-usage==0.6.0 \
             hdfsbrowser==1.0.0 \
             sparkconnector==1.1.0 \
             sparkmonitor==1.1.1 \
