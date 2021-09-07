@@ -207,7 +207,7 @@ RUN pip install psutil==5.8.0
 # Ignore (almost all) dependencies because they have already been installed or come from CVMFS
 RUN pip install --no-deps \
             jupyter-resource-usage==0.6.0 \
-            hdfsbrowser==1.0.0 \
+            hdfsbrowser==1.1.1 \
             sparkconnector==1.1.0 \
             sparkmonitor==1.1.1 \
             swancontents==1.2.0 \
