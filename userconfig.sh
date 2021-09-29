@@ -65,8 +65,10 @@ then
  # detect Spark major version to choose different Spark configuration 
  # the second argument of $SPARK_CONFIG_SCRIPT is the classpath compatibility for yarn
  SPARK_MJR_VERSION=$(readlink -f `which pyspark` | awk -F\/ '{print substr($7,1,1)}')
+ HADOOP_MJR_VERSION=$(readlink -f `which hdfs` | awk -F\/ '{print substr($7,1,1)}')
  if [[ $SPARK_MJR_VERSION == 3 ]]; then SPARKVERSION=spark3; fi
- source $SPARK_CONFIG_SCRIPT $SPARK_CLUSTER_NAME 3.2 ${SPARKVERSION:-'spark2'}
+ if [[ $HADOOP_MJR_VERSION == 3 ]]; then HADOOPVERSION='3.2'; fi
+ source $SPARK_CONFIG_SCRIPT $SPARK_CLUSTER_NAME ${HADOOPVERSION:-'2.7'} ${SPARKVERSION:-'spark2'}
  export SPARK_LOCAL_IP=`hostname -i`
  echo "c.InteractiveShellApp.extensions.append('sparkconnector.connector')" >>  $KERNEL_PROFILEPATH
  if [[ $CONNECTOR_BUNDLED_CONFIGS ]]
