@@ -244,9 +244,11 @@ RUN pip install --no-deps \
 # Install RStudio and FAP packages
 RUN mkdir /tmp/rstudio && \
     cd /tmp/rstudio && \
+    wget https://cdn.rstudio.com/r/centos-7/pkgs/R-4.1.1-1-1.x86_64.rpm && \
     wget https://download2.rstudio.org/server/centos7/x86_64/rstudio-server-rhel-1.4.1717-x86_64.rpm && \
     # TODO validate file before installing...
     yum -y install \
+        R-4.1.1-1-1.x86_64.rpm \
         rstudio-server-rhel-1.4.1717-x86_64.rpm \
         unixODBC-devel \
         https://download.oracle.com/otn_software/linux/instantclient/19800/oracle-instantclient19.8-basic-19.8.0.0.0-1.x86_64.rpm \
@@ -254,7 +256,9 @@ RUN mkdir /tmp/rstudio && \
         https://download.oracle.com/otn_software/linux/instantclient/19800/oracle-instantclient19.8-odbc-19.8.0.0.0-1.x86_64.rpm \
         https://download.oracle.com/otn_software/linux/instantclient/19800/oracle-instantclient19.8-jdbc-19.8.0.0.0-1.x86_64.rpm && \
     rm -rf /tmp/rstudio
-    
+
+ENV PATH /opt/R/4.1.1/bin:$PATH
+
 ADD http://service-oracle-tnsnames.web.cern.ch/service-oracle-tnsnames/tnsnames.ora /etc/tnsnames.ora
 RUN chmod 644 /etc/tnsnames.ora
 ENV TNS_ADMIN=/etc
