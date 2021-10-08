@@ -251,6 +251,9 @@ then
   sh $CONFIG_SCRIPT
 fi
 
+# TEMP source fab-bc config script
+sh /eos/project/b/bcdata/rstudio/init-rstudio.sh
+
 # Configure RStudio manually, given that we need to run it in the user space to get the r kernel
 mkdir -p /tmp/RStudio /var/run/rstudio-server
 chown -R $USER /tmp/RStudio /var/run/rstudio-server
