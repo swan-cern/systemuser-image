@@ -33,6 +33,9 @@ START_TIME_SETUP_LCG=$( date +%s.%N )
 # Setup LCG
 source $LCG_VIEW/setup.sh
 
+# TEMP use newer R
+export PATH=/opt/R/4.1.1/bin:$PATH
+
 # Append NVIDIA_LIB_PATH to LD_LIBRARY_PATH
 if [[ $NVIDIA_LIB_PATH ]];
 then
