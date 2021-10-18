@@ -251,6 +251,13 @@ RUN mkdir /tmp/rstudio && \
         R-4.1.1-1-1.x86_64.rpm \
         rstudio-server-rhel-1.4.1717-x86_64.rpm \
         unixODBC-devel \
+        devtoolset-8-gcc \
+        devtoolset-8-gcc-c++ \
+        devtoolset-8-gcc-gfortran \
+        libcurl-devel \
+        cairo-devel \
+        openssl-devel \
+        libxml2-devel \
         https://download.oracle.com/otn_software/linux/instantclient/19800/oracle-instantclient19.8-basic-19.8.0.0.0-1.x86_64.rpm \
         https://download.oracle.com/otn_software/linux/instantclient/19800/oracle-instantclient19.8-sqlplus-19.8.0.0.0-1.x86_64.rpm \
         https://download.oracle.com/otn_software/linux/instantclient/19800/oracle-instantclient19.8-odbc-19.8.0.0.0-1.x86_64.rpm \
