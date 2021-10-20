@@ -34,8 +34,8 @@ START_TIME_SETUP_LCG=$( date +%s.%N )
 source $LCG_VIEW/setup.sh
 
 # TEMP use newer R, local compiler and devel packages
-export PATH="/opt/R/4.1.1/bin:/opt/rh/devtoolset-8/root/usr/bin:/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-export LD_LIBRARY_PATH="/opt/rh/devtoolset-8/root/usr/lib64:/opt/rh/devtoolset-8/root/usr/lib"
+export PATH="/opt/R/4.1.1/bin:/opt/rh/devtoolset-8/root/usr/bin:/usr/sue/sbin:/usr/sue/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH"
+export LD_LIBRARY_PATH="/opt/rh/devtoolset-8/root/usr/lib64:/opt/rh/devtoolset-8/root/usr/lib:$LD_LIBRARY_PATH"
 export PKG_CONFIG_PATH="/usr/lib64/pkgconfig:/usr/share/pkgconfig"
 
 # Append NVIDIA_LIB_PATH to LD_LIBRARY_PATH
