@@ -12,7 +12,10 @@ stages:
 
 build_final_image:
     stage: build
-    script: docker build --compress --squash --rm -t $CI_COMMIT_SHA$CI_PIPELINE_IID --build-arg BUILD_TAG=$CI_COMMIT_TAG .
+    script: 
+      - docker login gitlab-registry.cern.ch -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+      - docker build --compress --squash --rm -t $CI_COMMIT_SHA$CI_PIPELINE_IID --build-arg BUILD_TAG=$CI_COMMIT_TAG .
+      - docker logout
     tags:
         - swan-runner
     only: 
@@ -21,7 +24,10 @@ build_final_image:
 
 build_daily:
     stage: build
-    script: docker build --compress --rm -t $CI_COMMIT_SHA$CI_PIPELINE_IID --build-arg VERSION_NBEXTENSIONS=daily --build-arg CI_PIPELINE=$CI_PIPELINE_ID .
+    script: 
+      - docker login gitlab-registry.cern.ch -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+      - docker build --compress --rm -t $CI_COMMIT_SHA$CI_PIPELINE_IID --build-arg VERSION_NBEXTENSIONS=daily --build-arg CI_PIPELINE=$CI_PIPELINE_ID .
+      - docker logout
     tags:
         - swan-runner
     except:
