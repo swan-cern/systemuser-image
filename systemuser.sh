@@ -194,6 +194,16 @@ then
   echo "c.HDFSBrowserConfig.hdfs_site_path = '/cvmfs/sft.cern.ch/lcg/etc/hadoop-confext/conf/etc/$CLUSTER_NAME/hadoop.$CLUSTER_NAME/hdfs-site.xml'" >> $JPY_CONFIG
   echo "c.HDFSBrowserConfig.hdfs_site_namenodes_property = 'dfs.ha.namenodes.$NAMESPACE'" >> $JPY_CONFIG
   echo "c.HDFSBrowserConfig.hdfs_site_namenodes_port = '50070'" >> $JPY_CONFIG
+
+else 
+  # Disable spark jupyterlab extensions enabled by default if no cluster is selected
+  mkdir -p /etc/jupyter/labconfig
+  echo "{
+    \"disabledExtensions\": {
+      \"sparkconnector\": true,
+      \"sparkmonitor\": true
+    }
+  }" > /etc/jupyter/labconfig/page_config.json
 fi
 
 # HTCondor at CERN integration
