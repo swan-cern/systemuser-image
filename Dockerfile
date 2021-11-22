@@ -209,7 +209,7 @@ RUN pip install --no-deps \
             jupyter-resource-usage==0.6.0 \
             hdfsbrowser==1.1.1 \
             sparkconnector==2.2.0 \
-            sparkmonitor==1.1.1 \
+            sparkmonitor==2.0.0 \
             swancontents==1.3.0 \
             swanhelp==1.0.0 \
             swanintro==1.0.0 \
