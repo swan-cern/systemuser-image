@@ -20,7 +20,7 @@ RUN yum -y install \
     libXpm \
     libXft
 
-# Install bs4 - required by sparkconnector.serverextension
+# Install bs4 - required by hdfsbrowser
 RUN pip3 install bs4
 
 # Install tk - required by matplotlib
@@ -223,7 +223,6 @@ RUN pip install --no-deps \
     jupyter nbextension install --py --system sparkconnector && \
     jupyter nbextension install --py --system sparkmonitor && \
     jupyter nbextension enable --py --system sparkmonitor && \
-    jupyter serverextension enable --py --system sparkmonitor && \
     jupyter nbextension install --py --system swancontents && \
     jupyter serverextension enable --py --system swancontents && \
     jupyter nbextension install --py --system swanhelp && \
