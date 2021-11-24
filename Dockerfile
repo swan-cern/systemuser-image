@@ -217,7 +217,8 @@ RUN pip install --no-deps \
             swannotebookviewer==1.2.0 \
             swannotifications==1.0.0 \
             swanoauthrenew==1.0.1 PyJWT \
-            swanshare==1.1.1 && \
+            swanshare==1.1.1 \
+            swanheader==1.0.0 && \
     # Enable all the nbextensions and server extensions
     jupyter nbextension install --py --system hdfsbrowser && \
     jupyter nbextension install --py --system sparkconnector && \
