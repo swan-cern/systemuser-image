@@ -237,8 +237,6 @@ RUN pip install --no-deps \
     jupyter nbextension install --py --system swanshare && \
     jupyter nbextension enable --py --system swanshare && \
     jupyter serverextension enable --py --system swanshare && \
-    # Build Jupyterlab to enable the installed lab extensions
-    jupyter lab build && \
     # Force nbextension_configurator systemwide to prevent users disabling it
     jupyter nbextensions_configurator enable --system && \
     # Spark Monitor/Connector also need to be available to the user environment since they have kernel extensions
