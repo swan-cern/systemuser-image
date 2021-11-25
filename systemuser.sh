@@ -201,7 +201,8 @@ else
   echo "{
     \"disabledExtensions\": {
       \"sparkconnector\": true,
-      \"sparkmonitor\": true
+      \"@swan-cern/hdfsbrowser\": true,
+      \"jupyterlab_sparkmonitor\": true
     }
   }" > /etc/jupyter/labconfig/page_config.json
 fi
