@@ -205,7 +205,7 @@ RUN pip install psutil==5.8.0
 
 # Install all of our extensions
 # Ignore (almost all) dependencies because they have already been installed or come from CVMFS
-RUN pip install --no-deps \
+RUN pip install --no-deps --no-cache-dir \
             jupyter-resource-usage==0.6.0 \
             hdfsbrowser==1.1.1 \
             sparkconnector==2.2.0 \
