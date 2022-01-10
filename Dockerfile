@@ -260,9 +260,7 @@ ENV SHELL /bin/bash
 ADD systemuser.sh /srv/singleuser/systemuser.sh
 ADD userconfig.sh /srv/singleuser/userconfig.sh
 ADD executables/start_ipykernel.py /usr/local/bin/start_ipykernel.py
-ADD executables/jupyterhub-singleuser /usr/local/bin/jupyterhub-singleuser
-RUN chmod 705 /usr/local/bin/start_ipykernel.py && \
-    chmod 705 /usr/local/bin/jupyterhub-singleuser
+RUN chmod 705 /usr/local/bin/start_ipykernel.py
 
 WORKDIR /root
 CMD ["sh", "/srv/singleuser/systemuser.sh"]

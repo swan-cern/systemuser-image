@@ -280,9 +280,14 @@ then
 fi
 
 # Run notebook server
+
+# The 'python -s' option below removes the user site-packages directory from sys.path and avoids 
+# any conflicting dependencies installed by the user from preventing the notebook server to start
+# including loading any .pth files which modify sys.path
+
 log_info "Running the notebook server"
 sudo -E -u $USER sh -c 'cd $SWAN_HOME \
-                        && jupyterhub-singleuser \
+                        && /usr/local/bin/python3 -s -m jupyterhub.singleuser \
                            --port=8888 \
                            --ip=0.0.0.0 \
                            --user=$JPY_USER \
