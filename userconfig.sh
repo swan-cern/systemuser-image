@@ -69,7 +69,8 @@ then
  if [[ $SPARK_MJR_VERSION == 3 ]]; then SPARKVERSION=spark3; fi
  if [[ $HADOOP_MJR_VERSION == 3 ]]; then HADOOPVERSION='3.2'; fi
  source $SPARK_CONFIG_SCRIPT $SPARK_CLUSTER_NAME ${HADOOPVERSION:-'2.7'} ${SPARKVERSION:-'spark2'}
- export SPARK_LOCAL_IP=`hostname -i`
+ #to make sure we get the ipv4 addrress when in dual stack nodes
+ export SPARK_LOCAL_IP=$(getent ahostsv4 | awk "/$HOSTNAME/ {print \$1}")
  echo "c.InteractiveShellApp.extensions.append('sparkconnector.connector')" >>  $KERNEL_PROFILEPATH
  if [[ $CONNECTOR_BUNDLED_CONFIGS ]]
   then
