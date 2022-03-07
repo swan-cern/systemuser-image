@@ -144,6 +144,8 @@ then
    cp -rL $OCTAVE_KERNEL_PATH $KERNEL_DIR
    export OCTAVE_KERNEL_JSON=$KERNEL_DIR/octave/kernel.json
 fi
+# Julia
+cp -rL $LCG_VIEW/share/jupyter/kernels/julia-* $KERNEL_DIR
 
 chown -R $USER:$USER $JPY_DIR $JPY_LOCAL_DIR $IPYTHONDIR
 export SWAN_ENV_FILE=$SCRATCH_HOME/.bash_profile
