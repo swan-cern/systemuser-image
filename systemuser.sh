@@ -218,7 +218,7 @@ if [[ $CERN_HTCONDOR ]]
 then
   export CONDOR_CONFIG=/eos/project/l/lxbatch/public/config-condor-swan/condor_config
   mkdir -p /etc/condor/config.d/ /etc/myschedd/
-  ln -s /eos/project/l/lxbatch/public/config-condor-swan/10_cernsubmit.erb /etc/condor/config.d/10_cernsubmit.erb
+  ln -s /eos/project/l/lxbatch/public/config-condor-swan/config.d/10_cernsubmit.erb /etc/condor/config.d/10_cernsubmit.erb
   ln -s /eos/project/l/lxbatch/public/config-condor-swan/myschedd.yaml /etc/myschedd/myschedd.yaml
   ln -s /eos/project/l/lxbatch/public/config-condor-swan/ngbauth-submit /etc/sysconfig/ngbauth-submit
 fi
