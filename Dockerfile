@@ -203,9 +203,14 @@ RUN mv /usr/local/lib/python3.9/site-packages/ipykernel /usr/local/lib/python3.9
 # Required by jupyter-resource-usage
 RUN pip install psutil==5.8.0
 
+# Required by dask-labextension
+RUN pip install jupyter-server-proxy==3.2.1 \
+                simpervisor==0.4
+
 # Install all of our extensions
 # Ignore (almost all) dependencies because they have already been installed or come from CVMFS
 RUN pip install --no-deps --no-cache-dir \
+            dask-labextension==5.2.0 \
             jupyter-resource-usage==0.6.0 \
             hdfsbrowser==1.1.1 \
             sparkconnector==2.3.0 \
