@@ -205,7 +205,9 @@ RUN pip install psutil==5.8.0
 
 # Required by dask-labextension
 RUN pip install jupyter-server-proxy==3.2.1 \
-                simpervisor==0.4
+                simpervisor==0.4 \
+                distributed>=1.24.1 \
+                bokeh >=1.0.0,!=2.0.0
 
 # Install all of our extensions
 # Ignore (almost all) dependencies because they have already been installed or come from CVMFS
