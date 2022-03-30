@@ -132,7 +132,7 @@ kfile_names = ["$KERNEL_DIR/%s/kernel.json" % kdir for kdir in kdirs]
 kfile_contents = [open(kfile_name).read() for kfile_name in kfile_names]
 kfile_contents_mod = list(map(addEnv, kfile_contents))
 print(kfile_contents_mod)
-[open(d[0],"w").write(json.dumps(d[1], indent=2)) for d in zip(kfile_names,kfile_contents_mod)]
+[open(d[0],"w").write(json.dumps(json.loads(d[1]), indent=2)) for d in zip(kfile_names,kfile_contents_mod)]
 
 with open("$SWAN_ENV_FILE", "w") as termEnvFile:
     for key, val in dict(os.environ).items():
