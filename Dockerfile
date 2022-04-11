@@ -223,7 +223,8 @@ RUN pip install --no-deps --no-cache-dir \
             swannotifications==1.0.0 \
             swanoauthrenew==1.0.1 PyJWT \
             swanshare==1.1.1 \
-            swanheader==1.0.0 && \
+            swanheader==1.0.0 \
+            swanportallocator==0.0.0 && \
     # Enable all the nbextensions and server extensions
     jupyter nbextension install --py --system hdfsbrowser && \
     jupyter nbextension install --py --system sparkconnector && \
@@ -242,13 +243,16 @@ RUN pip install --no-deps --no-cache-dir \
     jupyter nbextension install --py --system swanshare && \
     jupyter nbextension enable --py --system swanshare && \
     jupyter serverextension enable --py --system swanshare && \
+    jupyter serverextension enable --py --system swanportallocator && \
     # Force nbextension_configurator systemwide to prevent users disabling it
     jupyter nbextensions_configurator enable --system && \
     # Spark Monitor/Connector also need to be available to the user environment since they have kernel extensions
+    # PortAllocator is used by SparkConnector, so it needs to be available too
     mkdir -p /usr/local/lib/swan/extensions && \
     ln -s /usr/local/lib/python3.9/site-packages/sparkmonitor /usr/local/lib/swan/extensions/ && \
     ln -s /usr/local/lib/python3.9/site-packages/sparkconnector /usr/local/lib/swan/extensions/ && \
     ln -s /usr/local/lib/python3.9/site-packages/swankernelenv /usr/local/lib/swan/extensions/ && \
+    ln -s /usr/local/lib/python3.9/site-packages/swanportallocator /usr/local/lib/swan/extensions/ && \
     # FIXME workaround for templates. For some reason, and only in our image, Jupyter is looking for templates inside templates
     cp -r /usr/local/lib/python3.9/site-packages/swancontents/templates{,2} && \
     mv /usr/local/lib/python3.9/site-packages/swancontents/templates{2,/templates}
