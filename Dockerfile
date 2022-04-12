@@ -213,7 +213,7 @@ RUN pip install --no-deps --no-cache-dir \
             dask-labextension==5.2.0 \
             jupyter-resource-usage==0.6.0 \
             hdfsbrowser==1.1.1 \
-            sparkconnector==2.3.0 \
+            sparkconnector==2.4.1 \
             sparkmonitor==2.1.1 \
             swancontents==1.3.1 \
             swanhelp==1.0.0 \
