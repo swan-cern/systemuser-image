@@ -224,7 +224,7 @@ RUN pip install --no-deps --no-cache-dir \
             swanoauthrenew==1.0.1 PyJWT \
             swanshare==1.1.1 \
             swanheader==1.0.0 \
-            swanportallocator==0.0.0 && \
+            swanportallocator==1.0.0 && \
     # Enable all the nbextensions and server extensions
     jupyter nbextension install --py --system hdfsbrowser && \
     jupyter nbextension install --py --system sparkconnector && \
