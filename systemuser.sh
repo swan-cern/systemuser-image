@@ -184,7 +184,6 @@ then
   echo "{
     \"NotebookApp\": {
       \"nbserver_extensions\": {
-        \"swanportallocator.portallocator\": true,
         \"hdfsbrowser.serverextension\": true
       }
     }
