@@ -124,7 +124,14 @@ import json
 
 def addEnv(dtext):
     d=eval(dtext)
-    d["env"]=dict(os.environ)
+
+    # Configure a provisioner in kernel.json, that will load the enviornment
+    # dynamically from a folder-specific file or the default enviornment file
+    d["metadata"] = {
+    "kernel_provisioner": {
+      "provisioner_name": "swan-provisioner"
+      }
+    }
     return d
 
 kdirs = os.listdir("$KERNEL_DIR")
@@ -141,6 +148,15 @@ with open("$SWAN_ENV_FILE", "w") as termEnvFile:
         if key == "PYTHONPATH":
             val = re.sub('/usr/local/lib/swan/(extensions/)?:', '', val)
         termEnvFile.write("export %s=\"%s\"\n" % (key, val))
+# Write an enviornment file to be read by the provisioner
+# for folders without a defined environment
+with open("$SWAN_DEFAULT_ENV_FILE", "w") as defaultEnvFile:
+    for key, val in dict(os.environ).items():
+        if key == "SUDO_COMMAND":
+            continue
+        if key == "PYTHONPATH":
+            val = re.sub('/usr/local/lib/swan/(extensions/)?:', '', val)
+        defaultEnvFile.write("%s=%s\n" % (key, val))
 EOF
 
 # Make sure that `python` points to the correct python bin from CVMFS
