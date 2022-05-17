@@ -153,6 +153,8 @@ fi
 
 chown -R $USER:$USER $JPY_DIR $JPY_LOCAL_DIR $IPYTHONDIR
 export SWAN_ENV_FILE=$SCRATCH_HOME/.bash_profile
+# Used by swanprojects for the default folder environment
+export SWAN_DEFAULT_ENV_FILE=$SCRATCH_HOME/.swan_default_env
 
 sudo -E -u $USER sh /srv/singleuser/userconfig.sh
 
