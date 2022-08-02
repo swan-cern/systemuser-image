@@ -115,38 +115,16 @@ fi
 
 export KRB5CCNAME=$NOTEBOOK_KRB5CCNAME
 
-# Configure kernels
-# As the LCG setup might set PYTHONHOME, run python with -E to prevent this python 2 code
-# to lookup for modules in a Python 3 path (if this is the selected stack)
-/usr/local/bin/python3 -E <<EOF
-import os, re
-import json
 
-def addEnv(dtext):
-    d=eval(dtext)
-    d["env"]=dict(os.environ)
-    return d
 
-kdirs = os.listdir("$KERNEL_DIR")
-kfile_names = ["$KERNEL_DIR/%s/kernel.json" % kdir for kdir in kdirs]
-kfile_contents = [open(kfile_name).read() for kfile_name in kfile_names]
-kfile_contents_mod = list(map(addEnv, kfile_contents))
-print(kfile_contents_mod)
-[open(d[0],"w").write(json.dumps(d[1], indent=4)) for d in zip(kfile_names,kfile_contents_mod)]
-
-with open("$SWAN_ENV_FILE", "w") as termEnvFile:
-    for key, val in dict(os.environ).items():
-        if key == "SUDO_COMMAND":
-            continue
-        if key == "PYTHONPATH":
-            val = re.sub('/usr/local/lib/swan/(extensions/)?:', '', val)
-        termEnvFile.write("export %s=\"%s\"\n" % (key, val))
-EOF
-
-# Make sure that `python` points to the correct python bin from CVMFS
+# Make sure that `python` points to the correct python binary from CVMFS
 PYTHONEXECPATH=$(which python$PYVERSION)
 printf "alias python=\"$PYTHONEXECPATH\"\n" >> $SWAN_ENV_FILE
-sed -i -E "s@\[\"python[0-9.]*\"@\[\"$PYTHONEXECPATH\"@g" $KERNEL_DIR/*/kernel.json
+
+# As the LCG setup might set PYTHONHOME, run python with -E to prevent this python code
+# to lookup for modules in a Python 3 path (if this is the selected stack)
+PYTHONEXECPATH=$PYTHONEXECPATH /usr/local/bin/python3 -E /srv/singleuser/configure_kernels.py
+
 
 #Setting up colors
 printf "alias ls='ls --color'\n" >> $SWAN_ENV_FILE
