@@ -50,7 +50,7 @@ def configure_terminal():
 
         terminal_environment_file.writelines(
             [
-                f'alias python="{PYTHONEXECPATH}"',
+                f'alias python="{PYTHONEXECPATH}"\n',
                 # Setting up colors
                 "alias ls='ls --color'\n",
                 "alias grep='grep --color'\n",
