@@ -115,20 +115,9 @@ fi
 
 export KRB5CCNAME=$NOTEBOOK_KRB5CCNAME
 
-
-
-# Make sure that `python` points to the correct python binary from CVMFS
-PYTHONEXECPATH=$(which python$PYVERSION)
-printf "alias python=\"$PYTHONEXECPATH\"\n" >> $SWAN_ENV_FILE
-
-# As the LCG setup might set PYTHONHOME, run python with -E to prevent this python code
-# to lookup for modules in a Python 3 path (if this is the selected stack)
-PYTHONEXECPATH=$PYTHONEXECPATH /usr/local/bin/python3 -E /srv/singleuser/configure_kernels.py
-
-
-#Setting up colors
-printf "alias ls='ls --color'\n" >> $SWAN_ENV_FILE
-printf "alias grep='grep --color'\n" >> $SWAN_ENV_FILE
+# As the LCG setup might set PYTHONHOME, run python with -I (Isolated Mode) to prevent
+# the lookup for modules in a Python 3 path and user site
+/usr/local/bin/python3 -I /srv/singleuser/configure_kernels_and_terminal.py
 
 # Remove our extra paths (where we install our extensions) in the kernel (via SwanKernelEnv kernel extension), 
 # leaving the user env cleaned. It should be the last one called to allow the kernel to load our extensions correctly.
