@@ -84,6 +84,9 @@ echo "c.NotebookNotary.secret_file = '$JUPYTER_LOCAL_PATH/notebook_secret'" >> $
 echo "c.NotebookApp.contents_manager_class = 'swancontents.filemanager.swanfilemanager.SwanFileManager'" >> $JPY_CONFIG
 echo "c.ContentsManager.checkpoints_class = 'swancontents.filemanager.checkpoints.EOSCheckpoints'" >> $JPY_CONFIG
 
+# Fixes issue with frozen servers with async io errors, fix from https://github.com/jupyter/notebook/issues/6164
+echo "c.NotebookApp.kernel_manager_class = 'notebook.services.kernels.kernelmanager.AsyncMappingKernelManager'" >> $JPY_CONFIG
+
 if [ "${SWAN_USE_JUPYTERLAB}" == "true" ]; 
 then
   echo "c.NotebookApp.default_url = 'lab'" >> $JPY_CONFIG
