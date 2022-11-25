@@ -106,6 +106,16 @@ echo "c.SwanOauthRenew.files = [
     ('$OAUTH2_FILE', 'exchanged_tokens/$EOS_OAUTH_ID', 'oauth2:{token}:$OAUTH_INSPECTION_ENDPOINT')
 ]" >> $JPY_CONFIG
 
+# Convert the _xsrf cookie into a session cookie, to prevent it from having an expiration date of 30 days
+# Without this setting, _xsrf cookie could expire in the middle of a user editing a notebook, making it
+# impossible to save the notebook without refreshing the page and losing unsaved changes.
+echo "c.NotebookApp.tornado_settings = {
+  'xsrf_cookie_kwargs': {
+    'expires_days': None,
+    'expires': None
+  }
+}" >> $JPY_CONFIG
+
 cp -L -r $LCG_VIEW/etc/jupyter/* $JUPYTER_CONFIG_DIR
 
 # Configure %%cpp cell highlighting
