@@ -215,7 +215,7 @@ RUN pip install --no-deps --no-cache-dir \
             hdfsbrowser==1.1.1 \
             sparkconnector==2.4.5 \
             sparkmonitor==2.1.1 \
-            swancontents==1.4.1 \
+            swancontents==1.4.2 \
             swanhelp==1.0.0 \
             swanintro==1.0.0 \
             swankernelenv==1.0.0 \
