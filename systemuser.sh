@@ -116,6 +116,14 @@ echo "c.NotebookApp.tornado_settings = {
   }
 }" >> $JPY_CONFIG
 
+
+# Disable pinging for maintenance notifications when running on Kubernetes
+if [ "${SWAN_DISABLE_NOTIFICATIONS}" == "true" ]; 
+then
+  log_info "Disable SwanNotifications extension"
+  jupyter nbextension disable swannotifications/extension --system --section common
+fi
+
 cp -L -r $LCG_VIEW/etc/jupyter/* $JUPYTER_CONFIG_DIR
 
 # Configure %%cpp cell highlighting
