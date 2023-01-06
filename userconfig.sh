@@ -102,18 +102,22 @@ else
  log_info "Cannot find user script: $USER_ENV_SCRIPT";
 fi
 
-# Run notebook with different KRB5CCNAME than container itself.
-# This is needed to allow eos-fuse (and other container processes) to run with dedicated read-only KRB5CCNAME,
-# while notebook and terminal processes run KRB5CCNAME being NOTEBOOK_KRB5CCNAME.
-# If krb5ccname is already set copy this krb as default for the notebook process.
-NOTEBOOK_KRB5CCNAME="/tmp/krb5cc_${USER_ID}_${RANDOM}"
-if [[ -n $KRB5CCNAME && -f $KRB5CCNAME ]];
+# In k8s, $KRB5CCNAME_NB_TERM points to the location of the EOS kerberos ticket that notebook and terminal
+# processes use. The Jupyter server uses the same ticket stored in another location ($KRB5CCNAME). With the
+# code below, we force that $KRB5CCNAME becomes $KRB5CCNAME_NB_TERM only for notebook and terminal processes.
+# This duality exists to prevent the user from overwriting the EOS kerberos ticket that the Jupyter server
+# uses, e.g. by doing `kinit` from a notebook or a terminal.
+# In puppet, $KRB5CCNAME_NB_TERM does not exist. Thus we give it a value and make $KRB5CCNAME point to that
+# value.
+# Both in k8s and puppet, renewals of the EOS kerberos tickets are automatically done to prevent expiration,
+# both for the Jupyter server and the notebooks and terminals. However, if the user runs an explicit kinit
+# and generates new kerberos credentials for notebooks and terminals, they are responsible for renewing those
+# credentials from that point on.
+if [[ -z $KRB5CCNAME_NB_TERM ]]
 then
-  cp $KRB5CCNAME $NOTEBOOK_KRB5CCNAME
-  chown $USER:$USER $NOTEBOOK_KRB5CCNAME
+  KRB5CCNAME_NB_TERM="/tmp/krb5cc_${USER_ID}_${RANDOM}"
 fi
-
-export KRB5CCNAME=$NOTEBOOK_KRB5CCNAME
+export KRB5CCNAME=$KRB5CCNAME_NB_TERM
 
 # As the LCG setup might set PYTHONHOME, run python with -I (Isolated Mode) to prevent
 # the lookup for modules in a Python 3 path and user site
