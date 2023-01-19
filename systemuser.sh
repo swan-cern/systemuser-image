@@ -270,9 +270,14 @@ fi
 
 if [[ $GALLERY_URL ]]
 then
+  # Configure links rendered by notebook pages
   echo "c.NotebookApp.jinja_template_vars = {
     'gallery_url': '$GALLERY_URL'
 }" >> $JPY_CONFIG
+  # Configure SwanGallery JupyterLab extension
+  echo "{
+    \"gallery_url\": \"$GALLERY_URL\"
+}" > /usr/local/etc/jupyter/nbconfig/gallery.json
 fi
 
 # Make sure we have a sane terminal
