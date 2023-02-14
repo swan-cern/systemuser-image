@@ -216,7 +216,7 @@ RUN pip install simpervisor==0.4
 # Ignore (almost all) dependencies because they have already been installed or come from CVMFS
 RUN pip install --no-deps --no-cache-dir \
             dask-labextension==5.2.0 \
-            # swandask must to be installed after its dependency dask-labextension to disable the server extension automatically
+            # swandask must be installed after its dependency dask-labextension to disable the server extension automatically
             swandask==0.0.3 && \
             swandaskcluster==1.0.3 && \
             jupyter-resource-usage==0.6.0 \
