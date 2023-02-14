@@ -258,6 +258,9 @@ RUN pip install --no-deps --no-cache-dir \
     ln -s /usr/local/lib/python3.9/site-packages/sparkconnector /usr/local/lib/swan/extensions/ && \
     ln -s /usr/local/lib/python3.9/site-packages/swankernelenv /usr/local/lib/swan/extensions/ && \
     ln -s /usr/local/lib/python3.9/site-packages/swanportallocator /usr/local/lib/swan/extensions/ && \
+    ln -s /usr/local/lib/python3.9/site-packages/dask_labextension /usr/local/lib/swan/extensions/ && \
+    ln -s /usr/local/lib/python3.9/site-packages/jupyter_server_proxy /usr/local/lib/swan/extensions/ && \
+    ln -s /usr/local/lib/python3.9/site-packages/simpervisor /usr/local/lib/swan/extensions/ && \
     # FIXME workaround for templates. For some reason, and only in our image, Jupyter is looking for templates inside templates
     cp -r /usr/local/lib/python3.9/site-packages/swancontents/templates{,2} && \
     mv /usr/local/lib/python3.9/site-packages/swancontents/templates{2,/templates}
