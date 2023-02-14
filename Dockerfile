@@ -217,8 +217,8 @@ RUN pip install simpervisor==0.4
 RUN pip install --no-deps --no-cache-dir \
             dask-labextension==5.2.0 \
             # swandask must be installed after its dependency dask-labextension to disable the server extension automatically
-            swandask==0.0.3 && \
-            swandaskcluster==1.0.3 && \
+            swandask==0.0.3 \
+            swandaskcluster==1.0.3 \
             jupyter-resource-usage==0.6.0 \
             hdfsbrowser==1.1.1 \
             sparkconnector==2.4.6 \
