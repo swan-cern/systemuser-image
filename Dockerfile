@@ -216,6 +216,8 @@ RUN pip install simpervisor==0.4
 # Ignore (almost all) dependencies because they have already been installed or come from CVMFS
 RUN pip install --no-deps --no-cache-dir \
             dask-labextension==5.2.0 \
+            # swandask must to be installed after its dependency dask-labextension to disable the server extension automatically
+            swandask==0.0.3 && \
             jupyter-resource-usage==0.6.0 \
             hdfsbrowser==1.1.1 \
             sparkconnector==2.4.6 \
@@ -261,6 +263,7 @@ RUN pip install --no-deps --no-cache-dir \
     ln -s /usr/local/lib/python3.9/site-packages/dask_labextension /usr/local/lib/swan/extensions/ && \
     ln -s /usr/local/lib/python3.9/site-packages/jupyter_server_proxy /usr/local/lib/swan/extensions/ && \
     ln -s /usr/local/lib/python3.9/site-packages/simpervisor /usr/local/lib/swan/extensions/ && \
+    ln -s /usr/local/lib/python3.9/site-packages/swandask /usr/local/lib/swan/extensions/ && \
     # FIXME workaround for templates. For some reason, and only in our image, Jupyter is looking for templates inside templates
     cp -r /usr/local/lib/python3.9/site-packages/swancontents/templates{,2} && \
     mv /usr/local/lib/python3.9/site-packages/swancontents/templates{2,/templates}
