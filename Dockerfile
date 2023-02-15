@@ -282,6 +282,7 @@ ENV SHELL /bin/bash
 
 ADD systemuser.sh /srv/singleuser/systemuser.sh
 ADD userconfig.sh /srv/singleuser/userconfig.sh
+ADD create_dask_certs.sh /srv/singleuser/create_dask_certs.sh
 ADD configure_kernels_and_terminal.py /srv/singleuser/configure_kernels_and_terminal.py
 ADD executables/start_ipykernel.py /usr/local/bin/start_ipykernel.py
 RUN chmod 705 /usr/local/bin/start_ipykernel.py
