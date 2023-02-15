@@ -216,8 +216,6 @@ RUN pip install simpervisor==0.4
 # Ignore (almost all) dependencies because they have already been installed or come from CVMFS
 RUN pip install --no-deps --no-cache-dir \
             dask-labextension==5.2.0 \
-            # swandask must be installed after its dependency dask-labextension to disable the server extension automatically
-            swandask==0.0.3 \
             swandaskcluster==1.0.3 \
             jupyter-resource-usage==0.6.0 \
             hdfsbrowser==1.1.1 \
@@ -232,9 +230,12 @@ RUN pip install --no-deps --no-cache-dir \
             swanoauthrenew==1.0.1 PyJWT \
             swanshare==1.1.1 \
             swanheader==1.0.0 \
-            swanportallocator==1.0.1 && \
-    # Enable all the nbextensions and server extensions
-    jupyter nbextension install --py --system hdfsbrowser && \
+            swanportallocator==1.0.1
+# swandask must be installed after its dependency dask-labextension to disable the server extension automatically
+RUN pip install --no-deps --no-cache-dir swandask==0.0.3
+
+# Enable all the nbextensions and server extensions
+RUN jupyter nbextension install --py --system hdfsbrowser && \
     jupyter nbextension install --py --system sparkconnector && \
     jupyter nbextension install --py --system sparkmonitor && \
     jupyter nbextension enable --py --system sparkmonitor && \
