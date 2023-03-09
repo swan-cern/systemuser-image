@@ -260,6 +260,17 @@ RUN pip install --no-deps --no-cache-dir --target ${DASK_LIB_DIR} \
 # Dependency of swandaskcluster
 RUN ln -s /usr/local/lib/python3.9/site-packages/swanportallocator ${DASK_LIB_DIR}
 
+# Install the SLURM Packages
+RUN yum makecache fast \
+    && yum-config-manager --add-repo http://linuxsoft.cern.ch/internal/repos/batch7-stable/x86_64/os --nogpgcheck \
+    && yum -y install sudo epel-release --nogpgcheck \
+    && yum -y install slurm --nogpgcheck
+
+RUN /sbin/adduser slurm
+RUN mkdir -p /etc/slurm/
+ADD etc/slurm.conf /etc/slurm/slurm.conf
+####
+
 RUN yum clean all && \
     rm -rf /var/cache/yum
 
