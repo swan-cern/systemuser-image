@@ -103,6 +103,7 @@ EOS_OAUTH_ID="${EOS_OAUTH_ID:-eos-service}"
 echo "c.SwanOauthRenew.files = [
     ('/tmp/swan_oauth.token', 'access_token', '{token}'),
     ('/tmp/cernbox_oauth.token', 'exchanged_tokens/$CERNBOX_OAUTH_ID', '{token}'),
+    ('/tmp/slurm_oauth.token', 'exchanged_tokens/slurm', '{token}'),
     ('$OAUTH2_FILE', 'exchanged_tokens/$EOS_OAUTH_ID', 'oauth2:{token}:$OAUTH_INSPECTION_ENDPOINT')
 ]" >> $JPY_CONFIG
 
