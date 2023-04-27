@@ -50,7 +50,14 @@ SETUP_LCG_TIME_SEC=$(echo $(date +%s.%N --date="$START_TIME_SETUP_LCG seconds ag
 log_info "user: $USER, host: ${SERVER_HOSTNAME%%.*}, metric: configure_user_env_cvmfs.${ROOT_LCG_VIEW_NAME:-none}.duration_sec, value: $SETUP_LCG_TIME_SEC"
 
 # Add SWAN modules path to PYTHONPATH so that it picks them
-export PYTHONPATH=/usr/local/lib/swan/extensions/:$PYTHONPATH 
+export PYTHONPATH=/usr/local/lib/swan/extensions/:$PYTHONPATH
+
+# Configure Dask.
+# DASK_LIB_DIR is necessary so that kernels and notebooks can use the loader
+# in swandaskcluster to create a default Security object for Dask clients, to
+# which we point with a Dask variable
+export PYTHONPATH=$PYTHONPATH:$DASK_LIB_DIR
+export DASK_DISTRIBUTED__CLIENT__SECURITY_LOADER="swandaskcluster.security.loader"
 
 # Configure SparkMonitor
 export KERNEL_PROFILEPATH=$PROFILEPATH/ipython_kernel_config.py 
