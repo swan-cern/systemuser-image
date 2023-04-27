@@ -244,10 +244,13 @@ then
 
   # Create self-signed certificate for Dask processes
   log_info "Generating certificate for Dask"
-  export DASK_TLS_DIR=/srv/dask_tls
-  mkdir -p $DASK_TLS_DIR
+  export DASK_TLS_DIR=$DASK_DIR/tls
+  mkdir $DASK_TLS_DIR
   chown -R $USER:$USER $DASK_TLS_DIR
   sudo -u $USER sh /srv/singleuser/create_dask_certs.sh $DASK_TLS_DIR &
+
+  # Make SwanHTCondorCluster findable by the Dask lab extension
+  export PYTHONPATH=$PYTHONPATH:$DASK_LIB_DIR
 fi
 
 # Configurations for extensions (used when deployed outside CERN)

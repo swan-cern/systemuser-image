@@ -216,7 +216,6 @@ RUN pip install simpervisor==0.4
 # Ignore (almost all) dependencies because they have already been installed or come from CVMFS
 RUN pip install --no-deps --no-cache-dir \
             dask-labextension==5.2.0 \
-            swandaskcluster==2.0.0 \
             jupyter-resource-usage==0.6.0 \
             hdfsbrowser==1.1.1 \
             sparkconnector==2.4.6 \
@@ -266,11 +265,20 @@ RUN jupyter nbextension install --py --system hdfsbrowser && \
     ln -s /usr/local/lib/python3.9/site-packages/jupyter_server_proxy /usr/local/lib/swan/extensions/ && \
     ln -s /usr/local/lib/python3.9/site-packages/simpervisor /usr/local/lib/swan/extensions/ && \
     ln -s /usr/local/lib/python3.9/site-packages/swandask /usr/local/lib/swan/extensions/ && \
-    ln -s /usr/local/lib/python3.9/site-packages/swandaskcluster /usr/local/lib/swan/extensions/ && \
     # FIXME workaround for templates. For some reason, and only in our image, Jupyter is looking for templates inside templates
     cp -r /usr/local/lib/python3.9/site-packages/swancontents/templates{,2} && \
     mv /usr/local/lib/python3.9/site-packages/swancontents/templates{2,/templates}
 
+# Configure Dask
+ENV DASK_DIR /srv/dask
+RUN mkdir -p ${DASK_DIR}
+ENV DASK_LIB_DIR ${DASK_DIR}/lib
+# Install swandaskcluster in its own lib dir so that we can add it individually
+# to the PYTHONPATH of notebooks and terminals, which need it to do automatic
+# TLS configuration for Dask clients
+RUN pip install --no-deps --no-cache-dir --target ${DASK_LIB_DIR} swandaskcluster==2.0.0
+# Dependency of swandaskcluster
+RUN ln -s /usr/local/lib/python3.9/site-packages/swanportallocator ${DASK_LIB_DIR}
 
 RUN yum clean all && \
     rm -rf /var/cache/yum
