@@ -248,9 +248,6 @@ then
   mkdir $DASK_TLS_DIR
   chown -R $USER:$USER $DASK_TLS_DIR
   sudo -u $USER sh /srv/singleuser/create_dask_certs.sh $DASK_TLS_DIR &
-
-  # Make SwanHTCondorCluster findable by the Dask lab extension
-  export PYTHONPATH=$PYTHONPATH:$DASK_LIB_DIR
 fi
 
 # Configurations for extensions (used when deployed outside CERN)
@@ -323,7 +320,7 @@ fi
 
 log_info "Running the notebook server"
 sudo -E -u $USER sh -c 'cd $SWAN_HOME \
-                        && /usr/local/bin/python3 -s -m jupyterhub.singleuser \
+                        && /usr/local/bin/python3 -I -m jupyterhub.singleuser \
                            --port=8888 \
                            --ip=0.0.0.0 \
                            --user=$JPY_USER \
