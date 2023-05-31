@@ -248,6 +248,18 @@ then
   mkdir $DASK_TLS_DIR
   chown -R $USER:$USER $DASK_TLS_DIR
   sudo -u $USER sh /srv/singleuser/create_dask_certs.sh $DASK_TLS_DIR &
+
+  # Dask config: lab extension must use SwanHTCondorCluster
+  DASK_CONFIG_DIR=/etc/dask 
+  mkdir $DASK_CONFIG_DIR
+  echo "
+labextension:
+  factory:
+    module: 'swandaskcluster'
+    class: 'SwanHTCondorCluster'
+    args: []
+    kwargs: {}  
+  " > $DASK_CONFIG_DIR/labextension.yaml
 fi
 
 # Configurations for extensions (used when deployed outside CERN)
