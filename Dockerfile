@@ -213,7 +213,7 @@ RUN pip install simpervisor==0.4
 # Install all of our extensions
 # Ignore (almost all) dependencies because they have already been installed or come from CVMFS
 RUN pip install --no-deps --no-cache-dir \
-            dask-labextension==5.2.0 \
+            dask-labextension==6.1.0 \
             jupyter-resource-usage==0.6.0 \
             hdfsbrowser==1.1.1 \
             sparkconnector==2.4.6 \
