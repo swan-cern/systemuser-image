@@ -179,6 +179,10 @@ ADD etc/grid-security/vomsdir /etc/grid-security/vomsdir
 RUN yum -y install java-1.8.0-openjdk && \
     keytool -import -alias cernbundle -file /etc/pki/tls/certs/CERN-bundle.crt \
         -keystore /etc/pki/tls/certs/truststore.jks -storepass 'password' -noprompt && \
+    keytool -import -alias cernGridCA -file "/etc/pki/tls/certs/CERN_Grid_Certification_Authority(1).crt" \
+        -keystore /etc/pki/tls/certs/truststore.jks -storepass 'password' -noprompt && \
+    keytool -import -alias cernRootCA2 -file "/etc/pki/tls/certs/CERN_Root_Certification_Authority_2.crt" \
+        -keystore /etc/pki/tls/certs/truststore.jks -storepass 'password' -noprompt && \
     yum -y erase java-1.8.0-openjdk && \
     rm -rf /usr/lib/jvm/
 
