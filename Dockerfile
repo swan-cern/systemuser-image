@@ -83,29 +83,20 @@ gpgcheck=0' > /etc/yum.repos.d/carepo.repo && \
         ca_USERTrustRSACertificationAuthority \
         ca_DigiCertGridRootCA-Root \
         ca_CERN-Root-2 \
-        ca_CNRS2 \
-        ca_CNRS2-Projets \
         ca_QuoVadis-Root-CA2G3 \
         ca_COMODO-RSA-CA \
         ca_CESNET-CA-Root \
         ca_UKeScienceRoot-2007 \
         ca_QuoVadis-Root-CA3G3 \
-        ca_DarkMatterPrivateRootCAG4 \
         ca_KENETROOTCA \
         ca_KENETCA-ICA-2015 \
-        ca_DarkMatterIGTFCA \
-        ca_DarkMatterAssuredCA \
         ca_UKeScienceCA-2B \
         ca_CESNET-CA-4 \
         ca_InCommon-IGTF-Server-CA \
-        ca_DarkMatterSecureCA \
-        ca_CNRS2-Grid-FR \
         ca_CERN-GridCA \
         ca_DigiCertGridCA-1G2-Classic-2015 \
-        ca_DigiCertGridCA-1-Classic \
         ca_GEANTeScienceSSLCA4 \
         ca_GEANTeSciencePersonalCA4 \
-        ca_DigiCertGridTrustCA-Classic \
         ca_DigiCertGridTrustCAG2-Classic \
         ca_TERENAeSciencePersonalCA3 \
         ca_TERENA-eScience-SSL-CA-3 \
@@ -118,8 +109,6 @@ gpgcheck=0' > /etc/yum.repos.d/carepo.repo && \
         ca_UNLPGrid \
         ca_NIKHEF \
         ca_MARGI \
-        ca_NCSA-slcs-2013 \
-        ca_INFN-CA-2015 \
         ca_KEK \
         ca_DCAROOT-G1 \
         ca_IGCA2 \
@@ -129,41 +118,33 @@ gpgcheck=0' > /etc/yum.repos.d/carepo.repo && \
         ca_MaGrid \
         ca_BYGCA \
         ca_NorduGrid-2015 \
-        ca_PolishGrid \
         ca_PolishGrid-2019 \
         ca_AC-GRID-FR-Services \
-        ca_QuoVadis-Root-CA1 \
         ca_BG-ACAD-CA \
         ca_AC-GRID-FR \
-        ca_MYIFAM \
         ca_TRGrid \
         ca_REUNA-ca \
         ca_RDIG \
         ca_UGRID-G2 \
         ca_cilogon-silver \
-        ca_MD-Grid-CA-T \
         ca_QuoVadis-Root-CA2 \
         ca_SlovakGrid \
         ca_QuoVadis-Grid-ICA-G2 \
         ca_SiGNET-CA \
         ca_MREN-CA \
         ca_SDG-G2 \
-        ca_PSC-Myproxy-CA \
         ca_UNAMgrid-ca \
         ca_ArmeSFo \
-        ca_GermanGrid \
         ca_LIPCA \
         ca_HellasGrid-CA-2016 \
         ca_PK-Grid-2007 \
         ca_DFN-GridGermany-Root \
         ca_AC-GRID-FR-Robots \
         ca_AC-GRID-FR-Personnels \
-        ca_NIIF-Root-CA-2 \
         ca_RomanianGRID \
         ca_IRAN-GRID-GCG-G2 \
         ca_SRCE \
         ca_ASGCCA-2007 \
-        ca_NERSC-SLCS \
         ca_AEGIS \
         ca_TSU-GE \
         ca_DZeScience \
