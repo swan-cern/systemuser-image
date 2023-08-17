@@ -331,6 +331,8 @@ fi
 # including loading any .pth files which modify sys.path
 
 log_info "Running the notebook server"
+# Force the old backend, since the newer version uses jupyter-server by default
+export JUPYTERHUB_SINGLEUSER_APP='notebook'
 sudo -E -u $USER sh -c 'cd $SWAN_HOME \
                         && /usr/local/bin/python3 -I -m jupyterhub.singleuser \
                            --port=8888 \
