@@ -253,6 +253,18 @@ RUN jupyter nbextension install --py --system hdfsbrowser && \
     mv /usr/local/lib/python3.9/site-packages/swancontents/templates{2,/templates} && \
     jupyter serverextension enable --py rucio_jupyterlab --sys-prefix
 
+# Add Rucio CA Certificate
+RUN mkdir /certs \
+    && touch /opt/rucio/rucio_ca.pem \
+    && curl -fsSL 'https://cafiles.cern.ch/cafiles/certificates/CERN%20Root%20Certification%20Authority%202.crt' | openssl x509 -inform DER -out /tmp/cernrootca2.crt \
+    && curl -fsSL 'https://cafiles.cern.ch/cafiles/certificates/CERN%20Grid%20Certification%20Authority(1).crt' -o /tmp/cerngridca.crt \
+    && curl -fsSL 'https://cafiles.cern.ch/cafiles/certificates/CERN%20Certification%20Authority.crt' -o /tmp/cernca.crt \
+    && cat /tmp/cernrootca2.crt >> /opt/rucio/rucio_ca.pem \
+    && cat /tmp/cerngridca.crt >> /opt/rucio/rucio_ca.pem \
+    && cat /tmp/cernca.crt >> /opt/rucio/rucio_ca.pem \
+    && rm /tmp/*.crt \
+    && update-ca-certificates
+
 # Configure Dask
 ENV DASK_DIR /srv/dask
 RUN mkdir -p ${DASK_DIR}
@@ -278,6 +290,7 @@ ADD userconfig.sh /srv/singleuser/userconfig.sh
 ADD create_dask_certs.sh /srv/singleuser/create_dask_certs.sh
 ADD configure_kernels_and_terminal.py /srv/singleuser/configure_kernels_and_terminal.py
 ADD executables/start_ipykernel.py /usr/local/bin/start_ipykernel.py
+ADD configure_rucio_extension.py /srv/singleuser/configure_rucio_extension.py
 RUN chmod 705 /usr/local/bin/start_ipykernel.py
 
 WORKDIR /root

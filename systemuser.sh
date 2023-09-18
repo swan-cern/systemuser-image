@@ -233,6 +233,9 @@ else
   }" > /etc/jupyter/labconfig/page_config.json
 fi
 
+# Rucio configuration
+python /srv/singleuser/configure_rucio_extension.py
+
 # HTCondor at CERN integration
 if [[ $CERN_HTCONDOR ]]
 then
