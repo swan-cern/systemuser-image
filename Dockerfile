@@ -153,6 +153,9 @@ gpgcheck=0' > /etc/yum.repos.d/carepo.repo && \
 # Install VOMS
 RUN yum install -y voms-clients-java voms-clients-cpp  fetch-crl globus-gsi-sysconfig
 
+# Install gfal2 required by Rucio
+RUN yum install -y gfal2-all gfal2-python
+
 ADD etc/vomses /etc/vomses
 ADD etc/grid-security/vomsdir /etc/grid-security/vomsdir
 
