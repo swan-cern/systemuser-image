@@ -208,7 +208,8 @@ RUN pip install --no-deps --no-cache-dir \
             swanoauthrenew==1.0.1 PyJWT \
             swanshare==1.1.1 \
             swanheader==1.0.0 \
-            swanportallocator==1.0.1
+            swanportallocator==1.0.1 \
+            rucio-jupyterlab==0.9.8
 # swandask must be installed after its dependency dask-labextension to disable the server extension automatically
 RUN pip install --no-deps --no-cache-dir swandask==0.0.3
 
@@ -246,7 +247,8 @@ RUN jupyter nbextension install --py --system hdfsbrowser && \
     ln -s /usr/local/lib/python3.9/site-packages/swandask /usr/local/lib/swan/extensions/ && \
     # FIXME workaround for templates. For some reason, and only in our image, Jupyter is looking for templates inside templates
     cp -r /usr/local/lib/python3.9/site-packages/swancontents/templates{,2} && \
-    mv /usr/local/lib/python3.9/site-packages/swancontents/templates{2,/templates}
+    mv /usr/local/lib/python3.9/site-packages/swancontents/templates{2,/templates} && \
+    jupyter serverextension enable --py rucio_jupyterlab --sys-prefix
 
 # Configure Dask
 ENV DASK_DIR /srv/dask
