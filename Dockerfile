@@ -262,7 +262,7 @@ RUN ln -s /usr/local/lib/python3.9/site-packages/swanportallocator ${DASK_LIB_DI
 
 # Install the SLURM Packages
 RUN yum makecache fast \
-    && yum-config-manager --add-repo http://linuxsoft.cern.ch/internal/repos/batch7-stable/x86_64/os --nogpgcheck \
+    && yum-config-manager --add-repo http://linuxsoft.cern.ch/internal/repos/batch7-qa/x86_64/os --nogpgcheck \
     && yum -y install sudo epel-release --nogpgcheck \
     && yum -y install slurm --nogpgcheck
 
