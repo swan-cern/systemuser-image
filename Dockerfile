@@ -278,5 +278,10 @@ ADD configure_kernels_and_terminal.py /srv/singleuser/configure_kernels_and_term
 ADD executables/start_ipykernel.py /usr/local/bin/start_ipykernel.py
 RUN chmod 705 /usr/local/bin/start_ipykernel.py
 
+# TEMPORARY: apply a patch to the auth file while we wait for the release of a new version with it
+ADD log_patch.diff /tmp/log_patch.diff
+RUN patch /usr/local/lib/python3.9/site-packages/jupyterhub/services/auth.py /tmp/log_patch.diff && \
+    rm -f /tmp/log_patch.diff
+
 WORKDIR /root
 CMD ["sh", "/srv/singleuser/systemuser.sh"]
