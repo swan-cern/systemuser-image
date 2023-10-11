@@ -1,0 +1,11 @@
+--- ./jupyterhub/services/auth.py  2023-08-17 12:28:41.000000000 +0200
++++ ./jupyterhub/services/auth.py 2023-10-11 12:20:20.597042884 +0200
+@@ -1229,6 +1229,7 @@
+         )
+         if user_model is None:
+             raise HTTPError(500, "oauth callback failed to identify a user")
+-        app_log.info("Logged-in user %s", user_model)
++        app_log.info("Logged-in user %s", user_model['name'])
++        app_log.debug("User model %s", user_model)
+         self.hub_auth.set_cookie(self, token)
+         self.redirect(next_url or self.hub_auth.base_url)
