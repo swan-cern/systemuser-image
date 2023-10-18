@@ -260,6 +260,9 @@ RUN pip install --no-deps --no-cache-dir --target ${DASK_LIB_DIR} \
 # Dependency of swandaskcluster
 RUN ln -s /usr/local/lib/python3.9/site-packages/swanportallocator ${DASK_LIB_DIR}
 
+# Toughen the krb ciphers to prevent failures when combining with Alma 9 environments (i.e the eosxd pod)
+RUN sed -i "s/default_tkt_enctypes.*/default_tkt_enctypes = aes256-cts aes128-cts des3-cbc-sha1 des-cbc-md5 des-cbc-crc arcfour-hmac-md5/g" /etc/krb5.conf
+
 RUN yum clean all && \
     rm -rf /var/cache/yum
 
