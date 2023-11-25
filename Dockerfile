@@ -153,6 +153,9 @@ gpgcheck=0' > /etc/yum.repos.d/carepo.repo && \
 # Install VOMS
 RUN yum install -y voms-clients-java voms-clients-cpp  fetch-crl globus-gsi-sysconfig
 
+# Install gfal2 required by Rucio
+RUN yum install -y gfal2-all gfal2-python
+
 ADD etc/vomses /etc/vomses
 ADD etc/grid-security/vomsdir /etc/grid-security/vomsdir
 
@@ -208,7 +211,8 @@ RUN pip install --no-deps --no-cache-dir \
             swanoauthrenew==1.0.1 PyJWT \
             swanshare==1.1.1 \
             swanheader==1.0.0 \
-            swanportallocator==1.0.1
+            swanportallocator==1.0.1 \
+            rucio-jupyterlab==0.9.8
 # swandask must be installed after its dependency dask-labextension to disable the server extension automatically
 RUN pip install --no-deps --no-cache-dir swandask==0.0.3
 
@@ -246,7 +250,20 @@ RUN jupyter nbextension install --py --system hdfsbrowser && \
     ln -s /usr/local/lib/python3.9/site-packages/swandask /usr/local/lib/swan/extensions/ && \
     # FIXME workaround for templates. For some reason, and only in our image, Jupyter is looking for templates inside templates
     cp -r /usr/local/lib/python3.9/site-packages/swancontents/templates{,2} && \
-    mv /usr/local/lib/python3.9/site-packages/swancontents/templates{2,/templates}
+    mv /usr/local/lib/python3.9/site-packages/swancontents/templates{2,/templates} && \
+    jupyter serverextension enable --py rucio_jupyterlab --sys-prefix
+
+# Add Rucio CA Certificate
+RUN mkdir /certs \
+    && touch /opt/rucio/rucio_ca.pem \
+    && curl -fsSL 'https://cafiles.cern.ch/cafiles/certificates/CERN%20Root%20Certification%20Authority%202.crt' | openssl x509 -inform DER -out /tmp/cernrootca2.crt \
+    && curl -fsSL 'https://cafiles.cern.ch/cafiles/certificates/CERN%20Grid%20Certification%20Authority(1).crt' -o /tmp/cerngridca.crt \
+    && curl -fsSL 'https://cafiles.cern.ch/cafiles/certificates/CERN%20Certification%20Authority.crt' -o /tmp/cernca.crt \
+    && cat /tmp/cernrootca2.crt >> /opt/rucio/rucio_ca.pem \
+    && cat /tmp/cerngridca.crt >> /opt/rucio/rucio_ca.pem \
+    && cat /tmp/cernca.crt >> /opt/rucio/rucio_ca.pem \
+    && rm /tmp/*.crt \
+    && update-ca-certificates
 
 # Configure Dask
 ENV DASK_DIR /srv/dask
@@ -276,6 +293,7 @@ ADD userconfig.sh /srv/singleuser/userconfig.sh
 ADD create_dask_certs.sh /srv/singleuser/create_dask_certs.sh
 ADD configure_kernels_and_terminal.py /srv/singleuser/configure_kernels_and_terminal.py
 ADD executables/start_ipykernel.py /usr/local/bin/start_ipykernel.py
+ADD configure_rucio_extension.py /srv/singleuser/configure_rucio_extension.py
 RUN chmod 705 /usr/local/bin/start_ipykernel.py
 
 # TEMPORARY: apply a patch to the auth file while we wait for the release of a new version with it
