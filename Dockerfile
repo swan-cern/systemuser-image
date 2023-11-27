@@ -207,7 +207,7 @@ RUN pip install --no-deps --no-cache-dir \
             swannotifications==1.0.0 \
             swanoauthrenew==1.0.1 PyJWT \
             swanshare==1.1.1 \
-            swanheader==1.0.0 \
+            swanheader==2.0.1 \
             swanportallocator==1.0.1
 # swandask must be installed after its dependency dask-labextension to disable the server extension automatically
 RUN pip install --no-deps --no-cache-dir swandask==0.0.3
