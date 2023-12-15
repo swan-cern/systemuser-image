@@ -256,7 +256,7 @@ ENV DASK_LIB_DIR ${DASK_DIR}/lib
 # to the PYTHONPATH of notebooks and terminals, which need it to do automatic
 # TLS configuration for Dask clients
 RUN pip install --no-deps --no-cache-dir --target ${DASK_LIB_DIR} \
-        swandaskcluster==2.0.1
+        swandaskcluster==3.0.0
 # Dependency of swandaskcluster
 RUN ln -s /usr/local/lib/python3.9/site-packages/swanportallocator ${DASK_LIB_DIR}
 
