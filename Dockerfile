@@ -200,7 +200,7 @@ RUN pip install --no-deps --no-cache-dir \
             sparkconnector==2.4.7 \
             sparkmonitor==2.1.1 \
             swancontents==1.4.3 \
-            swanhelp==2.0.2 \
+            swanhelp==3.0.3 \
             swanintro==1.0.0 \
             swankernelenv==1.0.0 \
             swannotebookviewer==1.2.0 \
